@@ -2,6 +2,9 @@ import getLinkColor from './utils/getLinkColor.js'
 import getNodeColor from './utils/getNodeColor.js'
 import getTextColor from './utils/getTextColor.js'
 import getNeighbors from './utils/getNeighbors.js'
+import resetNodeColor from "./utils/resetNodeColor.js";
+import resetTextColor from "./utils/resetTextColor.js";
+import resetLinkColor from "./utils/resetLinkColor.js";
 
 import baseNodes from './data/nodes.js'
 import baseLinks from './data/links.js'
@@ -37,7 +40,7 @@ var linkForce = d3
 var simulation = d3
     .forceSimulation()
     .force('link', linkForce)
-    .force('charge', d3.forceManyBody().strength(-120))
+    .force('charge', d3.forceManyBody().strength(-60))
     .force('center', d3.forceCenter(width / 2, height / 2))
 
 var dragDrop = d3.drag().on('start', function (node) {
@@ -67,25 +70,28 @@ function selectNode(selectedNode) {
         selectedId = selectedNode.id
         updateData(selectedNode)
         updateSimulation()
+        var neighbors = getNeighbors(selectedNode, baseLinks)
+
+        // we modify the styles to highlight selected nodes
+        nodeElements.attr('fill', function (node) { return getNodeColor(node, neighbors, selectedNode) })
+        textElements.attr('fill', function (node) { return getTextColor(node, neighbors, selectedNode) })
+        linkElements.attr('stroke', function (link) { return getLinkColor(selectedNode, link) })
     }
-
-    var neighbors = getNeighbors(selectedNode, baseLinks)
-
-    // we modify the styles to highlight selected nodes
-    nodeElements.attr('fill', function (node) { return getNodeColor(node, neighbors) })
-    textElements.attr('fill', function (node) { return getTextColor(node, neighbors) })
-    linkElements.attr('stroke', function (link) { return getLinkColor(selectedNode, link) })
 }
 
 // this helper simple adds all nodes and links
 // that are missing, to recreate the initial state
 function resetData() {
     var nodeIds = nodes.map(function (node) { return node.id })
+    var neighbors = {}
 
     baseNodes.forEach(function (node) {
         if (nodeIds.indexOf(node.id) === -1) {
             nodes.push(node)
         }
+        nodeElements.attr('fill', function (node) { return resetNodeColor(node) })
+        textElements.attr('fill', function (node) { return resetTextColor(node) })
+        linkElements.attr('stroke', function (link) { return resetLinkColor(node) })
     })
 
     links = baseLinks
@@ -182,7 +188,6 @@ function updateSimulation() {
     simulation.force('link').links(links)
     simulation.alphaTarget(0.7).restart()
 }
-
 // last but not least, we call updateSimulation
 // to trigger the initial render
 updateSimulation()
