@@ -11,6 +11,7 @@ import baseLinks from './data/links.js'
 
 let nodes = [...baseNodes]
 let links = [...baseLinks]
+let zoom = d3.zoom().on("zoom", zoomy)
 
 var width = window.innerWidth
 var height = window.innerHeight
@@ -18,9 +19,7 @@ var height = window.innerHeight
 var svg = d3.select('#graph').append("svg")
     .attr("width",  width)
     .attr("height",  height)
-    .call(d3.zoom().on("zoom", function (event) {
-        svg.attr("transform", event.transform)
-    }))
+    .call(zoom)
     .append("g")
 
 var linkElements,
@@ -62,6 +61,38 @@ var dragDrop = d3.drag().on('start', function (event, node) {
     node.fx = null
     node.fy = null
 })
+
+var div = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+function zoomy(event){
+    svg.attr("transform", event.transform)
+}
+
+function zoomIn() {
+    svg
+        .transition()
+        .call(zoom.scaleBy, 2);
+}
+
+function zoomOut() {
+    svg
+        .transition()
+        .call(zoom.scaleBy, 0.5);
+}
+
+function resetZoom() {
+    svg
+        .transition()
+        .call(zoom.scaleTo, 1);
+}
+
+function center() {
+    svg
+        .transition()
+        .call(zoom.translateTo, 0.5 * width, 0.5 * height);
+}
 
 // select node is called on every click
 // we either update the data according to the selection
@@ -155,6 +186,19 @@ function updateGraph() {
         // we link the selectNode method here
         // to update the graph on every click
         .on('click', selectNode)
+        .on("mouseover", function(event, d) {
+            div.transition()
+                .duration(200)
+                .style("opacity", .9);
+            div	.html("ttt" + "<br/>"  + d.close)
+                .style("left", (event.pageX) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function(event, d) {
+            div.transition()
+                .duration(500)
+                .style("opacity", 0);
+        })
 
     nodeElements = nodeEnter.merge(nodeElements)
 
@@ -199,3 +243,7 @@ function updateSimulation() {
 // to trigger the initial render
 //initZoom();
 updateSimulation()
+window.zoomIn=zoomIn
+window.zoomOut=zoomOut
+window.resetZoom=resetZoom
+window.center=center
