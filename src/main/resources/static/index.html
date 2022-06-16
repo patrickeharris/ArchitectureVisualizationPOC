@@ -1,7 +1,13 @@
 <!DOCTYPE HTML>
 <meta charset="utf-8">
 
-<svg width="960" height="600"></svg>
-
-<script src="https://d3js.org/d3.v4.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
 <script type="module" src="./graph.js"></script>
+
+<svg width="0" height="0"><div id="graph"></div></svg>
+<button onclick="zoomIn()">Zoom in</button>
+<button onclick="zoomOut()">Zoom out</button>
+<button onclick="resetZoom()">Reset zoom</button>
+<button onclick="panLeft()">Pan left</button>
+<button onclick="panRight()">Pan right</button>
+<button onclick="center()">Center</button>

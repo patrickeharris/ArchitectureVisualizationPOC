@@ -15,8 +15,13 @@ let links = [...baseLinks]
 var width = window.innerWidth
 var height = window.innerHeight
 
-var svg = d3.select('svg')
-svg.attr('width', width).attr('height', height)
+var svg = d3.select('#graph').append("svg")
+    .attr("width",  width)
+    .attr("height",  height)
+    .call(d3.zoom().on("zoom", function (event) {
+        svg.attr("transform", event.transform)
+    }))
+    .append("g")
 
 var linkElements,
     nodeElements,
@@ -43,15 +48,15 @@ var simulation = d3
     .force('charge', d3.forceManyBody().strength(-60))
     .force('center', d3.forceCenter(width / 2, height / 2))
 
-var dragDrop = d3.drag().on('start', function (node) {
+var dragDrop = d3.drag().on('start', function (event, node) {
     node.fx = node.x
     node.fy = node.y
-}).on('drag', function (node) {
+}).on('drag', function (event, node) {
     simulation.alphaTarget(0.7).restart()
-    node.fx = d3.event.x
-    node.fy = d3.event.y
-}).on('end', function (node) {
-    if (!d3.event.active) {
+    node.fx = event.x
+    node.fy = event.y
+}).on('end', function (event, node) {
+    if (!event.active) {
         simulation.alphaTarget(0)
     }
     node.fx = null
@@ -61,7 +66,7 @@ var dragDrop = d3.drag().on('start', function (node) {
 // select node is called on every click
 // we either update the data according to the selection
 // or reset the data if the same node is clicked twice
-function selectNode(selectedNode) {
+function selectNode(event, selectedNode) {
     if (selectedId === selectedNode.id) {
         selectedId = undefined
         resetData()
@@ -96,6 +101,8 @@ function resetData() {
 
     links = baseLinks
 }
+
+
 
 // diffing and mutating the data
 function updateData(selectedNode) {
@@ -190,4 +197,5 @@ function updateSimulation() {
 }
 // last but not least, we call updateSimulation
 // to trigger the initial render
+//initZoom();
 updateSimulation()
