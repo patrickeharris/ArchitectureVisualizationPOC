@@ -44,7 +44,7 @@ var linkForce = d3
 var simulation = d3
     .forceSimulation()
     .force('link', linkForce)
-    .force('charge', d3.forceManyBody().strength(-60))
+    .force('charge', d3.forceManyBody().strength(-240))
     .force('center', d3.forceCenter(width / 2, height / 2))
 
 var dragDrop = d3.drag().on('start', function (event, node) {
