@@ -1,5 +1,5 @@
 export default [
-    { id: '1', group: 0, label: 'Service-1', level: 2 },
+    { id: '1', group: 0, label: 'Mervice-1', level: 2 },
     { id: '2', group: 0, label: 'Service-2', level: 2 },
     { id: '3', group: 0, label: 'Service-3', level: 2 },
     { id: '4', group: 0, label: 'Service-4', level: 2 },

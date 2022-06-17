@@ -15,6 +15,8 @@ let zoom = d3.zoom().on("zoom", zoomy)
 
 var width = window.innerWidth
 var height = window.innerHeight
+let searchNodes = []
+let searchLinks = []
 
 var svg = d3.select('#graph').append("svg")
     .attr("width",  width)
@@ -115,6 +117,65 @@ function selectNode(event, selectedNode) {
     }
 }
 
+export default function selectNodeExplicit(selectedNode) {
+        selectedId = selectedNode.id
+        updateData(selectedNode)
+        updateSimulation()
+        var neighbors = getNeighbors(selectedNode, baseLinks)
+
+        // we modify the styles to highlight selected nodes
+        nodeElements.attr('fill', function (node) { return getNodeColor(node, neighbors, selectedNode) })
+        textElements.attr('fill', function (node) { return getTextColor(node, neighbors, selectedNode) })
+        linkElements.attr('stroke', function (link) { return getLinkColor(selectedNode, link) })
+}
+
+export function selectNodesExplicit(selectedNode) {
+    selectedId = selectedNode.id
+
+    var val;
+    for (let i = 0; i < searchNodes.length; i++){
+        val = searchNodes.values().next().value
+
+        console.log("FOUND " + val)
+    }
+
+    if (!(typeof val === undefined)) {
+        searchNodes.push(selectedNode)
+        console.log("PUSHING " + val)
+    }
+
+    var diff = {
+        removed: nodes.filter(function (node) { return searchNodes.indexOf(node) === -1 }),
+        added: searchNodes.filter(function (node) { return nodes.indexOf(node) === -1 })
+    }
+
+    diff.removed.forEach(function (node) { nodes.splice(nodes.indexOf(node), 1) })
+    diff.added.forEach(function (node) { nodes.push(node) })
+
+    /*var newLinks = baseLinks.filter(function (link) {
+        return link.target.id === selectedNode.id || link.source.id === selectedNode.id
+    })
+
+    newLinks = newLinks.filter(function (link){
+        return link.target.id === selectedNode.id || link.source.id === selectedNode.id
+    })
+
+    for(let i = 0; i < newLinks.length; i++){
+
+    }*/
+
+    links = baseLinks.filter(function (link) {
+        return link.target.id === selectedNode.id || link.source.id === selectedNode.id
+    })
+
+    updateSimulation()
+}
+
+export function resetNodeExplicit() {
+    resetData()
+    updateSimulation()
+}
+
 // this helper simple adds all nodes and links
 // that are missing, to recreate the initial state
 function resetData() {
@@ -131,6 +192,10 @@ function resetData() {
     })
 
     links = baseLinks
+    for(let i = 0; i < searchNodes.length; i++)
+    {
+        searchNodes.pop();
+    }
 }
 
 
@@ -190,7 +255,7 @@ function updateGraph() {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div	.html("ttt" + "<br/>"  + d.close)
+            div	.html(d.id + "<br/>"  + d.label)
                 .style("left", (event.pageX) + "px")
                 .style("top", (event.pageY - 28) + "px");
         })
