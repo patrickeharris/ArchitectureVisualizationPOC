@@ -1,5 +1,5 @@
 import nodes from "../data/nodes.js";
-import selectNodeExplicit from "../graph.js";
+import selectNodeExplicit, {selectLinksExplicit} from "../graph.js";
 import {resetNodeExplicit, selectNodesExplicit} from "../graph.js";
 
 const searchWrapper = document.querySelector(".search-box")
@@ -8,6 +8,7 @@ const suggBox = searchWrapper.querySelector(".autocom_box")
 
 
 inputBox.onkeyup = (e)=>{
+    resetNodeExplicit();
     let userData = e.target.value;
     let emptyArray = [];
     if(userData){
@@ -18,6 +19,7 @@ inputBox.onkeyup = (e)=>{
             selectNodesExplicit(data);
             return data = '<li>' + data.label + '</li>';
         });
+        selectLinksExplicit()
         searchWrapper.classList.add("active");
         showSuggestions(emptyArray);
         let allList = suggBox.querySelectorAll("li");

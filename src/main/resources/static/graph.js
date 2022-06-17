@@ -135,15 +135,11 @@ export function selectNodesExplicit(selectedNode) {
     var val;
     for (let i = 0; i < searchNodes.length; i++){
         val = searchNodes.values().next().value
-
-        console.log("FOUND " + val)
     }
 
     if (!(typeof val === undefined)) {
         searchNodes.push(selectedNode)
-        console.log("PUSHING " + val)
     }
-
     var diff = {
         removed: nodes.filter(function (node) { return searchNodes.indexOf(node) === -1 }),
         added: searchNodes.filter(function (node) { return nodes.indexOf(node) === -1 })
@@ -151,27 +147,20 @@ export function selectNodesExplicit(selectedNode) {
 
     diff.removed.forEach(function (node) { nodes.splice(nodes.indexOf(node), 1) })
     diff.added.forEach(function (node) { nodes.push(node) })
+}
 
-    /*var newLinks = baseLinks.filter(function (link) {
-        return link.target.id === selectedNode.id || link.source.id === selectedNode.id
+export function selectLinksExplicit(){
+    var newLinks = baseLinks.filter(function (link) {
+        return (searchNodes.includes(link.source) && searchNodes.includes(link.target)) || searchNodes.length === 0
     })
-
-    newLinks = newLinks.filter(function (link){
-        return link.target.id === selectedNode.id || link.source.id === selectedNode.id
-    })
-
-    for(let i = 0; i < newLinks.length; i++){
-
-    }*/
-
-    links = baseLinks.filter(function (link) {
-        return link.target.id === selectedNode.id || link.source.id === selectedNode.id
-    })
-
+    links = newLinks
     updateSimulation()
 }
 
 export function resetNodeExplicit() {
+    nodeElements.attr('fill', 'gray')
+    textElements.attr('fill', 'black')
+    linkElements.attr('stroke', '#E5E5E5')
     resetData()
     updateSimulation()
 }
