@@ -17,9 +17,18 @@
 }
 
 .search-box{
-    width: 50%;
-    position: relative;
+    display: flex;
+    width: 25%;
+    position: absolute;
+    float: left;
+    z-index: 5;
 }
+
+.graph{
+    display: flex;
+    float: right;
+    z-index: 2;
+  }
 
 .search-box .autocom_box{
     padding: 0px;
@@ -113,10 +122,8 @@
     border: 2px solid #008CBA;
 }
 .center {
-    display: flex;
     justify-content: center;
     align-items: center;
-    height: 100px;
 }
 div.tooltip {
     position: absolute;
