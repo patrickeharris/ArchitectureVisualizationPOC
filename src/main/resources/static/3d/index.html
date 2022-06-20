@@ -17,8 +17,63 @@
     </div>
 <div id="graph"></div>
 </div>
+<div class="wrapper">
+    <div class="content">
+        <ul class="menu">
+            <li class="item" onclick="recolor()">
+                <i class="uil uil-eye"></i>
+                <span>Preview</span>
+            </li>
+            <li class="item share">
+                <div>
+                    <i class="uil uil-share"></i>
+                    <span>Share</span>
+                </div>
+                <i class="uil uil-angle-right"></i>
+                <ul class="share-menu">
+                    <li class="item">
+                        <i class="uil uil-twitter-alt"></i>
+                        <span>Twitter</span>
+                    </li>
+                    <li class="item">
+                        <i class="uil uil-instagram"></i>
+                        <span>Instagram</span>
+                    </li>
+                    <li class="item">
+                        <i class="uil uil-dribbble"></i>
+                        <span>Dribble</span>
+                    </li>
+                    <li class="item">
+                        <i class="uil uil-telegram-alt"></i>
+                        <span>Telegram</span>
+                    </li>
+                </ul>
+            </li>
+            <li class="item">
+                <i class="uil uil-link-alt"></i>
+                <span>Get Link</span>
+            </li>
+            <li class="item">
+                <i class="uil uil-edit"></i>
+                <span>Rename</span>
+            </li>
+            <li class="item">
+                <i class="uil uil-trash-alt"></i>
+                <span>Delete</span>
+            </li>
+        </ul>
+        <div class="setting">
+            <li class="item">
+                <i class="uil uil-setting"></i>
+                <span>Settings</span>
+            </li>
+        </div>
+    </div>
+</div>
+<script src="./utils/rightclick.js"></script>
 
-<script>
+<script type="module">
+    import { UnrealBloomPass } from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
     const highlightNodes = new Set();
     const highlightLinks = new Set();
     let hoverNode = null;
@@ -104,10 +159,12 @@
             })
             console.log(links.length)
             console.log(newLinks.length)
-            Graph.graphData({
-                nodes: emptyArray,
-                links: newLinks
-            })
+            if(emptyArray.length > 0) {
+                Graph.graphData({
+                    nodes: emptyArray,
+                    links: newLinks
+                })
+            }
             searchWrapper.classList.add("active");
             showSuggestions(searchNodes);
             let allList = suggBox.querySelectorAll("li");
@@ -130,6 +187,21 @@
         let emptyArray = nodes.filter((data)=>{
             return data.id.startsWith(selectUserData);
         });
+
+        Graph.graphData({
+            nodes: emptyArray,
+            links: links
+        })
+    }
+
+    function recolor(){
+        console.log("skh")
+        Graph.nodeColor('color').nodeAutoColorBy('group')
+        const bloomPass = new UnrealBloomPass();
+        bloomPass.strength = 3;
+        bloomPass.radius = 1;
+        bloomPass.threshold = 0.1;
+        Graph.postProcessingComposer().addPass(bloomPass);
     }
 
     function showSuggestions(list){
@@ -167,6 +239,8 @@
         }})
         updateHighlight();
     }
+
+    window.recolor = recolor;
 
 </script>
 </body>
