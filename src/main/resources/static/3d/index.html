@@ -3,9 +3,19 @@
 
     <script src="//unpkg.com/3d-force-graph"></script>
     <!--<script src="../../dist/3d-force-graph.js"></script>-->
+    <link rel="stylesheet" href="styles.css">
 </head>
 
 <body>
+<div class="center">
+    <div class="search-box">
+        <input type="text" placeholder="what are you looking for?">
+        <i class="fas fa-search"></i>
+        <div class="autocom_box">
+            <li>Happy</li>
+        </div>
+    </div>
+</div>
 <div id="3d-graph"></div>
 
 <script>
@@ -57,19 +67,23 @@
                 let result = JSON.parse(request.responseText);
                 console.log(node.id)
                 //result.links.forEach(function(neighbor){if(neighbor.source === node || neighbor.target === node){highlightNodes.add(neighbor)}});
-                result.links.forEach(function(link){if(link.source === node.id || link.target === node.id){
-                    highlightLinks.add(link)}});
-                result.nodes.forEach(function(node){
+                result.links.forEach(function(link){if(link.source === node.id || link.target === node.id) {
+                    highlightLinks.add(link);
+                    highlightNodes.add(link.source);
+                    highlightNodes.add(link.target);
+                    console.log("Yeye");
+                }});
+                /*result.nodes.forEach(function(nodel){
                     highlightLinks.forEach(function(link){
-                        if(link.source === node.id || link.target === node.id){
+                        if(link.source === nodel.id || link.target === nodel.id){
                             console.log("Ye")
-                            if(!highlightNodes.has(node)){
+                            if(!highlightNodes.has(nodel)){
                                 console.log("yes")
-                                highlightNodes.add(node)
+                                highlightNodes.add(nodel.id)
                             }
                         }
                     })
-                });
+                });*/
             }
 
             hoverNode = node || null;
