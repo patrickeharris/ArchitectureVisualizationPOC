@@ -11,7 +11,7 @@ inputBox.onkeyup = (e)=>{
     resetNodeExplicit();
     let userData = e.target.value;
     let emptyArray = [];
-    if(userData){
+    if (userData){
         emptyArray = nodes.filter((data)=>{
            return data.label.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
         });

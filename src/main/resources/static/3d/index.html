@@ -22,6 +22,9 @@
     const highlightNodes = new Set();
     const highlightLinks = new Set();
     let hoverNode = null;
+    const searchWrapper = document.querySelector(".search-box")
+    const inputBox = searchWrapper.querySelector("input")
+    const suggBox = searchWrapper.querySelector(".autocom_box")
 
     const Graph = ForceGraph3D()
     (document.getElementById('graph'))
@@ -81,6 +84,68 @@
             updateHighlight();
         });
 
+    inputBox.onkeyup = (e)=>{
+        const{ nodes, links } = Graph.graphData();
+        highlightNodes.clear();
+        highlightLinks.clear();
+        let userData = e.target.value;
+        let emptyArray = [];
+        let searchNodes = [];
+        if(userData){
+            emptyArray = nodes.filter((data)=>{
+                Graph.graphData({
+                    nodes: emptyArray,
+                    links
+                })
+                return data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
+            });
+            emptyArray = emptyArray.map((data)=>{
+                return data = '<li>' + data.id + '</li>';
+            });
+            var newLinks = links.filter(function (link) {
+                return (emptyArray.includes(link.source) && emptyArray.includes(link.target)) || emptyArray.length === 0
+            })
+            Graph.graphData({
+                nodes,
+                links: newLinks
+            })
+            searchWrapper.classList.add("active");
+            showSuggestions(emptyArray);
+            let allList = suggBox.querySelectorAll("li");
+            for(let index = 0; index < allList.length; index++){
+                //onclick attributes
+                allList[index].setAttribute("onclick", "select(this)")
+            }
+        }
+        else{
+            searchWrapper.classList.remove("active");
+            highlightNodes.clear();
+            highlightLinks.clear();
+        }
+    }
+
+    function select(element){
+        const{ nodes, links } = Graph.graphData();
+        let selectUserData = element.textContent;
+        inputBox.value = selectUserData;
+        searchWrapper.classList.remove("active");
+        let emptyArray = nodes.filter((data)=>{
+            return data.id.startsWith(selectUserData);
+        });
+    }
+
+    function showSuggestions(list){
+        let listData;
+        if(!list.length){
+            let userValue = inputBox.value;
+            listData = '<li>' + userValue + '</li>';
+        }
+        else{
+            listData = list.join('');
+        }
+        suggBox.innerHTML = listData;
+    }
+    window.select = select;
 
     function updateHighlight() {
         // trigger update of highlighted objects in scene
@@ -104,5 +169,6 @@
         }})
         updateHighlight();
     }
+
 </script>
 </body>
