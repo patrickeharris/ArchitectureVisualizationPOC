@@ -17,7 +17,7 @@
 }
 
 .search-box{
-    display: flex;
+    display: block;
     width: 25%;
     position: absolute;
     float: left;
@@ -42,6 +42,9 @@
     padding: 10px 8px;
     opacity: 1;
     pointer-events: auto;
+    z-index: 5;
+    color: black;
+    background: white;
 }
 
 .autocom_box li{
@@ -114,6 +117,7 @@
     margin: 4px 2px;
     transition-duration: 0.4s;
     cursor: pointer;
+    z-index: 5;
 }
 
 .button:hover {

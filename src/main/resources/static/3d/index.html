@@ -91,26 +91,25 @@
         let userData = e.target.value;
         let emptyArray = [];
         let searchNodes = [];
+        let newLinks = [];
         if(userData){
             emptyArray = nodes.filter((data)=>{
-                Graph.graphData({
-                    nodes: emptyArray,
-                    links
-                })
                 return data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
             });
-            emptyArray = emptyArray.map((data)=>{
+            searchNodes = emptyArray.map((data)=>{
                 return data = '<li>' + data.id + '</li>';
             });
-            var newLinks = links.filter(function (link) {
+            newLinks = links.filter((link)=>{
                 return (emptyArray.includes(link.source) && emptyArray.includes(link.target)) || emptyArray.length === 0
             })
+            console.log(links.length)
+            console.log(newLinks.length)
             Graph.graphData({
-                nodes,
+                nodes: emptyArray,
                 links: newLinks
             })
             searchWrapper.classList.add("active");
-            showSuggestions(emptyArray);
+            showSuggestions(searchNodes);
             let allList = suggBox.querySelectorAll("li");
             for(let index = 0; index < allList.length; index++){
                 //onclick attributes
@@ -119,8 +118,7 @@
         }
         else{
             searchWrapper.classList.remove("active");
-            highlightNodes.clear();
-            highlightLinks.clear();
+            Graph.jsonUrl('./data.json')
         }
     }
 
