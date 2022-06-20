@@ -61,29 +61,7 @@
             highlightLinks.clear();
             if (node) {
                 highlightNodes.add(node);
-                var request = new XMLHttpRequest();
-                request.open("GET", "./data.json", false);
-                request.send(null)
-                let result = JSON.parse(request.responseText);
-                console.log(node.id)
-                //result.links.forEach(function(neighbor){if(neighbor.source === node || neighbor.target === node){highlightNodes.add(neighbor)}});
-                result.links.forEach(function(link){if(link.source === node.id || link.target === node.id) {
-                    highlightLinks.add(link);
-                    highlightNodes.add(link.source);
-                    highlightNodes.add(link.target);
-                    console.log("Yeye");
-                }});
-                /*result.nodes.forEach(function(nodel){
-                    highlightLinks.forEach(function(link){
-                        if(link.source === nodel.id || link.target === nodel.id){
-                            console.log("Ye")
-                            if(!highlightNodes.has(nodel)){
-                                console.log("yes")
-                                highlightNodes.add(nodel.id)
-                            }
-                        }
-                    })
-                });*/
+                getNeighbors(node);
             }
 
             hoverNode = node || null;
@@ -110,6 +88,21 @@
             .nodeColor(Graph.nodeColor())
             .linkWidth(Graph.linkWidth())
             .linkDirectionalParticles(Graph.linkDirectionalParticles());
+    }
+
+    function getNeighbors(node){
+        const{ nodes, links } = Graph.graphData();
+        console.log(node.id);
+        links.forEach((link) => {if(link.source === node || link.target === node){
+            highlightLinks.add(link);
+            if(!highlightNodes.has(link.source)){
+                highlightNodes.add(link.source);
+            }
+            if(!highlightNodes.has(link.target)){
+                highlightNodes.add(link.target);
+            }
+        }})
+        updateHighlight();
     }
 </script>
 </body>
