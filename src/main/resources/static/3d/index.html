@@ -1,7 +1,7 @@
 <head>
     <style> body { margin: 0; } </style>
 
-    <script src="//unpkg.com/3d-force-graph"></script>
+    <script src="//unpkg.com/3d-force-graph@1.70.10"></script>
     <!--<script src="../../dist/3d-force-graph.js"></script>-->
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -20,9 +20,9 @@
 <div class="wrapper">
     <div class="content">
         <ul class="menu">
-            <li class="item" onclick="recolor()">
+            <li class="item" onclick="getNeighborsSelected()">
                 <i class="uil uil-eye"></i>
-                <span>Preview</span>
+                <span>Show Neighbors</span>
             </li>
             <li class="item share">
                 <div>
@@ -49,7 +49,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="item">
+            <li class="item" onclick="recolor()">
                 <i class="uil uil-link-alt"></i>
                 <span>Get Link</span>
             </li>
@@ -70,7 +70,6 @@
         </div>
     </div>
 </div>
-<script src="./utils/rightclick.js"></script>
 
 <script type="module">
     import { UnrealBloomPass } from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
@@ -80,6 +79,15 @@
     const searchWrapper = document.querySelector(".search-box")
     const inputBox = searchWrapper.querySelector("input")
     const suggBox = searchWrapper.querySelector(".autocom_box")
+    const contextMenu = document.querySelector(".wrapper");
+    const shareMenu = contextMenu.querySelector(".share-menu");
+    let selectedNode = null;
+
+    document.addEventListener("click", () => {
+        contextMenu.style.visibility = "hidden";
+        //selectedNode = null;
+        //console.log(selectedNode +"yeye")
+    });
 
     const Graph = ForceGraph3D()
     (document.getElementById('graph'))
@@ -110,6 +118,37 @@
                 node, // lookAt ({ x, y, z })
                 3000  // ms transition duration
             );
+            let emptyArray = [];
+            emptyArray.push(node);
+            Graph.graphData({
+                nodes: emptyArray,
+                links: []
+            })
+        })
+        .onNodeRightClick((node, e) =>{
+            selectedNode = node;
+            console.log("ISID?: " + node.id)
+            e.preventDefault();
+            let x = e.offsetX, y = e.offsetY,
+                winWidth = window.innerWidth,
+                winHeight = window.innerHeight,
+                cmWidth = contextMenu.offsetWidth,
+                cmHeight = contextMenu.offsetHeight;
+
+            if(x > (winWidth - cmWidth - shareMenu.offsetWidth)) {
+                shareMenu.style.left = "-200px";
+            } else {
+                shareMenu.style.left = "";
+                shareMenu.style.right = "-200px";
+            }
+
+            x = x > winWidth - cmWidth ? winWidth - cmWidth - 5 : x;
+            y = y > winHeight - cmHeight ? winHeight - cmHeight - 5 : y;
+
+            contextMenu.style.left = `${x}px`;
+            contextMenu.style.top = `${y}px`;
+            contextMenu.style.visibility = "visible";
+            console.log(node+"no")
         })
         .onNodeHover(node => {
             // no state change
@@ -240,7 +279,45 @@
         updateHighlight();
     }
 
+    function reset(){
+        Graph.jsonUrl('./data.json')
+    }
+
+    function getNeighborsSelected(){
+        reset()
+        console.log("ID" + selectedNode.id);
+        const{ nodes, links } = Graph.graphData();
+        let newLinks = links.filter((link) => {
+            return link.source.id === selectedNode.id || link.target.id === selectedNode.id
+        });
+        let searchNodes = nodes.filter((node) => {
+            return node.id === selectedNode.id
+        });
+
+        console.log(searchNodes.length)
+        console.log(newLinks.length)
+        /*links.forEach((link) => {if(link.source === selectedNode || link.target === selectedNode){
+            newLinks.push(link);
+            if(!highlightNodes.has(link.source)){
+                highlightNodes.add(link.source);
+                searchNodes.push(link.source)
+                console.log("ADDING")
+            }
+            if(!highlightNodes.has(link.target)){
+                highlightNodes.add(link.target);
+                searchNodes.push(link.target)
+                console.log("ADDING")
+            }
+        }})*/
+
+        Graph.graphData({
+            nodes: searchNodes,
+            links: links
+        })
+    }
+
     window.recolor = recolor;
+    window.getNeighborsSelected = getNeighborsSelected;
 
 </script>
 </body>
