@@ -71,6 +71,20 @@
     </div>
 </div>
 
+<div>
+    <input id="menuToggle" type="checkbox">
+    <div class="infobox md-card">
+        <div class="md-card-content">
+            <h2 id="nodeName">Name</h2>
+            <span class="md-caption">Something cool.</span>
+            <p>Other stuff.</p>
+        </div>
+        <div class="md-card-btns">
+            <label for="menuToggle" class="md-button">Close Box</label>
+        </div>
+    </div>
+</div>
+
 <script type="module">
     import { UnrealBloomPass } from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
     const highlightNodes = new Set();
@@ -82,6 +96,7 @@
     const contextMenu = document.querySelector(".wrapper");
     const shareMenu = contextMenu.querySelector(".share-menu");
     let selectedNode = null;
+    let allNodes = [];
 
     document.addEventListener("click", () => {
         contextMenu.style.visibility = "hidden";
@@ -98,6 +113,8 @@
         .nodeAutoColorBy('group')
         .linkDirectionalParticles(link => highlightLinks.has(link) ? 4 : 0)
         .linkDirectionalParticleWidth(4)
+        .nodeVisibility((node) => customNodeVisibility(node))
+        .linkVisibility((link) => customLinkVisibility(link))
         .onNodeDragEnd(node => {
             node.fx = node.x;
             node.fy = node.y;
@@ -124,6 +141,9 @@
                 nodes: emptyArray,
                 links: []
             })
+            const cb = document.querySelector('#menuToggle');
+            cb.checked = true;
+            document.getElementById("nodeName").innerHTML = node.id
         })
         .onNodeRightClick((node, e) =>{
             selectedNode = node;
@@ -179,58 +199,57 @@
         });
 
     inputBox.onkeyup = (e)=>{
-        const{ nodes, links } = Graph.graphData();
+        let { nodes, links } = Graph.graphData();
         highlightNodes.clear();
         highlightLinks.clear();
+        const cb = document.querySelector('#menuToggle');
+        cb.checked = false;
         let userData = e.target.value;
         let emptyArray = [];
-        let searchNodes = [];
-        let newLinks = [];
+        allNodes = []
         if(userData){
             emptyArray = nodes.filter((data)=>{
+                if(!data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase())){
+                    allNodes.push(data)
+                }
                 return data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
             });
-            searchNodes = emptyArray.map((data)=>{
+            emptyArray = emptyArray.map((data)=>{
                 return data = '<li>' + data.id + '</li>';
             });
-            newLinks = links.filter((link)=>{
-                return (emptyArray.includes(link.source) && emptyArray.includes(link.target)) || emptyArray.length === 0
-            })
-            console.log(links.length)
-            console.log(newLinks.length)
-            if(emptyArray.length > 0) {
-                Graph.graphData({
-                    nodes: emptyArray,
-                    links: newLinks
-                })
-            }
+            reset()
             searchWrapper.classList.add("active");
-            showSuggestions(searchNodes);
+            showSuggestions(emptyArray);
             let allList = suggBox.querySelectorAll("li");
             for(let index = 0; index < allList.length; index++){
-                //onclick attributes
                 allList[index].setAttribute("onclick", "select(this)")
             }
         }
         else{
             searchWrapper.classList.remove("active");
-            Graph.jsonUrl('./data.json')
+            allNodes = []
+            reset()
         }
     }
 
     function select(element){
-        const{ nodes, links } = Graph.graphData();
         let selectUserData = element.textContent;
         inputBox.value = selectUserData;
         searchWrapper.classList.remove("active");
-        let emptyArray = nodes.filter((data)=>{
-            return data.id.startsWith(selectUserData);
-        });
+        let j = 0;
 
-        Graph.graphData({
-            nodes: emptyArray,
-            links: links
-        })
+        for(let i = 0; i < nodes.length; i++){
+            if(nodes[i].id.startsWith(selectUserData)){
+                j = i
+            }
+            else{
+                allNodes.push(nodes[i])
+            }
+        }
+        reset()
+        const cb = document.querySelector('#menuToggle');
+        cb.checked = true;
+        document.getElementById("nodeName").innerHTML = nodes[j].id
     }
 
     function recolor(){
@@ -265,7 +284,7 @@
     }
 
     function getNeighbors(node){
-        const{ nodes, links } = Graph.graphData();
+        let { nodes, links } = Graph.graphData();
         console.log(node.id);
         links.forEach((link) => {if(link.source === node || link.target === node){
             highlightLinks.add(link);
@@ -280,20 +299,33 @@
     }
 
     function reset(){
-        Graph.jsonUrl('./data.json')
+        Graph.
+        nodeVisibility((node) => customNodeVisibility(node)).
+        linkVisibility((link) => customLinkVisibility(link));
+        Graph.refresh();
     }
 
     function getNeighborsSelected(){
-        reset()
         console.log("ID" + selectedNode.id);
-        const{ nodes, links } = Graph.graphData();
+        let { nodes, links } = Graph.graphData();
+        let result = [];
+        allNodes = nodes
         let newLinks = links.filter((link) => {
+            if(link.source.id === selectedNode.id || link.target.id === selectedNode.id){
+                if(allNodes.includes(link.source)){
+                    allNodes.push(link.source)
+                }
+
+                if(allNodes.includes(link.target)){
+                    allNodes.push(link.target)
+                }
+            }
             return link.source.id === selectedNode.id || link.target.id === selectedNode.id
         });
         let searchNodes = nodes.filter((node) => {
             return node.id === selectedNode.id
         });
-
+        reset()
         console.log(searchNodes.length)
         console.log(newLinks.length)
         /*links.forEach((link) => {if(link.source === selectedNode || link.target === selectedNode){
@@ -309,11 +341,16 @@
                 console.log("ADDING")
             }
         }})*/
+    }
 
-        Graph.graphData({
-            nodes: searchNodes,
-            links: links
-        })
+    function customNodeVisibility(node) {
+        if(allNodes.includes(node))
+            return false
+        return true
+    }
+
+    function customLinkVisibility(link) {
+        return customNodeVisibility(link.source) && customNodeVisibility(link.target);
     }
 
     window.recolor = recolor;
