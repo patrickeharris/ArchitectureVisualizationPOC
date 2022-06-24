@@ -80,7 +80,7 @@
             <p>Other stuff.</p>
         </div>
         <div class="md-card-btns">
-            <label for="menuToggle" class="md-button">Close Box</label>
+            <label for="menuToggle" class="md-button" onclick="closeBox()">Close Box</label>
         </div>
     </div>
 </div>
@@ -341,6 +341,12 @@
         Graph.refresh();
     }
 
+    function closeBox(){
+        let { nodes, links } = Graph.graphData();
+        visibleNodes = nodes;
+        reset();
+    }
+
     // Get neighbors of a selected node
     function getNeighborsSelected(){
         let { nodes, links } = Graph.graphData();
@@ -394,5 +400,6 @@
     window.recolor = recolor;
     window.getNeighborsSelected = getNeighborsSelected;
     window.select = select;
+    window.closeBox = closeBox;
 </script>
 </body>
