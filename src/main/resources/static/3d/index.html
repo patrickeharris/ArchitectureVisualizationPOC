@@ -1,6 +1,6 @@
 <head>
     <style> body { margin: 0; } </style>
-
+    <script src="//unpkg.com/three"></script>
     <script src="//unpkg.com/3d-force-graph@1.70.10"></script>
     <!--<script src="../../dist/3d-force-graph.js"></script>-->
     <link rel="stylesheet" href="styles.css">
@@ -27,35 +27,35 @@
             <li class="item share">
                 <div>
                     <i class="uil uil-share"></i>
-                    <span>Share</span>
+                    <span>Manipulation</span>
                 </div>
                 <i class="uil uil-angle-right"></i>
                 <ul class="share-menu">
                     <li class="item">
                         <i class="uil uil-twitter-alt"></i>
-                        <span>Twitter</span>
+                        <span>Thing 1</span>
                     </li>
                     <li class="item">
                         <i class="uil uil-instagram"></i>
-                        <span>Instagram</span>
+                        <span>Thing 2</span>
                     </li>
                     <li class="item">
                         <i class="uil uil-dribbble"></i>
-                        <span>Dribble</span>
+                        <span>Thing 3</span>
                     </li>
                     <li class="item">
                         <i class="uil uil-telegram-alt"></i>
-                        <span>Telegram</span>
+                        <span>Thing 4</span>
                     </li>
                 </ul>
             </li>
             <li class="item" onclick="recolor()">
                 <i class="uil uil-link-alt"></i>
-                <span>Get Link</span>
+                <span>Highlight Nodes</span>
             </li>
             <li class="item">
                 <i class="uil uil-edit"></i>
-                <span>Rename</span>
+                <span>Send Data Ping</span>
             </li>
             <li class="item">
                 <i class="uil uil-trash-alt"></i>
@@ -100,12 +100,27 @@
 
     document.addEventListener("click", () => {
         contextMenu.style.visibility = "hidden";
-        //selectedNode = null;
-        //console.log(selectedNode +"yeye")
     });
 
     const Graph = ForceGraph3D()
     (document.getElementById('graph'))
+        .nodeThreeObject((node) =>
+            new THREE.Mesh(
+                [
+                new THREE.BoxGeometry(10, 10, 10),
+                new THREE.ConeGeometry(5, 10),
+                new THREE.CylinderGeometry(5, 5, 10),
+                new THREE.DodecahedronGeometry(5),
+                new THREE.SphereGeometry(5),
+                new THREE.TorusGeometry(5, 1),
+                new THREE.TorusKnotGeometry(5, 1)][node.group % 7],
+            new THREE.MeshLambertMaterial({
+                color: highlightNodes.has(node) ? node === hoverNode ? 'rgb(255,0,0)' : 'rgba(255,160,0)' : node.group < 4 ? node.group < 2 ? 'rgba(0,255,0)' : 'rgb(255,0,255)' : 'rgba(0,255,255)',
+                transparent: true,
+                opacity: 0.75
+            })
+        ))
+        .nodeThreeObjectExtend(false)
         .jsonUrl('./data.json')
         .nodeLabel('id')
         .nodeColor(node => highlightNodes.has(node) ? node === hoverNode ? 'rgb(255,0,0,1)' : 'rgba(255,160,0,0.8)' : 'rgba(0,255,255,0.6)')
@@ -135,12 +150,9 @@
                 node, // lookAt ({ x, y, z })
                 3000  // ms transition duration
             );
-            let emptyArray = [];
-            emptyArray.push(node);
-            Graph.graphData({
-                nodes: emptyArray,
-                links: []
-            })
+            allNodes = []
+            allNodes.push(node)
+            reset()
             const cb = document.querySelector('#menuToggle');
             cb.checked = true;
             document.getElementById("nodeName").innerHTML = node.id
@@ -168,7 +180,6 @@
             contextMenu.style.left = `${x}px`;
             contextMenu.style.top = `${y}px`;
             contextMenu.style.visibility = "visible";
-            console.log(node+"no")
         })
         .onNodeHover(node => {
             // no state change
@@ -198,18 +209,20 @@
             updateHighlight();
         });
 
+    // When user types something in search box
     inputBox.onkeyup = (e)=>{
+        // Get data
         let { nodes, links } = Graph.graphData();
-        highlightNodes.clear();
-        highlightLinks.clear();
+        // Get rid of info box
         const cb = document.querySelector('#menuToggle');
         cb.checked = false;
+        // Get text in searchbox
         let userData = e.target.value;
         let emptyArray = [];
         allNodes = []
         if(userData){
             emptyArray = nodes.filter((data)=>{
-                if(!data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase())){
+                if(data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase())){
                     allNodes.push(data)
                 }
                 return data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
@@ -227,12 +240,13 @@
         }
         else{
             searchWrapper.classList.remove("active");
-            allNodes = []
+            allNodes = nodes
             reset()
         }
     }
 
     function select(element){
+        allNodes = []
         let selectUserData = element.textContent;
         inputBox.value = selectUserData;
         searchWrapper.classList.remove("active");
@@ -241,8 +255,6 @@
         for(let i = 0; i < nodes.length; i++){
             if(nodes[i].id.startsWith(selectUserData)){
                 j = i
-            }
-            else{
                 allNodes.push(nodes[i])
             }
         }
@@ -277,7 +289,9 @@
 
     function updateHighlight() {
         // trigger update of highlighted objects in scene
+
         Graph
+            .nodeThreeObjectExtend(false)
             .nodeColor(Graph.nodeColor())
             .linkWidth(Graph.linkWidth())
             .linkDirectionalParticles(Graph.linkDirectionalParticles());
@@ -306,55 +320,42 @@
     }
 
     function getNeighborsSelected(){
-        console.log("ID" + selectedNode.id);
         let { nodes, links } = Graph.graphData();
-        let result = [];
-        allNodes = nodes
-        let newLinks = links.filter((link) => {
+        allNodes = []
+        links.filter((link) => {
             if(link.source.id === selectedNode.id || link.target.id === selectedNode.id){
-                if(allNodes.includes(link.source)){
+                if(!allNodes.includes(link.source)){
                     allNodes.push(link.source)
                 }
-
-                if(allNodes.includes(link.target)){
+                if(!allNodes.includes(link.target)){
                     allNodes.push(link.target)
                 }
             }
-            return link.source.id === selectedNode.id || link.target.id === selectedNode.id
-        });
-        let searchNodes = nodes.filter((node) => {
-            return node.id === selectedNode.id
         });
         reset()
-        console.log(searchNodes.length)
-        console.log(newLinks.length)
-        /*links.forEach((link) => {if(link.source === selectedNode || link.target === selectedNode){
-            newLinks.push(link);
-            if(!highlightNodes.has(link.source)){
-                highlightNodes.add(link.source);
-                searchNodes.push(link.source)
-                console.log("ADDING")
-            }
-            if(!highlightNodes.has(link.target)){
-                highlightNodes.add(link.target);
-                searchNodes.push(link.target)
-                console.log("ADDING")
-            }
-        }})*/
     }
 
     function customNodeVisibility(node) {
         if(allNodes.includes(node))
-            return false
-        return true
+            return true
+        return false
     }
 
     function customLinkVisibility(link) {
         return customNodeVisibility(link.source) && customNodeVisibility(link.target);
     }
 
+    function delay(time) {
+        return new Promise(resolve => setTimeout(resolve, time));
+    }
+
     window.recolor = recolor;
     window.getNeighborsSelected = getNeighborsSelected;
+    delay(100).then(() => {
+        let { nodes, links } = Graph.graphData();
+        allNodes = nodes
+        reset()
+    });
 
 </script>
 </body>
