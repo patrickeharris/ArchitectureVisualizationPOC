@@ -3,6 +3,9 @@
     {"id": "ts-admin-user-service",
       "group": 1
     },
+    {"id": "ts-travel-service",
+      "group": 1
+    },
     {"id": "ts-user-service",
       "group": 2},
     {"id": "ts-basic-service",
