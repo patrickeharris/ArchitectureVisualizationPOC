@@ -121,6 +121,7 @@ const Graph = ForceGraph3D()
         // Clear currently highlighted nodes
         highlightNodes.clear();
         highlightLinks.clear();
+        console.log(link.functionType)
 
         // Add link and nodes on end to highlighted list
         if (link) {
@@ -262,13 +263,12 @@ function reset(){
 }
 
 // Set camera back to default view
-function resetView(){
-    const coords = { x: initX, y: initY, z: initZ };
-
+function resetView() {
+    const coords = {x: initX, y: initY, z: initZ};
     Graph.cameraPosition(
         coords, // new position
         initAngle, // lookAt ({ x, y, z })
-        3000  // ms transition duration
+        1000  // ms transition duration
     );
 }
 
@@ -317,7 +317,7 @@ function delay(time) {
 }
 
 // Populate graph after 100ms (after async jsonURL runs)
-delay(100).then(() => {
+delay(150).then(() => {
     let { nodes, links } = Graph.graphData();
     visibleNodes = nodes;
     reset();

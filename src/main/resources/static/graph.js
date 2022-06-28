@@ -60,8 +60,8 @@ var dragDrop = d3.drag().on('start', function (event, node) {
     if (!event.active) {
         simulation.alphaTarget(0)
     }
-    node.fx = null
-    node.fy = null
+    node.fx = event.x
+    node.fy = event.y
 })
 
 var div = d3.select("body").append("div")
