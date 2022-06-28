@@ -121,7 +121,6 @@ const Graph = ForceGraph3D()
         // Clear currently highlighted nodes
         highlightNodes.clear();
         highlightLinks.clear();
-        console.log(link.functionType)
 
         // Add link and nodes on end to highlighted list
         if (link) {
