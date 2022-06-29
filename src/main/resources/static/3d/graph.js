@@ -3,6 +3,7 @@ import { UnrealBloomPass } from '//cdn.skypack.dev/three@0.136/examples/jsm/post
 import links from "../data/links.js";
 
 // Data Abstraction
+let allLinks = null;
 const highlightNodes = new Set();
 const highlightLinks = new Set();
 let hoverNode = null;
@@ -18,6 +19,7 @@ const inputBox = searchWrapper.querySelector("input");
 const suggBox = searchWrapper.querySelector(".autocom_box");
 const contextMenu = document.querySelector(".wrapper");
 const shareMenu = contextMenu.querySelector(".share-menu");
+const dependencies = document.querySelector(".dependencies");
 
 // Make graph
 const Graph = ForceGraph3D()
@@ -42,7 +44,7 @@ const Graph = ForceGraph3D()
         ))
     .nodeThreeObjectExtend(false)
     // Get data
-    .jsonUrl('./train_ticket_new.json')
+    .jsonUrl('./train_ticket_temp.json')
     // JSON column for node names
     .nodeLabel('id')
     // Setup link width
@@ -194,6 +196,39 @@ function nodeClick(node){
     cb.checked = true;
     // Set info box data
     document.getElementById("nodeName").innerHTML = node.id;
+
+    /*
+     Dependants/Depends On:
+        Component: [service name]
+        Function Name: [endpointName]
+        Function Type: [PUT, GET, POST, DELETE]
+        Arguments: [arguments]
+        Return: [return]
+     */
+
+    let names = [];
+
+    allLinks.forEach(link => {
+        console.log("something");
+        if (link.source === node) {
+            console.log("something else");
+            link.functions.forEach(a => {
+                names.push(a);
+            });
+            names = names.map((data) => {
+                return data = '<li> Component: ' + link.target.id + '</li>' +
+                    '<li> Function Name: ' + data.endpointName + '</li>' +
+                    '<li> Function Type: ' + data.functionType + '</li>' +
+                    '<li> Arguments: ' + data.arguments + '</li>' +
+                    '<li> Return: ' + data.returnData +  '</li>';
+            });
+            let nameString = names.join('');
+            dependencies.innerHTML = nameString;
+        }
+        if (link.target === node) {
+
+        }
+    });
 }
 
 function select(element){
@@ -318,6 +353,7 @@ function delay(time) {
 // Populate graph after 100ms (after async jsonURL runs)
 delay(150).then(() => {
     let { nodes, links } = Graph.graphData();
+    allLinks = links;
     visibleNodes = nodes;
     reset();
 
