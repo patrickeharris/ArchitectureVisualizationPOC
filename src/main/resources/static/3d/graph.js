@@ -44,7 +44,7 @@ const Graph = ForceGraph3D()
         ))
     .nodeThreeObjectExtend(false)
     // Get data
-    .jsonUrl('./train_ticket_temp.json')
+    .jsonUrl('./train_ticket_new.json')
     // JSON column for node names
     .nodeLabel('id')
     // Setup link width
@@ -205,30 +205,33 @@ function nodeClick(node){
         Arguments: [arguments]
         Return: [return]
      */
-
-    let names = [];
+    let found = false;
+    let newLinks = [];
 
     allLinks.forEach(link => {
-        console.log("something");
         if (link.source === node) {
-            console.log("something else");
-            link.functions.forEach(a => {
-                names.push(a);
-            });
-            names = names.map((data) => {
-                return data = '<li> Component: ' + link.target.id + '</li>' +
-                    '<li> Function Name: ' + data.endpointName + '</li>' +
-                    '<li> Function Type: ' + data.functionType + '</li>' +
-                    '<li> Arguments: ' + data.arguments + '</li>' +
-                    '<li> Return: ' + data.returnData +  '</li>';
-            });
-            let nameString = names.join('');
-            dependencies.innerHTML = nameString;
-        }
-        if (link.target === node) {
-
+            found = true;
+            newLinks.push(link);
         }
     });
+
+    if (found) {
+        newLinks = newLinks.map((data) => {
+            data = '<li>' + data.target.id + '</li>';
+            /*data.functions.forEach(f => {
+                data += '<li> Function Name: ' + f.endpointName + '</li>' +
+                    '<li> Function Type: ' + f.functionType + '</li>' +
+                    '<li> Arguments: ' + f.arguments + '</li>' +
+                    '<li> Return: ' + f.returnData +  '</li>';
+            })
+            */
+            return data;
+        });
+        let nameString = newLinks.join('');
+        dependencies.innerHTML = nameString;
+    } else {
+        dependencies.innerHTML = "No Dependencies Found";
+    }
 }
 
 function select(element){
