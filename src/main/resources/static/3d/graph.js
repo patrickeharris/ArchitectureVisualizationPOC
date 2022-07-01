@@ -137,6 +137,7 @@ const Graph = ForceGraph3D()
 
 // When user types something in search box
 inputBox.onkeyup = (e)=>{
+    //exportGraph()
     // Get data
     let { nodes, links } = Graph.graphData();
     // Get rid of info box
@@ -351,6 +352,26 @@ function customLinkVisibility(link) {
 // Run code after a certain delay in ms
 function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
+}
+
+function exportGraph(){
+    exportToJsonFile(Graph.graphData())
+}
+
+function exportToJsonFile(jsonData) {
+    let dataStr = JSON.stringify(jsonData);
+    let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+    let exportFileDefaultName = 'data-out.json';
+
+    let linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+}
+
+function importGraph(){
+    Graph.jsonUrl('./import.json')
 }
 
 // Populate graph after 100ms (after async jsonURL runs)
