@@ -1,6 +1,5 @@
 // Import for lighting
-import { UnrealBloomPass } from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
-import links from "../data/links.js";
+import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
 
 // Data Abstraction
 let allLinks = null;
@@ -20,6 +19,7 @@ const suggBox = searchWrapper.querySelector(".autocom_box");
 const contextMenu = document.querySelector(".wrapper");
 const shareMenu = contextMenu.querySelector(".share-menu");
 const dependencies = document.querySelector(".dependencies");
+const connections = document.querySelector(".connections");
 
 // Make graph
 const Graph = ForceGraph3D()
@@ -133,6 +133,8 @@ const Graph = ForceGraph3D()
 
         // Update highlighted nodes on graph
         updateHighlight();
+    }).onLinkClick(link => {
+        linkClick(link);
     });
 
 // When user types something in search box
@@ -198,14 +200,6 @@ function nodeClick(node){
     // Set info box data
     document.getElementById("nodeName").innerHTML = node.id;
 
-    /*
-     Dependants/Depends On:
-        Component: [service name]
-        Function Name: [endpointName]
-        Function Type: [PUT, GET, POST, DELETE]
-        Arguments: [arguments]
-        Return: [return]
-     */
     let found = false;
     let newLinks = [];
 
@@ -219,20 +213,51 @@ function nodeClick(node){
     if (found) {
         newLinks = newLinks.map((data) => {
             data = '<li>' + data.target.id + '</li>';
-            /*data.functions.forEach(f => {
-                data += '<li> Function Name: ' + f.endpointName + '</li>' +
-                    '<li> Function Type: ' + f.functionType + '</li>' +
-                    '<li> Arguments: ' + f.arguments + '</li>' +
-                    '<li> Return: ' + f.returnData +  '</li>';
-            })
-            */
             return data;
         });
-        let nameString = newLinks.join('');
-        dependencies.innerHTML = nameString;
+        dependencies.innerHTML = newLinks.join('');
     } else {
         dependencies.innerHTML = "No Dependencies Found";
     }
+}
+
+function linkClick(link) {
+    const distance = 40;
+    const distRatio = 1 + distance/Math.hypot(link.x, link.y, link.z);
+
+    const newPos = link.x || link.y || link.z
+        ? { x: link.x * distRatio, y: link.y * distRatio, z: link.z * distRatio }
+        : { x: 0, y: 0, z: distance }; // special case if link is in (0,0,0)
+
+    Graph.cameraPosition(
+        newPos, // new position
+        link, // lookAt ({ x, y, z })
+        3000  // ms transition duration
+    );
+    // Hide all other nodes
+    visibleNodes = []
+    visibleNodes.push(link.source);
+    visibleNodes.push(link.target);
+    // Update visible nodes
+    reset()
+    // Show info box
+    const cb = document.querySelector('#linkMenuToggle');
+    cb.checked = true;
+    // Set info box data
+    document.getElementById("linkName").innerHTML = link.source.id + " => " + link.target.id;
+
+    let newLinks = [];
+    newLinks.push(link);
+    newLinks = newLinks.map((data) => {
+        data.functions.forEach(f => {
+            data += '<li> Function Name: ' + f.endpointName + '</li>' +
+                '<li> Function Type: ' + f.functionType + '</li>' +
+                '<li> Arguments: ' + f.arguments + '</li>' +
+                '<li> Return: ' + f.returnData +  '\n</li>';
+        });
+        return data;
+    });
+    connections.innerHTML = newLinks.join('');
 }
 
 function select(element){
