@@ -11,7 +11,6 @@ let visibleNodes = [];
 let initX = null;
 let initY = null;
 let initZ = null;
-let initAngle = null;
 // HTML elements
 const searchWrapper = document.querySelector(".search-box");
 const inputBox = searchWrapper.querySelector("input");
@@ -222,11 +221,11 @@ function nodeClick(node){
 }
 
 function linkClick(link) {
-    const distance = 40;
+    const distance = 200;
     const distRatio = 1 + distance/Math.hypot(link.x, link.y, link.z);
 
     const newPos = link.x || link.y || link.z
-        ? { x: link.x * distRatio, y: link.y * distRatio, z: link.z * distRatio }
+        ? { x: (link.source.x + link.target.x) / 2 * distRatio, y: (link.source.y + link.target.y) / 2 * distRatio, z: (link.source.z + link.target.z) / 2 * distRatio }
         : { x: 0, y: 0, z: distance }; // special case if link is in (0,0,0)
 
     Graph.cameraPosition(
@@ -328,7 +327,7 @@ function resetView() {
     const coords = {x: initX, y: initY, z: initZ};
     Graph.cameraPosition(
         coords, // new position
-        initAngle, // lookAt ({ x, y, z })
+        { x: 0, y: 0, z: 0 }, // lookAt ({ x, y, z })
         1000  // ms transition duration
     );
 }
@@ -408,7 +407,6 @@ delay(150).then(() => {
     initX = x;
     initY = y;
     initZ = z;
-    initAngle = lookAt;
 
     /* Export stuff:
     for(let j = 0; j < nodes.length; j++){
