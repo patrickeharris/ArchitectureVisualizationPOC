@@ -1,116 +1,47 @@
-<!DOCTYPE HTML>
-<meta charset="utf-8">
-<link rel="stylesheet" href="styles.css">
-<script src="https://d3js.org/d3.v7.min.js"></script>
-<script type="module" src="./graph.js"></script>
-<script src="https://kit.fontawesome.com/31ba8b7d44.js" crossorigin="anonymous"></script>
-
-<div class="center">
-<div class="search-box">
-    <input type="text" placeholder="what are you looking for?">
-    <i class="fas fa-search"></i>
-    <div class="autocom_box">
-        <li>Happy</li>
-    </div>
-</div>
-</div>
-<svg width="0" height="0"><div id="graph"></div></svg>
-
-<div class="wrapper">
-    <div class="content">
-        <ul class="menu">
-            <li class="item">
-                <i class="uil uil-eye"></i>
-                <span>Show Neighbors</span>
-            </li>
-            <li class="item share">
-                <div>
-                    <i class="uil uil-share"></i>
-                    <span>Manipulation</span>
+<!DOCTYPE html>
+<html style="font-size: 16px;" lang="en"><head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>Microservice Visualization Prototype</title>
+    <link rel="stylesheet" href="nicepage.css" media="screen">
+    <link rel="stylesheet" href="styles.css" media="screen">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i">
+    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans:400,400i,700,700i|Montserrat:100,100i,200,200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i">
+</head>
+<body class="u-body u-xl-mode" data-lang="en"><header class="u-clearfix u-header u-header" id="sec-a8ef"><div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+    <a href="" class="u-image u-logo u-image-1">
+        <img src="images/default-logo.png" class="u-logo-image u-logo-image-1">
+    </a>
+</div></header>
+<section class="u-align-center u-clearfix u-image u-section-1" id="carousel_c20f" data-image-width="1980" data-image-height="1980">
+    <div class="u-clearfix u-sheet u-valign-middle-sm u-valign-middle-xs u-sheet-1">
+        <h1 class="u-align-center u-custom-font u-font-pt-sans u-text u-text-palette-3-dark-3 u-text-1">Microservice Visualization Prototype</h1>
+        <p class="u-custom-font u-font-montserrat u-text u-text-palette-3-dark-3 u-text-2">Interactive graphs to visualize microservice-based systems.</p>
+        <p class="u-text u-text-palette-3-dark-3 u-text-3">Developed by <a href="" class="u-active-none u-border-1 u-border-palette-3-dark-3 u-btn u-button-link u-button-style u-hover-none u-none u-text-palette-3-dark-3 u-btn-1" target="_blank">Mia Gortney and Patrick Harris</a>
+        </p>
+        <div class="u-clearfix u-gutter-0 u-layout-wrap u-layout-wrap-1">
+            <div class="u-layout">
+                <div class="u-layout-row">
+                    <div class="u-align-center-sm u-align-center-xs u-align-right-lg u-align-right-md u-align-right-xl u-container-style u-layout-cell u-left-cell u-size-30 u-layout-cell-1">
+                        <div class="u-container-layout u-container-layout-1">
+                            <a href="/2d/" class="u-active-white u-border-2 u-border-active-white u-border-hover-white u-border-palette-3-dark-3 u-btn u-btn-round u-button-style u-hover-white u-palette-3-dark-3 u-radius-8 u-text-active-palette-3-base u-text-hover-palette-3-base u-text-palette-3-base u-btn-2">2D Prototype</a>
+                        </div>
+                    </div>
+                    <div class="u-align-center-sm u-align-center-xs u-align-left-lg u-align-left-md u-align-left-xl u-container-style u-layout-cell u-right-cell u-size-30 u-layout-cell-2">
+                        <div class="u-container-layout u-valign-middle-lg u-valign-middle-xl u-container-layout-2">
+                            <a href="/3d/" class="u-active-white u-border-2 u-border-active-white u-border-hover-white u-border-palette-3-dark-3 u-btn u-btn-round u-button-style u-hover-white u-none u-radius-8 u-text-active-black u-text-hover-black u-text-palette-3-dark-3 u-btn-3">3D Prototype</a>
+                        </div>
+                    </div>
                 </div>
-                <i class="uil uil-angle-right"></i>
-                <ul class="share-menu">
-                    <li class="item">
-                        <i class="uil uil-twitter-alt"></i>
-                        <span>Thing 1</span>
-                    </li>
-                    <li class="item">
-                        <i class="uil uil-instagram"></i>
-                        <span>Thing 2</span>
-                    </li>
-                    <li class="item">
-                        <i class="uil uil-dribbble"></i>
-                        <span>Thing 3</span>
-                    </li>
-                    <li class="item">
-                        <i class="uil uil-telegram-alt"></i>
-                        <span>Thing 4</span>
-                    </li>
-                </ul>
-            </li>
-            <li class="item">
-                <i class="uil uil-link-alt"></i>
-                <span>Highlight Nodes</span>
-            </li>
-            <li class="item">
-                <i class="uil uil-edit"></i>
-                <span>Send Data Ping</span>
-            </li>
-            <li class="item">
-                <i class="uil uil-trash-alt"></i>
-                <span>Delete</span>
-            </li>
-        </ul>
-        <div class="setting">
-            <li class="item">
-                <i class="uil uil-setting"></i>
-                <span>Settings</span>
-            </li>
+            </div>
         </div>
     </div>
-</div>
+</section>
 
-<div>
-    <input id="menuToggle" type="checkbox">
-    <div class="infobox md-card">
-        <div class="md-card-content">
-            <h2 id="nodeName">Name</h2>
-            <p><b>Dependencies</b></p>
-            <ul class="dependencies">
-                <li class="md-caption">Coffee</li>
-                <li class="md-caption">Tea</li>
-                <li class="md-caption">Milk</li>
-            </ul>
-            <p><b>Depends On</b></p>
-            <ul class="dependson">
-                <li class="md-caption">Coffee</li>
-                <li class="md-caption">Tea</li>
-                <li class="md-caption">Milk</li>
-            </ul>
-        </div>
-    </div>
-</div>
+<section class="u-backlink u-clearfix u-grey-80">
+    <p class="u-text" href="" target="_blank">
+        <span>© 2022</span>
+    </p>
+</section>
 
-<div>
-    <input id="linkMenuToggle" type="checkbox">
-    <div class="infobox md-card">
-        <div class="md-card-content">
-            <h2 id="linkName">Name</h2>
-            <p>Functions</p>
-            <ul class="connections">
-                <li class="md-caption">Coffee</li>
-                <li class="md-caption">Tea</li>
-                <li class="md-caption">Milk</li>
-            </ul>
-        </div>
-    </div>
-</div>
-
-<div class="center">
-<button class="button" onclick="zoomIn()">Zoom in</button>
-<button class="button" onclick="zoomOut()">Zoom out</button>
-<button class="button" onclick="resetZoom()">Reset zoom</button>
-<button class="button" onclick="center()">Center</button>
-</div>
-
-<script type="module" src="utils/search.js"></script>
+</body></html>

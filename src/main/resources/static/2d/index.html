@@ -1,26 +1,25 @@
-<head>
-    <style> body { margin: 0; } </style>
-    <script src="../libraries/three.js"></script>
-    <script src="../libraries/3d-force-graph.js"></script>
-    <!--<script src="../../dist/3d-force-graph.js"></script>-->
-    <link rel="stylesheet" href="styles.css">
-</head>
+<!DOCTYPE HTML>
+<meta charset="utf-8">
+<link rel="stylesheet" href="styles.css">
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<script type="module" src="graph.js"></script>
+<script src="https://kit.fontawesome.com/31ba8b7d44.js" crossorigin="anonymous"></script>
 
-<body>
 <div class="center">
-    <div class="search-box">
-        <input type="text" placeholder="what are you looking for?">
-        <i class="fas fa-search"></i>
-        <div class="autocom_box">
-            <li>Happy</li>
-        </div>
+<div class="search-box">
+    <input type="text" placeholder="what are you looking for?">
+    <i class="fas fa-search"></i>
+    <div class="autocom_box">
+        <li>Happy</li>
     </div>
-<div id="graph"></div>
 </div>
+</div>
+<svg width="0" height="0"><div id="graph"></div></svg>
+
 <div class="wrapper">
     <div class="content">
         <ul class="menu">
-            <li class="item" onclick="getNeighborsSelected()">
+            <li class="item">
                 <i class="uil uil-eye"></i>
                 <span>Show Neighbors</span>
             </li>
@@ -31,9 +30,9 @@
                 </div>
                 <i class="uil uil-angle-right"></i>
                 <ul class="share-menu">
-                    <li class="item" onclick="requestAnimationFrame(download)">
+                    <li class="item">
                         <i class="uil uil-twitter-alt"></i>
-                        <span>Download</span>
+                        <span>Thing 1</span>
                     </li>
                     <li class="item">
                         <i class="uil uil-instagram"></i>
@@ -49,7 +48,7 @@
                     </li>
                 </ul>
             </li>
-            <li class="item" onclick="recolor()">
+            <li class="item">
                 <i class="uil uil-link-alt"></i>
                 <span>Highlight Nodes</span>
             </li>
@@ -76,15 +75,18 @@
     <div class="infobox md-card">
         <div class="md-card-content">
             <h2 id="nodeName">Name</h2>
-            <p>Dependencies</p>
+            <p><b>Dependencies</b></p>
             <ul class="dependencies">
                 <li class="md-caption">Coffee</li>
                 <li class="md-caption">Tea</li>
                 <li class="md-caption">Milk</li>
             </ul>
-        </div>
-        <div class="md-card-btns">
-            <label for="menuToggle" class="md-button" onclick="closeBox()">Close Box</label>
+            <p><b>Depends On</b></p>
+            <ul class="dependson">
+                <li class="md-caption">Coffee</li>
+                <li class="md-caption">Tea</li>
+                <li class="md-caption">Milk</li>
+            </ul>
         </div>
     </div>
 </div>
@@ -101,11 +103,14 @@
                 <li class="md-caption">Milk</li>
             </ul>
         </div>
-        <div class="md-card-btns">
-            <label for="linkMenuToggle" class="md-button" onclick="closeBox()">Close Box</label>
-        </div>
     </div>
 </div>
 
-<script type="module" src="graph.js"></script>
-</body>
+<div class="center">
+<button class="button" onclick="zoomIn()">Zoom in</button>
+<button class="button" onclick="zoomOut()">Zoom out</button>
+<button class="button" onclick="resetZoom()">Reset zoom</button>
+<button class="button" onclick="center()">Center</button>
+</div>
+
+<script type="module" src="../utils/search.js"></script>

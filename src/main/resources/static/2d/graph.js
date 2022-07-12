@@ -1,13 +1,13 @@
-import getLinkColor from './utils/getLinkColor.js'
-import getNodeColor from './utils/getNodeColor.js'
-import getTextColor from './utils/getTextColor.js'
-import getNeighbors from './utils/getNeighbors.js'
-import resetNodeColor from "./utils/resetNodeColor.js";
-import resetTextColor from "./utils/resetTextColor.js";
-import resetLinkColor from "./utils/resetLinkColor.js";
+import getLinkColor from '../utils/getLinkColor.js'
+import getNodeColor from '../utils/getNodeColor.js'
+import getTextColor from '../utils/getTextColor.js'
+import getNeighbors from '../utils/getNeighbors.js'
+import resetNodeColor from "../utils/resetNodeColor.js";
+import resetTextColor from "../utils/resetTextColor.js";
+import resetLinkColor from "../utils/resetLinkColor.js";
 
-import baseNodes from './data/nodes.js'
-import baseLinks from './data/links.js'
+import baseNodes from '../data/nodes.js'
+import baseLinks from '../data/links.js'
 
 const dependencies = document.querySelector(".dependencies");
 const dependson = document.querySelector(".dependson");

@@ -1,6 +1,6 @@
 import nodes from "../data/nodes.js";
-import selectNodeExplicit, {selectLinksExplicit} from "../graph.js";
-import {resetNodeExplicit, selectNodesExplicit} from "../graph.js";
+import selectNodeExplicit, {selectLinksExplicit} from "../2d/graph.js";
+import {resetNodeExplicit, selectNodesExplicit} from "../2d/graph.js";
 
 const searchWrapper = document.querySelector(".search-box")
 const inputBox = searchWrapper.querySelector("input")

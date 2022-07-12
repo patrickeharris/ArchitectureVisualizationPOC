@@ -1,6 +1,7 @@
 // Import for lighting
 import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
 import getNeighbors from "../utils/getNeighbors.js";
+import { saveAs } from '../utils/file-saver.js';
 
 // Data Abstraction
 let allLinks = null;
@@ -44,7 +45,7 @@ const Graph = ForceGraph3D()
         ))
     .nodeThreeObjectExtend(false)
     // Get data
-    .jsonUrl('./train_ticket_new.json')
+    .jsonUrl('../data/train_ticket_new.json')
     // JSON column for node names
     .nodeLabel('id')
     // Setup link width
@@ -109,7 +110,7 @@ const Graph = ForceGraph3D()
         // Add node and neighbors to highlighted nodes list
         if (node) {
             highlightNodes.add(node);
-            getNeighborsOld(node);
+            getHighlightNeighbors(node);
         }
 
         // Set node to hoverNode
@@ -187,7 +188,7 @@ function nodeClick(node){
     Graph.cameraPosition(
         newPos, // new position
         node, // lookAt ({ x, y, z })
-        3000  // ms transition duration
+        2000  // ms transition duration
     );
     // Hide all other nodes
     visibleNodes = []
@@ -232,7 +233,7 @@ function linkClick(link) {
     Graph.cameraPosition(
         newPos, // new position
         link, // lookAt ({ x, y, z })
-        3000  // ms transition duration
+        2000  // ms transition duration
     );
     // Hide all other nodes
     visibleNodes = []
@@ -302,24 +303,14 @@ function updateHighlight() {
 }
 
 // Highlight neighbors
-function getNeighborsOld(node){
+function getHighlightNeighbors(node){
     let { nodes, links } = Graph.graphData();
-    console.log(node.id);
     highlightNodes = new Set(getNeighbors(node, links))
     links.forEach((link) => {
-        if (highlightNodes.has(link.source) && highlightNodes.has(link.target)) {
+        if ((highlightNodes.has(link.source) && link.target === node) || (highlightNodes.has(link.target)) && link.source === node) {
             highlightLinks.add(link)
         }
     })
-    /*links.forEach((link) => {
-        if(link.source === node || link.target === node){
-            highlightLinks.add(link);
-            if(!highlightNodes.has(link.source))
-                highlightNodes.add(link.source);
-            if(!highlightNodes.has(link.target))
-                highlightNodes.add(link.target);
-        }
-    })*/
     updateHighlight();
 }
 
@@ -335,7 +326,7 @@ function resetView() {
     Graph.cameraPosition(
         coords, // new position
         { x: 0, y: 0, z: 0 }, // lookAt ({ x, y, z })
-        1000  // ms transition duration
+        2000  // ms transition duration
     );
 }
 
@@ -349,21 +340,8 @@ function closeBox(){
 // Get neighbors of a selected node
 function getNeighborsSelected(){
     let { nodes, links } = Graph.graphData();
-    // Empty visible nodes
-    visibleNodes = [];
-
-    // Add nodes that are linked to selected nodes
-    console.log(getNeighbors(selectedNode, links).length)
+    // Set neighbors
     visibleNodes = getNeighbors(selectedNode, links)
-    /*links.filter((link) => {
-        if(link.source.id === selectedNode.id || link.target.id === selectedNode.id){
-            if(!visibleNodes.includes(link.source))
-                visibleNodes.push(link.source);
-            if(!visibleNodes.includes(link.target))
-                visibleNodes.push(link.target);
-        }
-    });*/
-
     // Refresh visible nodes
     reset();
 }
@@ -401,6 +379,17 @@ function exportToJsonFile(jsonData) {
     linkElement.click();
 }
 
+var a, downloads = 0;
+
+function download(){
+        cancelAnimationFrame(a);
+        //Obviously, you should swap this out for a selector that gets only the 3D graph
+        Graph.renderer().domElement.toBlob(function(blob){
+            //Powered by [FileSaver](https://github.com/eligrey/FileSaver.js/)
+            saveAs(blob, 'a.png');
+        });
+}
+
 function importGraph(){
     Graph.jsonUrl('./import.json')
 }
@@ -416,6 +405,8 @@ delay(150).then(() => {
     initX = x;
     initY = y;
     initZ = z;
+
+    //importGraph();
 
     /* Export stuff:
     for(let j = 0; j < nodes.length; j++){
@@ -434,3 +425,5 @@ window.recolor = recolor;
 window.getNeighborsSelected = getNeighborsSelected;
 window.select = select;
 window.closeBox = closeBox;
+window.requestAnimationFrame = requestAnimationFrame;
+window.download = download;
