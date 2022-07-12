@@ -13,8 +13,6 @@ import baseLinks from '../data/links.js'
 const dependencies = document.querySelector(".dependencies");
 const dependson = document.querySelector(".dependson");
 const connections = document.querySelector(".connections");
-const contextMenu = document.querySelector(".wrapper");
-const shareMenu = contextMenu.querySelector(".share-menu");
 
 let nodes = [...baseNodes]
 let links = [...baseLinks]
@@ -37,7 +35,6 @@ var linkElements,
 // we use svg groups to logically group the elements together
 var linkGroup = svg.append('g').attr('class', 'links')
 var nodeGroup = svg.append('g').attr('class', 'nodes')
-
 var textGroup = svg.append('g').attr('class', 'texts')
 
 // we use this reference to select/deselect
@@ -296,9 +293,7 @@ function updateGraph() {
         // to update the graph on every click
         .on('click', selectNode)
         .on("contextmenu", function (e) {
-        e.preventDefault();
-        var position = d3.pointer(this);
-        rightClick(e.x, e.y);
+            rightClick(e);
         });
 
     nodeElements = nodeEnter.merge(nodeElements)
@@ -342,7 +337,6 @@ function updateSimulation() {
 }
 // last but not least, we call updateSimulation
 // to trigger the initial render
-//initZoom();
 updateSimulation()
 window.zoomIn=zoomIn
 window.zoomOut=zoomOut

@@ -58,7 +58,7 @@ const Graph = ForceGraph3D()
     .linkVisibility((link) => customLinkVisibility(link))
     .linkDirectionalArrowLength(3.5)
     .linkDirectionalArrowRelPos(1)
-    // Change where noode is when clicking and dragging
+    // Change where node is when clicking and dragging
     .onNodeDragEnd(node => {
         node.fx = node.x;
         node.fy = node.y;
@@ -73,12 +73,7 @@ const Graph = ForceGraph3D()
     .onNodeRightClick((node, e) =>{
         // Set selected node
         selectedNode = node;
-        // Prevent normal right click menu
-        e.preventDefault();
-
-        // Set position for menu
-        let x = e.offsetX, y = e.offsetY;
-        rightClick(x, y)
+        rightClick(e)
     })
     // Setup hovering on nodes
     .onNodeHover(node => {
@@ -122,7 +117,6 @@ const Graph = ForceGraph3D()
 
 // When user types something in search box
 inputBox.onkeyup = (e)=>{
-    //exportGraph()
     // Get data
     let { nodes, links } = Graph.graphData();
     // Get rid of info box
@@ -349,8 +343,21 @@ function exportGraph(){
     exportToJsonFile(Graph.graphData())
 }
 
+function replacer(key,value)
+{
+    if (key=="__threeObj") return undefined;
+    else if (key=="__lineObj") return undefined;
+    else if (key=="__arrowObj") return undefined;
+    else if (key=="__curve") return undefined;
+    else if (key=="index") return undefined;
+    else if (key=="source") return value.id;
+    else if (key=="target") return value.id;
+    else return value;
+}
+
 function exportToJsonFile(jsonData) {
-    let dataStr = JSON.stringify(jsonData);
+    let dataStr = JSON.stringify(Object.assign({}, jsonData, Graph.cameraPosition()), replacer);
+    //let dataStr2 = JSON.stringify(Graph.cameraPosition());
     let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
 
     let exportFileDefaultName = 'data-out.json';
@@ -373,10 +380,58 @@ function download(){
 }
 
 function importGraph(){
-    Graph.jsonUrl('./import.json')
+    var input = document.createElement('input');
+    input.type = 'file';
+
+    input.onchange = e => {
+        var file = e.target.files[0];
+
+        // setting up the reader
+        var reader = new FileReader();
+        reader.readAsText(file,'UTF-8');
+
+        // here we tell the reader what to do when it's done reading...
+        reader.onload = readerEvent => {
+            var content = readerEvent.target.result; // this is the content!
+            var parsedData = JSON.parse(content);
+            Graph.graphData(parsedData)
+            delay(150).then(() => {
+                let {nodes, links} = Graph.graphData();
+                allLinks = links;
+                visibleNodes = nodes;
+                reset();
+
+                Graph.cameraPosition(
+                    { x: parsedData.x, y: parsedData.y, z: parsedData.z }, // new position
+                    {x: 0, y: 0, z:0 },//parsedData.lookAt, // lookAt ({ x, y, z })
+                    0  // ms transition duration
+                );
+            })
+        }
+    }
+
+    input.click();
+    /*var request = new XMLHttpRequest();
+    request.open("GET", "./import.json", false);
+    request.send(null)
+    var parsedData = JSON.parse(request.responseText);
+    //Graph.jsonUrl('./import.json')
+    Graph.graphData(parsedData)
+    delay(150).then(() => {
+        let {nodes, links} = Graph.graphData();
+        allLinks = links;
+        visibleNodes = nodes;
+        reset();
+
+        Graph.cameraPosition(
+            { x: parsedData.x, y: parsedData.y, z: parsedData.z }, // new position
+            {x: 0, y: 0, z:0 },//parsedData.lookAt, // lookAt ({ x, y, z })
+            0  // ms transition duration
+        );
+    })*/
 }
 
-// Populate graph after 100ms (after async jsonURL runs)
+// Populate graph after 150ms (after async jsonURL runs)
 delay(150).then(() => {
     let { nodes, links } = Graph.graphData();
     allLinks = links;
@@ -404,3 +459,5 @@ window.select = select;
 window.closeBox = closeBox;
 window.requestAnimationFrame = requestAnimationFrame;
 window.download = download;
+window.importGraph = importGraph;
+window.exportGraph = exportGraph;

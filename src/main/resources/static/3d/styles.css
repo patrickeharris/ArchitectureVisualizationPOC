@@ -258,3 +258,30 @@ div.tooltip {
     -webkit-transition: visibility 0s 0s, opacity .4s .1s;
     transition: visibility 0s 0s, opacity .4s .1s;
 }
+
+.button {
+    background-color: #008CBA;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+
+.button:hover {
+    background-color: white;
+    color: #008CBA;
+    border: 2px solid #008CBA;
+}
+
+.buttons{
+    position: absolute;
+    left: 700px;
+    top: 10px;
+    z-index: 70;
+}

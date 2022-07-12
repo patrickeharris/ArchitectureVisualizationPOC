@@ -15,7 +15,11 @@
             <li>Happy</li>
         </div>
     </div>
-<div id="graph"></div>
+    <div class="buttons">
+        <button class="button" onclick="exportGraph()">Export</button>
+        <button class="button" onclick="importGraph()">Import</button>
+    </div>
+    <div id="graph"></div>
 </div>
 <div class="wrapper">
     <div class="content">
@@ -35,7 +39,7 @@
                         <i class="uil uil-twitter-alt"></i>
                         <span>Download</span>
                     </li>
-                    <li class="item">
+                    <li class="item" onclick="importGraph()">
                         <i class="uil uil-instagram"></i>
                         <span>Thing 2</span>
                     </li>

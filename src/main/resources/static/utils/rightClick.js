@@ -1,8 +1,11 @@
 const contextMenu = document.querySelector(".wrapper");
 const shareMenu = contextMenu.querySelector(".share-menu");
 
-export default function rightClick(x, y) {
-    let winWidth = window.innerWidth,
+export default function rightClick(e) {
+    e.preventDefault();
+    let x = e.offsetX,
+        y = e.offsetY,
+        winWidth = window.innerWidth,
         winHeight = window.innerHeight,
         cmWidth = contextMenu.offsetWidth,
         cmHeight = contextMenu.offsetHeight;
