@@ -16,6 +16,60 @@
 </div>
 <svg width="0" height="0"><div id="graph"></div></svg>
 
+<div class="wrapper">
+    <div class="content">
+        <ul class="menu">
+            <li class="item">
+                <i class="uil uil-eye"></i>
+                <span>Show Neighbors</span>
+            </li>
+            <li class="item share">
+                <div>
+                    <i class="uil uil-share"></i>
+                    <span>Manipulation</span>
+                </div>
+                <i class="uil uil-angle-right"></i>
+                <ul class="share-menu">
+                    <li class="item">
+                        <i class="uil uil-twitter-alt"></i>
+                        <span>Thing 1</span>
+                    </li>
+                    <li class="item">
+                        <i class="uil uil-instagram"></i>
+                        <span>Thing 2</span>
+                    </li>
+                    <li class="item">
+                        <i class="uil uil-dribbble"></i>
+                        <span>Thing 3</span>
+                    </li>
+                    <li class="item">
+                        <i class="uil uil-telegram-alt"></i>
+                        <span>Thing 4</span>
+                    </li>
+                </ul>
+            </li>
+            <li class="item">
+                <i class="uil uil-link-alt"></i>
+                <span>Highlight Nodes</span>
+            </li>
+            <li class="item">
+                <i class="uil uil-edit"></i>
+                <span>Send Data Ping</span>
+            </li>
+            <li class="item">
+                <i class="uil uil-trash-alt"></i>
+                <span>Delete</span>
+            </li>
+        </ul>
+        <div class="setting">
+            <li class="item">
+                <i class="uil uil-setting"></i>
+                <span>Settings</span>
+            </li>
+        </div>
+    </div>
+</div>
+
 <div>
     <input id="menuToggle" type="checkbox">
     <div class="infobox md-card">
@@ -37,13 +91,6 @@
     </div>
 </div>
 
-<div class="center">
-<button class="button" onclick="zoomIn()">Zoom in</button>
-<button class="button" onclick="zoomOut()">Zoom out</button>
-<button class="button" onclick="resetZoom()">Reset zoom</button>
-<button class="button" onclick="center()">Center</button>
-</div>
-
 <div>
     <input id="linkMenuToggle" type="checkbox">
     <div class="infobox md-card">
@@ -56,10 +103,14 @@
                 <li class="md-caption">Milk</li>
             </ul>
         </div>
-        <div class="md-card-btns">
-            <label for="linkMenuToggle" class="md-button" onclick="closeBox()">Close Box</label>
-        </div>
     </div>
+</div>
+
+<div class="center">
+<button class="button" onclick="zoomIn()">Zoom in</button>
+<button class="button" onclick="zoomOut()">Zoom out</button>
+<button class="button" onclick="resetZoom()">Reset zoom</button>
+<button class="button" onclick="center()">Center</button>
 </div>
 
 <script type="module" src="utils/search.js"></script>

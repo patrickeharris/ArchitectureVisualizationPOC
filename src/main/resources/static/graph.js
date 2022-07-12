@@ -12,6 +12,8 @@ import baseLinks from './data/links.js'
 const dependencies = document.querySelector(".dependencies");
 const dependson = document.querySelector(".dependson");
 const connections = document.querySelector(".connections");
+const contextMenu = document.querySelector(".wrapper");
+const shareMenu = contextMenu.querySelector(".share-menu");
 
 let nodes = [...baseNodes]
 let links = [...baseLinks]
@@ -20,7 +22,6 @@ let zoom = d3.zoom().on("zoom", zoomy)
 var width = window.innerWidth
 var height = window.innerHeight
 let searchNodes = []
-let searchLinks = []
 
 var svg = d3.select('#graph').append("svg")
     .attr("width",  width)
@@ -184,6 +185,25 @@ export function selectNodesExplicit(selectedNode) {
     diff.added.forEach(function (node) { nodes.push(node) })
 }
 
+export function selectLink(selectedLink) {
+    // Show info box
+    const cb = document.querySelector('#linkMenuToggle');
+    cb.checked = true;
+    // Set info box data
+    document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
+
+    let newLinks = [];
+    selectedLink.functions.forEach(l => {
+        newLinks.push(l);
+    });
+    newLinks = newLinks.map((data) => {
+        data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
+            + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '</li>';
+        return data;
+    });
+    connections.innerHTML = newLinks.join('');
+}
+
 export function selectLinksExplicit(){
     var newLinks = baseLinks.filter(function (link) {
         return (searchNodes.includes(link.source) && searchNodes.includes(link.target)) || searchNodes.length === 0
@@ -221,8 +241,6 @@ function resetData() {
     }
 }
 
-
-
 // diffing and mutating the data
 function updateData(selectedNode) {
     var neighbors = getNeighbors(selectedNode, baseLinks)
@@ -243,6 +261,10 @@ function updateData(selectedNode) {
     })
 }
 
+function showMenu(selectedNode) {
+
+}
+
 function updateGraph() {
     // links
     linkElements = linkGroup.selectAll('line')
@@ -256,6 +278,7 @@ function updateGraph() {
         .enter().append('line')
         .attr('stroke-width', 1)
         .attr('stroke', 'rgba(50, 50, 50, 0.2)')
+        .on('click', function (link) { selectLink(link) })
 
     linkElements = linkEnter.merge(linkElements)
 
@@ -285,8 +308,8 @@ function updateGraph() {
         .on("mouseout", function(event, d) {
             div.transition()
                 .duration(500)
-                .style("opacity", 0);
-        })
+                .style("opacity", 0)
+        });
 
     nodeElements = nodeEnter.merge(nodeElements)
 
