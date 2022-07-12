@@ -217,7 +217,7 @@ function resetData() {
 function updateData(selectedNode) {
     var neighbors = getNeighbors(selectedNode, baseLinks)
     var newNodes = baseNodes.filter(function (node) {
-        return neighbors.indexOf(node.id) > -1 || node.level === 1
+        return neighbors.indexOf(node) > -1 || node.level === 1
     })
 
     var diff = {

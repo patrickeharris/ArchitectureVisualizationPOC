@@ -1,10 +1,11 @@
 // Import for lighting
 import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
+import getNeighbors from "../utils/getNeighbors.js";
 
 // Data Abstraction
 let allLinks = null;
-const highlightNodes = new Set();
-const highlightLinks = new Set();
+let highlightNodes = new Set();
+let highlightLinks = new Set();
 let hoverNode = null;
 let selectedNode = null;
 let visibleNodes = [];
@@ -108,7 +109,7 @@ const Graph = ForceGraph3D()
         // Add node and neighbors to highlighted nodes list
         if (node) {
             highlightNodes.add(node);
-            getNeighbors(node);
+            getNeighborsOld(node);
         }
 
         // Set node to hoverNode
@@ -301,10 +302,21 @@ function updateHighlight() {
 }
 
 // Highlight neighbors
-function getNeighbors(node){
+function getNeighborsOld(node){
     let { nodes, links } = Graph.graphData();
     console.log(node.id);
-    links.forEach((link) => {
+    highlightNodes = new Set(getNeighbors(node, links))
+    highlightLinks = links.reduce(
+        (neighbors, link) => {
+            if (highlightNodes.has(link.source)) {
+                neighbors.push(link)
+            } else if (highlightNodes.has(link.target)) {
+                neighbors.push(link)
+            }
+            return neighbors
+        }
+    )
+    /*links.forEach((link) => {
         if(link.source === node || link.target === node){
             highlightLinks.add(link);
             if(!highlightNodes.has(link.source))
@@ -312,7 +324,7 @@ function getNeighbors(node){
             if(!highlightNodes.has(link.target))
                 highlightNodes.add(link.target);
         }
-    })
+    })*/
     updateHighlight();
 }
 
@@ -346,14 +358,16 @@ function getNeighborsSelected(){
     visibleNodes = [];
 
     // Add nodes that are linked to selected nodes
-    links.filter((link) => {
+    console.log(getNeighbors(selectedNode, links).length)
+    visibleNodes = getNeighbors(selectedNode, links)
+    /*links.filter((link) => {
         if(link.source.id === selectedNode.id || link.target.id === selectedNode.id){
             if(!visibleNodes.includes(link.source))
                 visibleNodes.push(link.source);
             if(!visibleNodes.includes(link.target))
                 visibleNodes.push(link.target);
         }
-    });
+    });*/
 
     // Refresh visible nodes
     reset();

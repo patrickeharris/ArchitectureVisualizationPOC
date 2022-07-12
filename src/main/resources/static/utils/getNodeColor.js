@@ -1,5 +1,5 @@
 export default function getNodeColor(node, neighbors, selectedNode) {
-    if (Array.isArray(neighbors) && neighbors.indexOf(node.id) > -1) {
+    if (Array.isArray(neighbors) && neighbors.indexOf(node) > -1) {
         if(node === selectedNode){
             return 'blue'
         }
