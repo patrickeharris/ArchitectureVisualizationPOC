@@ -2,6 +2,7 @@
 import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
 import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
+import rightClick from "../utils/rightClick.js";
 
 // Data Abstraction
 let allLinks = null;
@@ -17,8 +18,6 @@ let initZ = null;
 const searchWrapper = document.querySelector(".search-box");
 const inputBox = searchWrapper.querySelector("input");
 const suggBox = searchWrapper.querySelector(".autocom_box");
-const contextMenu = document.querySelector(".wrapper");
-const shareMenu = contextMenu.querySelector(".share-menu");
 const dependencies = document.querySelector(".dependencies");
 const connections = document.querySelector(".connections");
 
@@ -78,25 +77,8 @@ const Graph = ForceGraph3D()
         e.preventDefault();
 
         // Set position for menu
-        let x = e.offsetX, y = e.offsetY,
-            winWidth = window.innerWidth,
-            winHeight = window.innerHeight,
-            cmWidth = contextMenu.offsetWidth,
-            cmHeight = contextMenu.offsetHeight;
-
-        if(x > (winWidth - cmWidth - shareMenu.offsetWidth)) {
-            shareMenu.style.left = "-200px";
-        } else {
-            shareMenu.style.left = "";
-            shareMenu.style.right = "-200px";
-        }
-
-        x = x > winWidth - cmWidth ? winWidth - cmWidth - 5 : x;
-        y = y > winHeight - cmHeight ? winHeight - cmHeight - 5 : y;
-
-        contextMenu.style.left = `${x}px`;
-        contextMenu.style.top = `${y}px`;
-        contextMenu.style.visibility = "visible";
+        let x = e.offsetX, y = e.offsetY;
+        rightClick(x, y)
     })
     // Setup hovering on nodes
     .onNodeHover(node => {
@@ -413,11 +395,6 @@ delay(150).then(() => {
         let oldNode = {node: nodes[j], x: nodes[j].fx, y: nodes[j].fy, z: nodes[j].fz, x2: nodes[j].x, y2: nodes[j].y, z2: nodes[j].z};
         movedNodes.push(oldNode);
     }*/
-});
-
-// Hide right click menu when clicking out of it
-document.addEventListener("click", () => {
-    contextMenu.style.visibility = "hidden";
 });
 
 // Make functions global (accessible from html)

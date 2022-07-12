@@ -5,6 +5,7 @@ import getNeighbors from '../utils/getNeighbors.js'
 import resetNodeColor from "../utils/resetNodeColor.js";
 import resetTextColor from "../utils/resetTextColor.js";
 import resetLinkColor from "../utils/resetLinkColor.js";
+import rightClick from "../utils/rightClick.js";
 
 import baseNodes from '../data/nodes.js'
 import baseLinks from '../data/links.js'
@@ -36,6 +37,7 @@ var linkElements,
 // we use svg groups to logically group the elements together
 var linkGroup = svg.append('g').attr('class', 'links')
 var nodeGroup = svg.append('g').attr('class', 'nodes')
+
 var textGroup = svg.append('g').attr('class', 'texts')
 
 // we use this reference to select/deselect
@@ -261,10 +263,6 @@ function updateData(selectedNode) {
     })
 }
 
-function showMenu(selectedNode) {
-
-}
-
 function updateGraph() {
     // links
     linkElements = linkGroup.selectAll('line')
@@ -297,18 +295,10 @@ function updateGraph() {
         // we link the selectNode method here
         // to update the graph on every click
         .on('click', selectNode)
-        .on("mouseover", function(event, d) {
-            div.transition()
-                .duration(200)
-                .style("opacity", .9);
-            div	.html(d.id)
-                .style("left", (event.pageX) + "px")
-                .style("top", (event.pageY - 28) + "px");
-        })
-        .on("mouseout", function(event, d) {
-            div.transition()
-                .duration(500)
-                .style("opacity", 0)
+        .on("contextmenu", function (e) {
+        e.preventDefault();
+        var position = d3.pointer(this);
+        rightClick(e.x, e.y);
         });
 
     nodeElements = nodeEnter.merge(nodeElements)

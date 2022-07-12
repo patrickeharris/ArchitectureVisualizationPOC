@@ -1,10 +1,8 @@
-const contextMenu = document.querySelector(".wrapper"),
-    shareMenu = contextMenu.querySelector(".share-menu");
+const contextMenu = document.querySelector(".wrapper");
+const shareMenu = contextMenu.querySelector(".share-menu");
 
-window.addEventListener("contextmenu", e => {
-    e.preventDefault();
-    let x = e.offsetX, y = e.offsetY,
-        winWidth = window.innerWidth,
+export default function rightClick(x, y) {
+    let winWidth = window.innerWidth,
         winHeight = window.innerHeight,
         cmWidth = contextMenu.offsetWidth,
         cmHeight = contextMenu.offsetHeight;
@@ -22,6 +20,9 @@ window.addEventListener("contextmenu", e => {
     contextMenu.style.left = `${x}px`;
     contextMenu.style.top = `${y}px`;
     contextMenu.style.visibility = "visible";
-});
+}
 
-document.addEventListener("click", () => contextMenu.style.visibility = "hidden");
+// Hide right click menu when clicking out of it
+document.addEventListener("click", () => {
+    contextMenu.style.visibility = "hidden";
+});
