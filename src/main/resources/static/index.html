@@ -16,11 +16,47 @@
 </div>
 <svg width="0" height="0"><div id="graph"></div></svg>
 
+<div>
+    <input id="menuToggle" type="checkbox">
+    <div class="infobox md-card">
+        <div class="md-card-content">
+            <h2 id="nodeName">Name</h2>
+            <p>Dependencies</p>
+            <ul class="dependencies">
+                <li class="md-caption">Coffee</li>
+                <li class="md-caption">Tea</li>
+                <li class="md-caption">Milk</li>
+            </ul>
+        </div>
+        <div class="md-card-btns">
+            <label for="menuToggle" class="md-button" onclick="closeBox()">Close Box</label>
+        </div>
+    </div>
+</div>
+
 <div class="center">
 <button class="button" onclick="zoomIn()">Zoom in</button>
 <button class="button" onclick="zoomOut()">Zoom out</button>
 <button class="button" onclick="resetZoom()">Reset zoom</button>
 <button class="button" onclick="center()">Center</button>
+</div>
+
+<div>
+    <input id="linkMenuToggle" type="checkbox">
+    <div class="infobox md-card">
+        <div class="md-card-content">
+            <h2 id="linkName">Name</h2>
+            <p>Functions</p>
+            <ul class="connections">
+                <li class="md-caption">Coffee</li>
+                <li class="md-caption">Tea</li>
+                <li class="md-caption">Milk</li>
+            </ul>
+        </div>
+        <div class="md-card-btns">
+            <label for="linkMenuToggle" class="md-button" onclick="closeBox()">Close Box</label>
+        </div>
+    </div>
 </div>
 
 <script type="module" src="utils/search.js"></script>

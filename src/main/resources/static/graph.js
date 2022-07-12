@@ -9,6 +9,9 @@ import resetLinkColor from "./utils/resetLinkColor.js";
 import baseNodes from './data/nodes.js'
 import baseLinks from './data/links.js'
 
+const dependencies = document.querySelector(".dependencies");
+const connections = document.querySelector(".connections");
+
 let nodes = [...baseNodes]
 let links = [...baseLinks]
 let zoom = d3.zoom().on("zoom", zoomy)
@@ -105,15 +108,8 @@ function selectNode(event, selectedNode) {
         resetData()
         updateSimulation()
     } else {
-        selectedId = selectedNode.id
-        updateData(selectedNode)
-        updateSimulation()
-        var neighbors = getNeighbors(selectedNode, baseLinks)
-
-        // we modify the styles to highlight selected nodes
-        nodeElements.attr('fill', function (node) { return getNodeColor(node, neighbors, selectedNode) })
-        textElements.attr('fill', function (node) { return getTextColor(node, neighbors, selectedNode) })
-        linkElements.attr('stroke', function (link) { return getLinkColor(selectedNode, link) })
+        selectNodeExplicit(selectedNode);
+        getInfoBox(selectedNode);
     }
 }
 
@@ -127,6 +123,34 @@ export default function selectNodeExplicit(selectedNode) {
         nodeElements.attr('fill', function (node) { return getNodeColor(node, neighbors, selectedNode) })
         textElements.attr('fill', function (node) { return getTextColor(node, neighbors, selectedNode) })
         linkElements.attr('stroke', function (link) { return getLinkColor(selectedNode, link) })
+}
+
+function getInfoBox(selectedNode) {
+    // Show info box
+    const cb = document.querySelector('#menuToggle');
+    cb.checked = true;
+    // Set info box data
+    document.getElementById("nodeName").innerHTML = selectedNode.id;
+
+    let found = false;
+    let newLinks = [];
+
+    links.forEach(link => {
+        if (link.source === selectedNode) {
+            found = true;
+            newLinks.push(link);
+        }
+    });
+
+    if (found) {
+        newLinks = newLinks.map((data) => {
+            data = '<li>' + data.target.id + '</li>';
+            return data;
+        });
+        dependencies.innerHTML = newLinks.join('');
+    } else {
+        dependencies.innerHTML = "No Dependencies Found";
+    }
 }
 
 export function selectNodesExplicit(selectedNode) {
