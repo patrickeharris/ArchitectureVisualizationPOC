@@ -10,6 +10,7 @@ import baseNodes from './data/nodes.js'
 import baseLinks from './data/links.js'
 
 const dependencies = document.querySelector(".dependencies");
+const dependson = document.querySelector(".dependson");
 const connections = document.querySelector(".connections");
 
 let nodes = [...baseNodes]
@@ -76,27 +77,19 @@ function zoomy(event){
 }
 
 function zoomIn() {
-    svg
-        .transition()
-        .call(zoom.scaleBy, 2);
+    svg.transition().call(zoom.scaleBy, 2);
 }
 
 function zoomOut() {
-    svg
-        .transition()
-        .call(zoom.scaleBy, 0.5);
+    svg.transition().call(zoom.scaleBy, 0.5);
 }
 
 function resetZoom() {
-    svg
-        .transition()
-        .call(zoom.scaleTo, 1);
+    svg.transition().call(zoom.scaleTo, 1);
 }
 
 function center() {
-    svg
-        .transition()
-        .call(zoom.translateTo, 0.5 * width, 0.5 * height);
+    svg.transition().call(zoom.translateTo, 0.5 * width, 0.5 * height);
 }
 
 // select node is called on every click
@@ -107,6 +100,8 @@ function selectNode(event, selectedNode) {
         selectedId = undefined
         resetData()
         updateSimulation()
+        const cb = document.querySelector('#menuToggle');
+        cb.checked = false;
     } else {
         selectNodeExplicit(selectedNode);
         getInfoBox(selectedNode);
@@ -133,23 +128,39 @@ function getInfoBox(selectedNode) {
     document.getElementById("nodeName").innerHTML = selectedNode.id;
 
     let found = false;
+    let found2 = false;
     let newLinks = [];
+    let dependLinks = [];
 
     links.forEach(link => {
         if (link.source === selectedNode) {
             found = true;
             newLinks.push(link);
         }
+        if (link.target === selectedNode) {
+            found2 = true;
+            dependLinks.push(link);
+        }
     });
 
     if (found) {
         newLinks = newLinks.map((data) => {
-            data = '<li>' + data.target.id + '</li>';
+            data = '<li><b>' + data.target.id + '</b></li>';
             return data;
         });
         dependencies.innerHTML = newLinks.join('');
     } else {
-        dependencies.innerHTML = "No Dependencies Found";
+        dependencies.innerHTML = "N/A";
+    }
+
+    if (found2) {
+        dependLinks = dependLinks.map((data) => {
+            data = '<li><b>' + data.source.id + '</b></li>';
+            return data;
+        });
+        dependson.innerHTML = dependLinks.join('');
+    } else {
+        dependson.innerHTML = "N/A";
     }
 }
 
@@ -205,8 +216,7 @@ function resetData() {
     })
 
     links = baseLinks
-    for(let i = 0; i < searchNodes.length; i++)
-    {
+    for(let i = 0; i < searchNodes.length; i++) {
         searchNodes.pop();
     }
 }
@@ -217,7 +227,7 @@ function resetData() {
 function updateData(selectedNode) {
     var neighbors = getNeighbors(selectedNode, baseLinks)
     var newNodes = baseNodes.filter(function (node) {
-        return neighbors.indexOf(node) > -1 || node.level === 1
+        return neighbors.indexOf(node) > -1
     })
 
     var diff = {
@@ -259,7 +269,7 @@ function updateGraph() {
         .enter()
         .append('circle')
         .attr('r', 10)
-        .attr('fill', function (node) { return node.level === 1 ? 'red' : 'gray' })
+        .attr('fill', function (node) { return node.group === 1 ? 'red' : 'gray' })
         .call(dragDrop)
         // we link the selectNode method here
         // to update the graph on every click
@@ -268,7 +278,7 @@ function updateGraph() {
             div.transition()
                 .duration(200)
                 .style("opacity", .9);
-            div	.html(d.id + "<br/>"  + d.label)
+            div	.html(d.id)
                 .style("left", (event.pageX) + "px")
                 .style("top", (event.pageY - 28) + "px");
         })
@@ -289,7 +299,7 @@ function updateGraph() {
     var textEnter = textElements
         .enter()
         .append('text')
-        .text(function (node) { return node.label })
+        .text(function (node) { return node.id })
         .attr('font-size', 15)
         .attr('dx', 15)
         .attr('dy', 4)

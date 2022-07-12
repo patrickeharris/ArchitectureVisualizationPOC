@@ -6,18 +6,17 @@ const searchWrapper = document.querySelector(".search-box")
 const inputBox = searchWrapper.querySelector("input")
 const suggBox = searchWrapper.querySelector(".autocom_box")
 
-
 inputBox.onkeyup = (e)=>{
     resetNodeExplicit();
     let userData = e.target.value;
     let emptyArray = [];
     if (userData){
         emptyArray = nodes.filter((data)=>{
-           return data.label.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
+           return data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
         });
         emptyArray = emptyArray.map((data)=>{
             selectNodesExplicit(data);
-            return data = '<li>' + data.label + '</li>';
+            return data = '<li>' + data.id + '</li>';
         });
         selectLinksExplicit()
         searchWrapper.classList.add("active");
@@ -39,7 +38,7 @@ function select(element){
     inputBox.value = selectUserData;
     searchWrapper.classList.remove("active");
     let emptyArray = nodes.filter((data)=>{
-        return data.label.startsWith(selectUserData);
+        return data.id.startsWith(selectUserData);
     });
     selectNodeExplicit(emptyArray.values().next().value);
 }
