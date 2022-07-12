@@ -306,16 +306,11 @@ function getNeighborsOld(node){
     let { nodes, links } = Graph.graphData();
     console.log(node.id);
     highlightNodes = new Set(getNeighbors(node, links))
-    highlightLinks = links.reduce(
-        (neighbors, link) => {
-            if (highlightNodes.has(link.source)) {
-                neighbors.push(link)
-            } else if (highlightNodes.has(link.target)) {
-                neighbors.push(link)
-            }
-            return neighbors
+    links.forEach((link) => {
+        if (highlightNodes.has(link.source) && highlightNodes.has(link.target)) {
+            highlightLinks.add(link)
         }
-    )
+    })
     /*links.forEach((link) => {
         if(link.source === node || link.target === node){
             highlightLinks.add(link);
