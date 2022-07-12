@@ -247,14 +247,12 @@ function linkClick(link) {
     document.getElementById("linkName").innerHTML = link.source.id + " => " + link.target.id;
 
     let newLinks = [];
-    newLinks.push(link);
+    link.functions.forEach(l => {
+        newLinks.push(l);
+    });
     newLinks = newLinks.map((data) => {
-        data.functions.forEach(f => {
-            data += '<li> Function Name: ' + f.endpointName + '</li>' +
-                '<li> Function Type: ' + f.functionType + '</li>' +
-                '<li> Arguments: ' + f.arguments + '</li>' +
-                '<li> Return: ' + f.returnData +  '\n</li>';
-        });
+        data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
+            + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '</li>';
         return data;
     });
     connections.innerHTML = newLinks.join('');
