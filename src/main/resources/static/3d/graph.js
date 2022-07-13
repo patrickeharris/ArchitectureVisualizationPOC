@@ -20,6 +20,7 @@ const inputBox = searchWrapper.querySelector("input");
 const suggBox = searchWrapper.querySelector(".autocom_box");
 const dependencies = document.querySelector(".dependencies");
 const connections = document.querySelector(".connections");
+const dependson = document.querySelector(".dependson");
 
 // Make graph
 const Graph = ForceGraph3D()
@@ -193,12 +194,18 @@ function nodeClick(node){
     document.getElementById("nodeName").innerHTML = node.id;
 
     let found = false;
+    let found2 = false;
     let newLinks = [];
+    let dependLinks = [];
 
     allLinks.forEach(link => {
         if (link.source === node) {
             found = true;
             newLinks.push(link);
+        }
+        if (link.target === node) {
+            found2 = true;
+            dependLinks.push(link);
         }
     });
 
@@ -209,7 +216,17 @@ function nodeClick(node){
         });
         dependencies.innerHTML = newLinks.join('');
     } else {
-        dependencies.innerHTML = "No Dependencies Found";
+        dependencies.innerHTML = '<li>N/A</li>';
+    }
+
+    if (found2) {
+        dependLinks = dependLinks.map((data) => {
+            data = '<li>' + data.source.id + '</li>';
+            return data;
+        });
+        dependson.innerHTML = dependLinks.join('');
+    } else {
+        dependson.innerHTML = '<li>N/A</li>';
     }
 }
 
