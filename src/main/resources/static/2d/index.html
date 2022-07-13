@@ -14,6 +14,12 @@
     </div>
 </div>
 </div>
+<div class="btn-group">
+    <button id="zoom_in" class="button" onclick="zoomIn()">Zoom in</button>
+    <button class="button" onclick="zoomOut()">Zoom out</button>
+    <button class="button" onclick="resetZoom()">Reset zoom</button>
+    <button class="button" onclick="center()">Center</button>
+</div>
 <svg width="0" height="0"><div id="graph"></div></svg>
 
 <div class="wrapper">
@@ -104,13 +110,6 @@
             </ul>
         </div>
     </div>
-</div>
-
-<div class="center">
-<button class="button" onclick="zoomIn()">Zoom in</button>
-<button class="button" onclick="zoomOut()">Zoom out</button>
-<button class="button" onclick="resetZoom()">Reset zoom</button>
-<button class="button" onclick="center()">Center</button>
 </div>
 
 <script type="module" src="../utils/search.js"></script>

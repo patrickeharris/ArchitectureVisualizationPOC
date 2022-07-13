@@ -155,6 +155,24 @@
     cursor: pointer;
 }
 
+.btn-group{
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.btn-group button {
+    padding: 0px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    width: 100px; /* Set a width if needed */
+    height: 30px;
+    display: block; /* Make the buttons appear below each other */
+}
+
+.btn-group button:not(:last-child) {
+    border-bottom: none; /* Prevent double borders */
+}
+
 .button:hover {
     background-color: white;
     color: #008CBA;

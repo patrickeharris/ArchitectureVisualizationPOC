@@ -16,7 +16,7 @@ const connections = document.querySelector(".connections");
 
 let nodes = [...baseNodes]
 let links = [...baseLinks]
-let zoom = d3.zoom().on("zoom", zoomy)
+let zoom = d3.zoom().scaleExtent([1 / 2, 8]).on("zoom", zoomy)
 
 var width = window.innerWidth
 var height = window.innerHeight
@@ -26,16 +26,18 @@ var svg = d3.select('#graph').append("svg")
     .attr("width",  width)
     .attr("height",  height)
     .call(zoom)
-    .append("g")
+
+var g = svg.append("g")
+
 
 var linkElements,
     nodeElements,
     textElements
 
 // we use svg groups to logically group the elements together
-var linkGroup = svg.append('g').attr('class', 'links')
-var nodeGroup = svg.append('g').attr('class', 'nodes')
-var textGroup = svg.append('g').attr('class', 'texts')
+var linkGroup = g.attr('class', 'links')
+var nodeGroup = g.attr('class', 'nodes')
+var textGroup = g.attr('class', 'texts')
 
 // we use this reference to select/deselect
 // after clicking the same element twice
@@ -73,7 +75,7 @@ var div = d3.select("body").append("div")
     .style("opacity", 0);
 
 function zoomy(event){
-    svg.attr("transform", event.transform)
+    g.attr("transform", event.transform)
 }
 
 function zoomIn() {
