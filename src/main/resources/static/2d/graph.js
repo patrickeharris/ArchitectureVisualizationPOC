@@ -16,6 +16,7 @@ let nodes = [...baseNodes];
 let links = [...baseLinks];
 let changeColor = true;
 let clickedNode = null;
+let hoveredNode = null;
 let zoom = d3.zoom().scaleExtent([1 / 4, 8]).on("zoom", zoomController);
 let svg = d3.select('#graph').append("svg")
     .attr("width",  width)
@@ -202,6 +203,18 @@ export function resetData() {
     updateSimulation();
 }
 
+function hoverNode(selectedNode){
+    hoveredNode = selectedNode;
+    changeColor = true;
+    updateSimulation();
+}
+
+function stopHoverNode(selectedNode){
+    hoveredNode = null;
+    changeColor = true;
+    updateSimulation();
+}
+
 function updateGraph() {
     // links
     linkElements = linkGroup.selectAll('path')
@@ -235,6 +248,8 @@ function updateGraph() {
         // we link the selectNode method here
         // to update the graph on every click
         .on('click', function(e, node){selectNode(node)})
+        .on('mouseover', function(e, node){hoverNode(node)})
+        .on('mouseout', function(e, node){stopHoverNode(node)})
         .on("contextmenu", function (e, node) {
             rightClick(e);
             clickedNode = node;
@@ -266,8 +281,14 @@ export function updateSimulation() {
         if(changeColor){
             changeColor = false;
             nodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, baseLinks), clickedNode);
+                return getNodeColor(node, getNeighbors(node, baseLinks), clickedNode, hoveredNode);
             });
+            textElements.attr('fill', function (node) {
+                return getNodeColor(node, getNeighbors(node, baseLinks), clickedNode, hoveredNode);
+            });
+            linkElements.attr('stroke', function(link){
+                return getLinkColor(link, hoveredNode);
+            })
         }
         nodeElements
             .attr('cx', function (node) { return node.x })
