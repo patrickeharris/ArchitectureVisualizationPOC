@@ -152,6 +152,21 @@ inputBox.onkeyup = (e)=>{
     }
 }
 
+function getColor(node){
+    let { nodes, links } = Graph.graphData();
+    let numNeighbors = getNeighbors(node, links).length;
+
+    if(numNeighbors > 2){
+        //node.color =
+        return 'rgba(255,160,0)';
+    }
+    if(numNeighbors > 4){
+        return 'rgb(255,0,0)';
+    }
+
+    return 'rgba(0,255,0)';
+}
+
 function nodeClick(node){
     // Aim at node from outside it
     const distance = 40;
