@@ -130,7 +130,7 @@ function getInfoBox(selectedNode) {
     let newLinks = [];
     let dependLinks = [];
 
-    links.forEach(link => {
+    baseLinks.forEach(link => {
         if (link.source === selectedNode) {
             found = true;
             newLinks.push(link);
@@ -288,7 +288,7 @@ export function updateSimulation() {
             });
             linkElements.attr('stroke', function(link){
                 return getLinkColor(link, hoveredNode);
-            })
+            });
         }
         nodeElements
             .attr('cx', function (node) { return node.x })
