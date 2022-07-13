@@ -2,7 +2,6 @@ import getLinkColor from '../utils/getLinkColor.js';
 import getNodeColor from '../utils/getNodeColor.js';
 import getTextColor from '../utils/getTextColor.js';
 import getNeighbors from '../utils/getNeighbors.js';
-import resetNodeColor from "../utils/resetNodeColor.js";
 import resetTextColor from "../utils/resetTextColor.js";
 import resetLinkColor from "../utils/resetLinkColor.js";
 import rightClick from "../utils/rightClick.js";
@@ -21,7 +20,7 @@ let zoom = d3.zoom().scaleExtent([1 / 2, 8]).on("zoom", zoomy);
 var width = window.innerWidth;
 var height = window.innerHeight;
 let searchNodes = [];
-let selectedNode = null;
+let selectedNode2 = null;
 
 var svg = d3.select('#graph').append("svg")
     .attr("width",  width)
@@ -101,11 +100,14 @@ function center() {
 function selectNode(event, selectedNode) {
     if (selectedId === selectedNode.id) {
         selectedId = undefined;
+        selectedNode2 = null;
+        changeColor = true;
         resetData();
         updateSimulation();
         const cb = document.querySelector('#menuToggle');
         cb.checked = false;
     } else {
+        selectedNode2 = selectedNode;
         selectNodeExplicit(selectedNode);
         getInfoBox(selectedNode);
     }
@@ -113,18 +115,22 @@ function selectNode(event, selectedNode) {
 
 export default function selectNodeExplicit(selectedNode) {
         selectedId = selectedNode.id;
-        updateData(selectedNode);
+        nodes = [selectedNode];
+        links = [];
+        changeColor = true;
         updateSimulation();
-        var neighbors = getNeighbors(selectedNode, baseLinks);
-
-        // we modify the styles to highlight selected nodes
-        nodeElements.attr('fill', function (node) { return getNodeColor(node, neighbors, selectedNode); });
-        textElements.attr('fill', function (node) { return getTextColor(node, neighbors, selectedNode); });
-        linkElements.attr('stroke', function (link) { return getLinkColor(selectedNode, link); });
 }
 
 function getNeighborsSelected(){
-    selectNodeExplicit(selectedNode);
+    selectedId = selectedNode2.id;
+    updateData(selectedNode2);
+    updateSimulation();
+    var neighbors = getNeighbors(selectedNode2, baseLinks);
+
+    // we modify the styles to highlight selected nodes
+    nodeElements.attr('fill', function (node) { return getNodeColor(node, neighbors, selectedNode2); });
+    textElements.attr('fill', function (node) { return getTextColor(node, neighbors, selectedNode2); });
+    linkElements.attr('stroke', function (link) { return getLinkColor(selectedNode2, link); });
 }
 
 function getInfoBox(selectedNode) {
@@ -218,25 +224,19 @@ export function selectLinksExplicit(){
     updateSimulation();
 }
 
-export function resetNodeExplicit() {
-    nodeElements.attr('fill', 'gray');
-    textElements.attr('fill', 'black');
-    linkElements.attr('stroke', '#E5E5E5');
-    resetData();
-    updateSimulation();
-}
-
 // this helper simple adds all nodes and links
 // that are missing, to recreate the initial state
-function resetData() {
+export function resetData() {
     var nodeIds = nodes.map(function (node) { return node.id });
     var neighbors = {};
+
+    changeColor = true;
 
     baseNodes.forEach(function (node) {
         if (nodeIds.indexOf(node.id) === -1) {
             nodes.push(node);
         }
-        nodeElements.attr('fill', function (node) { return resetNodeColor(node) });
+        nodeElements.attr('fill', getNodeColor(node, getNeighbors(node, baseLinks), null));
         textElements.attr('fill', function (node) { return resetTextColor(node) });
         linkElements.attr('stroke', function (link) { return resetLinkColor(node) });
     })
@@ -294,14 +294,13 @@ function updateGraph() {
         .enter()
         .append('circle')
         .attr('r', 10)
-        .attr('fill', function (node) { return node.group === 1 ? 'red' : 'gray' })
         .call(dragDrop)
         // we link the selectNode method here
         // to update the graph on every click
         .on('click', selectNode)
         .on("contextmenu", function (e, node) {
             rightClick(e);
-            selectedNode = node;
+            selectedNode2 = node;
         });
 
     nodeElements = nodeEnter.merge(nodeElements);
@@ -323,13 +322,19 @@ function updateGraph() {
     textElements = textEnter.merge(textElements);
 }
 
-function updateSimulation() {
+export function updateSimulation() {
     updateGraph();
 
     simulation.nodes(nodes).on('tick', () => {
+        if(changeColor){
+            changeColor = false;
+            nodeElements.attr('fill', function (node) {
+                return getNodeColor(node, getNeighbors(node, baseLinks), selectedNode2);
+            });
+        }
         nodeElements
             .attr('cx', function (node) { return node.x })
-            .attr('cy', function (node) { return node.y });
+            .attr('cy', function (node) { return node.y })
         textElements
             .attr('x', function (node) { return node.x })
             .attr('y', function (node) { return node.y });
@@ -345,6 +350,7 @@ function updateSimulation() {
 }
 // last but not least, we call updateSimulation
 // to trigger the initial render
+let changeColor = true;
 updateSimulation();
 window.zoomIn=zoomIn;
 window.zoomOut=zoomOut;

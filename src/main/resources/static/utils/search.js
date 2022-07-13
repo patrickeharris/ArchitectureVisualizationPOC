@@ -1,13 +1,14 @@
 import nodes from "../data/nodes.js";
 import selectNodeExplicit, {selectLinksExplicit} from "../2d/graph.js";
-import {resetNodeExplicit, selectNodesExplicit} from "../2d/graph.js";
+import {resetData, updateSimulation, selectNodesExplicit} from "../2d/graph.js";
 
 const searchWrapper = document.querySelector(".search-box")
 const inputBox = searchWrapper.querySelector("input")
 const suggBox = searchWrapper.querySelector(".autocom_box")
 
 inputBox.onkeyup = (e)=>{
-    resetNodeExplicit();
+    resetData();
+    updateSimulation();
     let userData = e.target.value;
     let emptyArray = [];
     if (userData){
