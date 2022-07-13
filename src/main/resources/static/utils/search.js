@@ -1,6 +1,6 @@
 import nodes from "../data/nodes.js";
 import selectNodeExplicit, {selectLinksExplicit} from "../2d/graph.js";
-import {resetData, updateSimulation, selectNodesExplicit} from "../2d/graph.js";
+import {resetData, selectSearchNodes, updateSimulation} from "../2d/graph.js";
 
 const searchWrapper = document.querySelector(".search-box")
 const inputBox = searchWrapper.querySelector("input")
@@ -15,8 +15,8 @@ inputBox.onkeyup = (e)=>{
         emptyArray = nodes.filter((data)=>{
            return data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
         });
+        selectSearchNodes(emptyArray);
         emptyArray = emptyArray.map((data)=>{
-            selectNodesExplicit(data);
             return data = '<li>' + data.id + '</li>';
         });
         selectLinksExplicit()
@@ -30,7 +30,8 @@ inputBox.onkeyup = (e)=>{
     }
     else{
         searchWrapper.classList.remove("active");
-        resetNodeExplicit();
+        resetData();
+        updateSimulation();
     }
 }
 

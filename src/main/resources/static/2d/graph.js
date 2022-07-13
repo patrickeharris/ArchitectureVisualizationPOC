@@ -177,24 +177,10 @@ function getInfoBox(selectedNode) {
     }
 }
 
-export function selectNodesExplicit(selectedNode) {
-    selectedId = selectedNode.id;
-
-    var val;
-    for (let i = 0; i < searchNodes.length; i++){
-        val = searchNodes.values().next().value;
-    }
-
-    if (!(typeof val === undefined)) {
-        searchNodes.push(selectedNode);
-    }
-    var diff = {
-        removed: nodes.filter(function (node) { return searchNodes.indexOf(node) === -1; }),
-        added: searchNodes.filter(function (node) { return nodes.indexOf(node) === -1; })
-    };
-
-    diff.removed.forEach(function (node) { nodes.splice(nodes.indexOf(node), 1) });
-    diff.added.forEach(function (node) { nodes.push(node) });
+export function selectSearchNodes(selectedNodes){
+    nodes = selectedNodes;
+    links = [];
+    updateSimulation();
 }
 
 export function selectLink(selectedLink) {
@@ -218,7 +204,7 @@ export function selectLink(selectedLink) {
 
 export function selectLinksExplicit(){
     var newLinks = baseLinks.filter(function (link) {
-        return (searchNodes.includes(link.source) && searchNodes.includes(link.target)) || searchNodes.length === 0;
+        return nodes.includes(link.source) && nodes.includes(link.target);
     });
     links = newLinks;
     updateSimulation();
