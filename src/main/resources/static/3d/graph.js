@@ -1,8 +1,6 @@
 // Import for lighting
 import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
 import getNeighbors from "../utils/getNeighbors.js";
-import { saveAs } from '../utils/file-saver.js';
-import rightClick from "../utils/rightClick.js";
 
 // Data Abstraction
 let allLinks = null;
@@ -18,8 +16,11 @@ let initZ = null;
 const searchWrapper = document.querySelector(".search-box");
 const inputBox = searchWrapper.querySelector("input");
 const suggBox = searchWrapper.querySelector(".autocom_box");
+const contextMenu = document.querySelector(".wrapper");
+const shareMenu = contextMenu.querySelector(".share-menu");
 const dependencies = document.querySelector(".dependencies");
 const connections = document.querySelector(".connections");
+const dependson = document.querySelector(".dependson");
 
 // Make graph
 const Graph = ForceGraph3D()
@@ -58,7 +59,7 @@ const Graph = ForceGraph3D()
     .linkVisibility((link) => customLinkVisibility(link))
     .linkDirectionalArrowLength(3.5)
     .linkDirectionalArrowRelPos(1)
-    // Change where node is when clicking and dragging
+    // Change where noode is when clicking and dragging
     .onNodeDragEnd(node => {
         node.fx = node.x;
         node.fy = node.y;
@@ -73,7 +74,29 @@ const Graph = ForceGraph3D()
     .onNodeRightClick((node, e) =>{
         // Set selected node
         selectedNode = node;
-        rightClick(e)
+        // Prevent normal right click menu
+        e.preventDefault();
+
+        // Set position for menu
+        let x = e.offsetX, y = e.offsetY,
+            winWidth = window.innerWidth,
+            winHeight = window.innerHeight,
+            cmWidth = contextMenu.offsetWidth,
+            cmHeight = contextMenu.offsetHeight;
+
+        if(x > (winWidth - cmWidth - shareMenu.offsetWidth)) {
+            shareMenu.style.left = "-200px";
+        } else {
+            shareMenu.style.left = "";
+            shareMenu.style.right = "-200px";
+        }
+
+        x = x > winWidth - cmWidth ? winWidth - cmWidth - 5 : x;
+        y = y > winHeight - cmHeight ? winHeight - cmHeight - 5 : y;
+
+        contextMenu.style.left = `${x}px`;
+        contextMenu.style.top = `${y}px`;
+        contextMenu.style.visibility = "visible";
     })
     // Setup hovering on nodes
     .onNodeHover(node => {
@@ -87,7 +110,7 @@ const Graph = ForceGraph3D()
         // Add node and neighbors to highlighted nodes list
         if (node) {
             highlightNodes.add(node);
-            getHighlightNeighbors(node);
+            getNeighborsOld(node);
         }
 
         // Set node to hoverNode
@@ -117,6 +140,7 @@ const Graph = ForceGraph3D()
 
 // When user types something in search box
 inputBox.onkeyup = (e)=>{
+    //exportGraph()
     // Get data
     let { nodes, links } = Graph.graphData();
     // Get rid of info box
@@ -179,7 +203,7 @@ function nodeClick(node){
     Graph.cameraPosition(
         newPos, // new position
         node, // lookAt ({ x, y, z })
-        2000  // ms transition duration
+        3000  // ms transition duration
     );
     // Hide all other nodes
     visibleNodes = []
@@ -193,12 +217,18 @@ function nodeClick(node){
     document.getElementById("nodeName").innerHTML = node.id;
 
     let found = false;
+    let found2 = false;
     let newLinks = [];
+    let dependLinks = [];
 
     allLinks.forEach(link => {
         if (link.source === node) {
             found = true;
             newLinks.push(link);
+        }
+        if (link.target === node) {
+            found2 = true;
+            dependLinks.push(link);
         }
     });
 
@@ -209,7 +239,17 @@ function nodeClick(node){
         });
         dependencies.innerHTML = newLinks.join('');
     } else {
-        dependencies.innerHTML = "No Dependencies Found";
+        dependencies.innerHTML = '<li>N/A</li>';
+    }
+
+    if (found2) {
+        dependLinks = dependLinks.map((data) => {
+            data = '<li>' + data.source.id + '</li>';
+            return data;
+        });
+        dependson.innerHTML = dependLinks.join('');
+    } else {
+        dependson.innerHTML = '<li>N/A</li>';
     }
 }
 
@@ -224,7 +264,7 @@ function linkClick(link) {
     Graph.cameraPosition(
         newPos, // new position
         link, // lookAt ({ x, y, z })
-        2000  // ms transition duration
+        3000  // ms transition duration
     );
     // Hide all other nodes
     visibleNodes = []
@@ -294,14 +334,24 @@ function updateHighlight() {
 }
 
 // Highlight neighbors
-function getHighlightNeighbors(node){
+function getNeighborsOld(node){
     let { nodes, links } = Graph.graphData();
+    console.log(node.id);
     highlightNodes = new Set(getNeighbors(node, links))
     links.forEach((link) => {
-        if ((highlightNodes.has(link.source) && link.target === node) || (highlightNodes.has(link.target)) && link.source === node) {
+        if (highlightNodes.has(link.source) && highlightNodes.has(link.target)) {
             highlightLinks.add(link)
         }
     })
+    /*links.forEach((link) => {
+        if(link.source === node || link.target === node){
+            highlightLinks.add(link);
+            if(!highlightNodes.has(link.source))
+                highlightNodes.add(link.source);
+            if(!highlightNodes.has(link.target))
+                highlightNodes.add(link.target);
+        }
+    })*/
     updateHighlight();
 }
 
@@ -317,7 +367,7 @@ function resetView() {
     Graph.cameraPosition(
         coords, // new position
         { x: 0, y: 0, z: 0 }, // lookAt ({ x, y, z })
-        2000  // ms transition duration
+        1000  // ms transition duration
     );
 }
 
@@ -331,17 +381,28 @@ function closeBox(){
 // Get neighbors of a selected node
 function getNeighborsSelected(){
     let { nodes, links } = Graph.graphData();
-    // Set neighbors
+    // Empty visible nodes
+    visibleNodes = [];
+
+    // Add nodes that are linked to selected nodes
+    console.log(getNeighbors(selectedNode, links).length)
     visibleNodes = getNeighbors(selectedNode, links)
+    /*links.filter((link) => {
+        if(link.source.id === selectedNode.id || link.target.id === selectedNode.id){
+            if(!visibleNodes.includes(link.source))
+                visibleNodes.push(link.source);
+            if(!visibleNodes.includes(link.target))
+                visibleNodes.push(link.target);
+        }
+    });*/
+
     // Refresh visible nodes
     reset();
 }
 
 // Node is visible if contained in visibleNodes
 function customNodeVisibility(node) {
-    if(visibleNodes.includes(node))
-        return true;
-    return false;
+    return visibleNodes.includes(node);
 }
 
 // Link is visible if nodes on either end are visible
@@ -358,21 +419,8 @@ function exportGraph(){
     exportToJsonFile(Graph.graphData())
 }
 
-function replacer(key,value)
-{
-    if (key=="__threeObj") return undefined;
-    else if (key=="__lineObj") return undefined;
-    else if (key=="__arrowObj") return undefined;
-    else if (key=="__curve") return undefined;
-    else if (key=="index") return undefined;
-    else if (key=="source") return value.id;
-    else if (key=="target") return value.id;
-    else return value;
-}
-
 function exportToJsonFile(jsonData) {
-    let dataStr = JSON.stringify(Object.assign({}, jsonData, Graph.cameraPosition()), replacer);
-    //let dataStr2 = JSON.stringify(Graph.cameraPosition());
+    let dataStr = JSON.stringify(jsonData);
     let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
 
     let exportFileDefaultName = 'data-out.json';
@@ -383,70 +431,11 @@ function exportToJsonFile(jsonData) {
     linkElement.click();
 }
 
-var a, downloads = 0;
-
-function download(){
-        cancelAnimationFrame(a);
-        //Obviously, you should swap this out for a selector that gets only the 3D graph
-        Graph.renderer().domElement.toBlob(function(blob){
-            //Powered by [FileSaver](https://github.com/eligrey/FileSaver.js/)
-            saveAs(blob, 'a.png');
-        });
-}
-
 function importGraph(){
-    var input = document.createElement('input');
-    input.type = 'file';
-
-    input.onchange = e => {
-        var file = e.target.files[0];
-
-        // setting up the reader
-        var reader = new FileReader();
-        reader.readAsText(file,'UTF-8');
-
-        // here we tell the reader what to do when it's done reading...
-        reader.onload = readerEvent => {
-            var content = readerEvent.target.result; // this is the content!
-            var parsedData = JSON.parse(content);
-            Graph.graphData(parsedData)
-            delay(150).then(() => {
-                let {nodes, links} = Graph.graphData();
-                allLinks = links;
-                visibleNodes = nodes;
-                reset();
-
-                Graph.cameraPosition(
-                    { x: parsedData.x, y: parsedData.y, z: parsedData.z }, // new position
-                    {x: 0, y: 0, z:0 },//parsedData.lookAt, // lookAt ({ x, y, z })
-                    0  // ms transition duration
-                );
-            })
-        }
-    }
-
-    input.click();
-    /*var request = new XMLHttpRequest();
-    request.open("GET", "./import.json", false);
-    request.send(null)
-    var parsedData = JSON.parse(request.responseText);
-    //Graph.jsonUrl('./import.json')
-    Graph.graphData(parsedData)
-    delay(150).then(() => {
-        let {nodes, links} = Graph.graphData();
-        allLinks = links;
-        visibleNodes = nodes;
-        reset();
-
-        Graph.cameraPosition(
-            { x: parsedData.x, y: parsedData.y, z: parsedData.z }, // new position
-            {x: 0, y: 0, z:0 },//parsedData.lookAt, // lookAt ({ x, y, z })
-            0  // ms transition duration
-        );
-    })*/
+    Graph.jsonUrl('./import.json')
 }
 
-// Populate graph after 150ms (after async jsonURL runs)
+// Populate graph after 100ms (after async jsonURL runs)
 delay(150).then(() => {
     let { nodes, links } = Graph.graphData();
     allLinks = links;
@@ -458,8 +447,6 @@ delay(150).then(() => {
     initY = y;
     initZ = z;
 
-    //importGraph();
-
     /* Export stuff:
     for(let j = 0; j < nodes.length; j++){
         let oldNode = {node: nodes[j], x: nodes[j].fx, y: nodes[j].fy, z: nodes[j].fz, x2: nodes[j].x, y2: nodes[j].y, z2: nodes[j].z};
@@ -467,12 +454,13 @@ delay(150).then(() => {
     }*/
 });
 
+// Hide right click menu when clicking out of it
+document.addEventListener("click", () => {
+    contextMenu.style.visibility = "hidden";
+});
+
 // Make functions global (accessible from html)
 window.recolor = recolor;
 window.getNeighborsSelected = getNeighborsSelected;
 window.select = select;
 window.closeBox = closeBox;
-window.requestAnimationFrame = requestAnimationFrame;
-window.download = download;
-window.importGraph = importGraph;
-window.exportGraph = exportGraph;

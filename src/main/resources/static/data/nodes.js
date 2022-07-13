@@ -73,5 +73,5 @@ export default [
         group: 4},
     {id: 'ts-consign-price-service',
         group: 5},
-    {id:  'ts-travel-service', group:  5}
+    {id: 'ts-travel-service', group:  5}
 ]

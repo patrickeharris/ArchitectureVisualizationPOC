@@ -152,22 +152,22 @@ function getInfoBox(selectedNode) {
 
     if (found) {
         newLinks = newLinks.map((data) => {
-            data = '<li><b>' + data.target.id + '</b></li>';
+            data = '<li>' + data.target.id + '</li>';
             return data;
         });
         dependencies.innerHTML = newLinks.join('');
     } else {
-        dependencies.innerHTML = "N/A";
+        dependencies.innerHTML = '<li>N/A</li>';
     }
 
     if (found2) {
         dependLinks = dependLinks.map((data) => {
-            data = '<li><b>' + data.source.id + '</b></li>';
+            data = '<li>' + data.source.id + '</li>';
             return data;
         });
         dependson.innerHTML = dependLinks.join('');
     } else {
-        dependson.innerHTML = "N/A";
+        dependson.innerHTML = '<li>N/A</li>';
     }
 }
 
