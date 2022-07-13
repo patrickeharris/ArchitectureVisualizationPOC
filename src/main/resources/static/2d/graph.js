@@ -26,6 +26,16 @@ var linkElements,
     nodeElements,
     textElements;
 
+svg.append("svg:defs").append("svg:marker")
+    .attr("id", "arrow")
+    .attr("viewBox", "0 -5 10 10")
+    .attr('refX', 30)//so that it comes towards the center.
+    .attr("markerWidth", 5)
+    .attr("markerHeight", 5)
+    .attr("orient", "auto")
+    .append("svg:path")
+    .attr("d", "M0,-5L10,0L0,5");
+
 // we use svg groups to logically group the elements together
 let linkGroup = g.attr('class', 'links');
 let nodeGroup = g.attr('class', 'nodes');
@@ -194,7 +204,7 @@ export function resetData() {
 
 function updateGraph() {
     // links
-    linkElements = linkGroup.selectAll('line')
+    linkElements = linkGroup.selectAll('path')
         .data(links, function (link) {
             return link.target.id + link.source.id
         });
@@ -202,9 +212,11 @@ function updateGraph() {
     linkElements.exit().remove();
 
     let linkEnter = linkElements
-        .enter().append('line')
+        .enter().append( "path" )//append path
+        .attr( "class", "link" )
         .attr('stroke-width', 1)
         .attr('stroke', 'rgba(50, 50, 50, 0.2)')
+        .attr('marker-end', (d) => "url(#arrow)")//attach the arrow from defs
         .on('click', function (link) { selectLink(link) });
 
     linkElements = linkEnter.merge(linkElements);
@@ -267,7 +279,8 @@ export function updateSimulation() {
             .attr('x1', function (link) { return link.source.x })
             .attr('y1', function (link) { return link.source.y })
             .attr('x2', function (link) { return link.target.x })
-            .attr('y2', function (link) { return link.target.y });
+            .attr('y2', function (link) { return link.target.y })
+            .attr( "d", (d) => "M" + d.source.x + "," + d.source.y + ", " + d.target.x + "," + d.target.y);
     });
 
     simulation.force('link').links(links);
