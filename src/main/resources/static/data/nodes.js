@@ -67,8 +67,6 @@ export default [
         group: 1},
     {id: 'ts-admin-order-service',
         group: 2},
-    {id: 'ts-inside-payment-service',
-        group: 3},
     {id: 'ts-verification-code-service',
         group: 4},
     {id: 'ts-consign-price-service',
