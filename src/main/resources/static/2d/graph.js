@@ -16,6 +16,7 @@ let nodes = [...baseNodes];
 let links = [...baseLinks];
 let changeColor = true;
 let clickedNode = null;
+let clickedLink = null;
 let hoveredNode = null;
 let zoom = d3.zoom().scaleExtent([1 / 4, 8]).on("zoom", zoomController);
 let svg = d3.select('#graph').append("svg")
@@ -89,6 +90,14 @@ function center() {
     svg.transition().call(zoom.translateTo, 0.5 * width, 0.5 * height);
 }
 
+function addNode() {
+
+}
+
+function addLink(selectedNode) {
+
+}
+
 // select node is called on every click
 // we either update the data according to the selection
 // or reset the data if the same node is clicked twice
@@ -116,6 +125,27 @@ function getNeighborsSelected(){
     });
     changeColor = true;
     updateSimulation();
+}
+
+function deleteNode(){
+
+    let visibleNodes = [];
+    let visibleLinks = [];
+    if (window.confirm("Are you sure you want to delete this node and all its links?")) {
+        nodes.forEach((node) => {
+            if (node !== clickedNode) {
+                visibleNodes.push(node);
+            }
+        });
+        links.forEach((link) => {
+            if (link.source !== clickedNode && link.target !== clickedNode) {
+                visibleLinks.push(link);
+            }
+        });
+        links = visibleLinks;
+        nodes = visibleNodes;
+        updateSimulation();
+    }
 }
 
 function getInfoBox(selectedNode) {
@@ -170,6 +200,10 @@ export function selectSearchNodes(selectedNodes){
 }
 
 export function selectLink(selectedLink) {
+
+    links = [selectedLink];
+    nodes = [selectedLink.source, selectedLink.target];
+    updateSimulation();
     // Show info box
     const cb = document.querySelector('#linkMenuToggle');
     cb.checked = true;
@@ -182,7 +216,7 @@ export function selectLink(selectedLink) {
     });
     newLinks = newLinks.map((data) => {
         data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
-            + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '</li>';
+            + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '<br></li>';
         return data;
     });
     connections.innerHTML = newLinks.join('');
@@ -192,6 +226,12 @@ function selectLinksExplicit(){
     links = baseLinks.filter(function (link) {
         return nodes.includes(link.source) && nodes.includes(link.target);
     });
+}
+
+function closeBox(){
+    const cb = document.querySelector('#linkMenuToggle');
+    cb.checked = false;
+    resetData();
 }
 
 // this helper simple adds all nodes and links
@@ -230,7 +270,9 @@ function updateGraph() {
         .attr('stroke-width', 1)
         .attr('stroke', 'rgba(50, 50, 50, 0.2)')
         .attr('marker-end', (d) => "url(#arrow)")//attach the arrow from defs
-        .on('click', function (link) { selectLink(link) });
+        .on('click', function (e, link) {
+            selectLink(link);
+        });
 
     linkElements = linkEnter.merge(linkElements);
 
@@ -315,3 +357,5 @@ window.zoomOut=zoomOut;
 window.resetZoom=resetZoom;
 window.center=center;
 window.getNeighborsSelected = getNeighborsSelected;
+window.deleteNode = deleteNode;
+window.closeBox = closeBox;

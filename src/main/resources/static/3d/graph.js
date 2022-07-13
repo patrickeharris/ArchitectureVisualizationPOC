@@ -3,6 +3,7 @@ import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postpr
 import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
 import rightClick from "../utils/rightClick.js";
+import {updateSimulation} from "../2d/graph.js";
 
 // Data Abstraction
 let allLinks = null;
@@ -10,6 +11,7 @@ let highlightNodes = new Set();
 let highlightLinks = new Set();
 let hoverNode = null;
 let selectedNode = null;
+let selectedLink = null;
 let visibleNodes = [];
 let initX = null;
 let initY = null;
@@ -231,6 +233,7 @@ function nodeClick(node){
 }
 
 function linkClick(link) {
+    selectedLink = link;
     const distance = 200;
     const distRatio = 1 + distance/Math.hypot(link.x, link.y, link.z);
 
@@ -265,6 +268,32 @@ function linkClick(link) {
         return data;
     });
     connections.innerHTML = newLinks.join('');
+}
+
+function deleteNode() {
+    let nodesNew = [];
+    if (window.confirm("Are you sure you want to delete this node and all its links?")) {
+        visibleNodes.forEach((node) => {
+            if (node !== selectedNode) {
+                nodesNew.push(node);
+            }
+        })
+        visibleNodes = nodesNew;
+        updateSimulation();
+    }
+}
+
+function deleteLink() {
+    let linksNew = [];
+    if (window.confirm("Are you sure you want to delete this link?")) {
+        allLinks.forEach((link) => {
+            if (link !== selectedLink) {
+                linksNew.push(link);
+            }
+        });
+        allLinks = linksNew;
+        updateSimulation();
+    }
 }
 
 function select(element){
@@ -493,3 +522,5 @@ window.requestAnimationFrame = requestAnimationFrame;
 window.download = download;
 window.importGraph = importGraph;
 window.exportGraph = exportGraph;
+window.deleteLink = deleteLink;
+window.deleteNode = deleteNode;

@@ -19,6 +19,7 @@
     <button class="button" onclick="zoomOut()">Zoom out</button>
     <button class="button" onclick="resetZoom()">Reset zoom</button>
     <button class="button" onclick="center()">Center</button>
+    <button class="button" onclick="addNode()">Add Node</button>
 </div>
 <svg width="0" height="0"><div id="graph"></div></svg>
 
@@ -40,7 +41,7 @@
                         <i class="uil uil-twitter-alt"></i>
                         <span>Download</span>
                     </li>
-                    <li class="item">
+                    <li class="item" onclick="addLink()">
                         <i class="uil uil-add-link"></i>
                         <span>Add Link</span>
                     </li>
@@ -54,7 +55,7 @@
                 <i class="uil uil-edit"></i>
                 <span>Send Data Ping</span>
             </li>
-            <li class="item">
+            <li class="item" onclick="deleteNode()">
                 <i class="uil uil-trash-alt"></i>
                 <span>Delete</span>
             </li>
@@ -88,12 +89,15 @@
     <div class="infobox md-card">
         <div class="md-card-content">
             <h2 id="linkName">Name</h2>
-            <p>Functions</p>
+            <p><br>Functions<br></p>
             <ul class="connections">
                 <li class="md-caption">Coffee</li>
                 <li class="md-caption">Tea</li>
                 <li class="md-caption">Milk</li>
             </ul>
+        </div>
+        <div class="md-card-btns">
+            <label for="linkMenuToggle" class="md-button" onclick="closeBox()">Close Box</label>
         </div>
     </div>
 </div>
