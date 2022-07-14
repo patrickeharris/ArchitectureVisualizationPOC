@@ -3,8 +3,7 @@ import getNodeColor from '../utils/getNodeColor.js';
 import getNeighbors from '../utils/getNeighbors.js';
 import rightClick from "../utils/rightClick.js";
 
-import baseNodes from '../data/nodes.js';
-import baseLinks from '../data/links.js';
+import inputFile from '../data/train_ticket_new.json' assert { type: "json" };
 
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -12,8 +11,8 @@ const dependencies = document.querySelector(".dependencies");
 const dependson = document.querySelector(".dependson");
 const connections = document.querySelector(".connections");
 
-let nodes = [...baseNodes];
-let links = [...baseLinks];
+let nodes = [...inputFile.nodes];
+let links = [...inputFile.links];
 let changeColor = true;
 let changeLinkColor = true;
 let clickedNode = null;
@@ -121,8 +120,8 @@ export function selectNode(selectedNode) {
 }
 
 function getNeighborsSelected(){
-    nodes = getNeighbors(clickedNode, baseLinks);
-    links = baseLinks.filter(function (link) {
+    nodes = getNeighbors(clickedNode, inputFile.links);
+    links = inputFile.links.filter(function (link) {
         return link.target.id === clickedNode.id || link.source.id === clickedNode.id;
     });
     changeColor = true;
@@ -162,7 +161,7 @@ function getInfoBox(selectedNode) {
     let newLinks = [];
     let dependLinks = [];
 
-    baseLinks.forEach(link => {
+    inputFile.links.forEach(link => {
         if (link.source === selectedNode) {
             found = true;
             newLinks.push(link);
@@ -225,7 +224,7 @@ export function selectLink(selectedLink) {
 }
 
 function selectLinksExplicit(){
-    links = baseLinks.filter(function (link) {
+    links = inputFile.links.filter(function (link) {
         return nodes.includes(link.source) && nodes.includes(link.target);
     });
 }
@@ -239,8 +238,8 @@ function closeBox(){
 // this helper simple adds all nodes and links
 // that are missing, to recreate the initial state
 export function resetData() {
-    nodes = baseNodes;
-    links = baseLinks;
+    nodes = inputFile.nodes;
+    links = inputFile.links;
     changeColor = true;
     updateSimulation();
 }
@@ -339,10 +338,10 @@ export function updateSimulation() {
         if(changeColor){
             changeColor = false;
             nodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, baseLinks), clickedNode, hoveredNode);
+                return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode);
             });
             textElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, baseLinks), clickedNode, hoveredNode);
+                return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode);
             });
             linkElements.attr('stroke', function(link){
                 return getLinkColor(link, hoveredNode);
