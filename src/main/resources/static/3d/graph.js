@@ -271,14 +271,25 @@ function linkClick() {
 }
 
 function deleteNode() {
+    let { nodes, links } = Graph.graphData();
     let nodesNew = [];
     if (window.confirm("Are you sure you want to delete this node and all its links?")) {
-        visibleNodes.forEach((node) => {
+        nodes.forEach((node) => {
             if (node !== selectedNode) {
                 nodesNew.push(node);
             }
         })
         visibleNodes = nodesNew;
+        nodes = nodesNew;
+        links.filter((data)=>{
+           if(nodes.includes(data.source) && nodes.includes(data.target)) {
+               return data;
+           }
+        });
+        Graph.graphData({
+            nodes: nodes,
+            links: links
+        });
         updateSimulation();
     }
 }
