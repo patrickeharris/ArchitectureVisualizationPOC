@@ -115,7 +115,8 @@ const Graph = ForceGraph3D()
         // Update highlighted nodes on graph
         updateHighlight();
     }).onLinkClick(link => {
-        linkClick(link);
+        selectedLink = link;
+        linkClick();
     });
 
 // When user types something in search box
@@ -232,13 +233,12 @@ function nodeClick(node){
     }
 }
 
-function linkClick(link) {
-    selectedLink = link;
+function linkClick() {
     const distance = 200;
-    const distRatio = 1 + distance/Math.hypot(link.x, link.y, link.z);
+    const distRatio = 1 + distance/Math.hypot(selectedLink.x, selectedLink.y, selectedLink.z);
 
-    const newPos = link.x || link.y || link.z
-        ? { x: (link.source.x + link.target.x) / 2 * distRatio, y: (link.source.y + link.target.y) / 2 * distRatio, z: (link.source.z + link.target.z) / 2 * distRatio }
+    const newPos = selectedLink.x || selectedLink.y || selectedLink.z
+        ? { x: (selectedLink.source.x + selectedLink.target.x) / 2 * distRatio, y: (selectedLink.source.y + selectedLink.target.y) / 2 * distRatio, z: (selectedLink.source.z + selectedLink.target.z) / 2 * distRatio }
         : { x: 0, y: 0, z: distance }; // special case if link is in (0,0,0)
 
     Graph.cameraPosition(
@@ -248,18 +248,18 @@ function linkClick(link) {
     );
     // Hide all other nodes
     visibleNodes = []
-    visibleNodes.push(link.source);
-    visibleNodes.push(link.target);
+    visibleNodes.push(selectedLink.source);
+    visibleNodes.push(selectedLink.target);
     // Update visible nodes
     reset()
     // Show info box
     const cb = document.querySelector('#linkMenuToggle');
     cb.checked = true;
     // Set info box data
-    document.getElementById("linkName").innerHTML = link.source.id + " => " + link.target.id;
+    document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
 
     let newLinks = [];
-    link.functions.forEach(l => {
+    selectedLink.functions.forEach(l => {
         newLinks.push(l);
     });
     newLinks = newLinks.map((data) => {

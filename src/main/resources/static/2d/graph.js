@@ -15,9 +15,11 @@ const connections = document.querySelector(".connections");
 let nodes = [...baseNodes];
 let links = [...baseLinks];
 let changeColor = true;
+let changeLinkColor = true;
 let clickedNode = null;
 let clickedLink = null;
 let hoveredNode = null;
+let hoveredLink = null;
 let zoom = d3.zoom().scaleExtent([1 / 4, 8]).on("zoom", zoomController);
 let svg = d3.select('#graph').append("svg")
     .attr("width",  width)
@@ -249,9 +251,21 @@ function hoverNode(selectedNode){
     updateSimulation();
 }
 
+function hoverLink(selectedLink) {
+    hoveredLink = selectedLink;
+    changeLinkColor = true;
+    updateSimulation();
+}
+
 function stopHoverNode(selectedNode){
     hoveredNode = null;
     changeColor = true;
+    updateSimulation();
+}
+
+function stopHoverLink(selectedLink) {
+    hoveredLink = null;
+    changeLinkColor = true;
     updateSimulation();
 }
 
@@ -272,7 +286,9 @@ function updateGraph() {
         .attr('marker-end', (d) => "url(#arrow)")//attach the arrow from defs
         .on('click', function (e, link) {
             selectLink(link);
-        });
+        })
+        .on('mouseover', function(e, link){hoverLink(link)})
+        .on('mouseout', function(e, link){stopHoverLink(link)})
 
     linkElements = linkEnter.merge(linkElements);
 
@@ -332,6 +348,12 @@ export function updateSimulation() {
                 return getLinkColor(link, hoveredNode);
             });
         }
+        if (changeLinkColor) {
+            changeLinkColor = false;
+            linkElements.attr('stroke', function(link) {
+                return 'pink';
+            })
+        }
         nodeElements
             .attr('cx', function (node) { return node.x })
             .attr('cy', function (node) { return node.y })
@@ -349,6 +371,7 @@ export function updateSimulation() {
     simulation.force('link').links(links);
     simulation.alphaTarget(0.7).restart();
 }
+
 // last but not least, we call updateSimulation
 // to trigger the initial render
 updateSimulation();
