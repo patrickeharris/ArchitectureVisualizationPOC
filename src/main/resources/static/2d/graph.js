@@ -10,6 +10,8 @@ const height = window.innerHeight;
 const dependencies = document.querySelector(".dependencies");
 const dependson = document.querySelector(".dependson");
 const connections = document.querySelector(".connections");
+const cb = document.querySelector("#menuToggle");
+const cbl = document.querySelector("#linkMenuToggle");
 
 let nodes = [...inputFile.nodes];
 let links = [...inputFile.links];
@@ -104,20 +106,12 @@ function addLink(selectedNode) {
 // we either update the data according to the selection
 // or reset the data if the same node is clicked twice
 export function selectNode(selectedNode) {
-    if (clickedNode === selectedNode) {
-        clickedNode = null;
-        changeColor = true;
-        resetData();
-        const cb = document.querySelector('#menuToggle');
-        cb.checked = false;
-    } else {
-        clickedNode = selectedNode;
-        nodes = [selectedNode];
-        links = [];
-        changeColor = true;
-        updateSimulation();
-        getInfoBox(selectedNode);
-    }
+    clickedNode = selectedNode;
+    nodes = [selectedNode];
+    links = [];
+    changeColor = true;
+    updateSimulation();
+    getInfoBox(selectedNode);
 }
 
 function getNeighborsSelected(){
@@ -168,7 +162,6 @@ function deleteLink() {
 
 function getInfoBox(selectedNode) {
     // Show info box
-    const cb = document.querySelector('#menuToggle');
     cb.checked = true;
     // Set info box data
     document.getElementById("nodeName").innerHTML = selectedNode.id;
@@ -219,33 +212,25 @@ export function selectSearchNodes(selectedNodes){
 
 export function selectLink(selectedLink) {
 
-    if (clickedLink === selectedLink) {
-        clickedLink = null;
-        resetData();
-        const cb = document.querySelector('#linkMenuToggle');
-        cb.checked = false;
-    } else {
-        clickedLink = selectedLink;
-        links = [selectedLink];
-        nodes = [selectedLink.source, selectedLink.target];
-        updateSimulation();
-        // Show info box
-        const cb = document.querySelector('#linkMenuToggle');
-        cb.checked = true;
-        // Set info box data
-        document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
+    clickedLink = selectedLink;
+    links = [selectedLink];
+    nodes = [selectedLink.source, selectedLink.target];
+    updateSimulation();
+    // Show info box
+    cbl.checked = true;
+    // Set info box data
+    document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
 
-        let newLinks = [];
-        selectedLink.functions.forEach(l => {
-            newLinks.push(l);
-        });
-        newLinks = newLinks.map((data) => {
-            data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
-                + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '<br></li>';
-            return data;
-        });
-        connections.innerHTML = newLinks.join('');
-    }
+    let newLinks = [];
+    selectedLink.functions.forEach(l => {
+        newLinks.push(l);
+    });
+    newLinks = newLinks.map((data) => {
+        data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
+            + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '<br></li>';
+        return data;
+    });
+    connections.innerHTML = newLinks.join('');
 }
 
 function selectLinksExplicit(){
@@ -254,9 +239,13 @@ function selectLinksExplicit(){
     });
 }
 
-function closeBox(){
-    const cb = document.querySelector('#linkMenuToggle');
+function closeBox() {
     cb.checked = false;
+    resetData();
+}
+
+function closeLinkBox(){
+    cbl.checked = false;
     resetData();
 }
 
@@ -406,3 +395,4 @@ window.getNeighborsSelected = getNeighborsSelected;
 window.deleteNode = deleteNode;
 window.deleteLink = deleteLink;
 window.closeBox = closeBox;
+window.closeLinkBox = closeLinkBox;
