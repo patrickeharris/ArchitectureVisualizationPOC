@@ -32,7 +32,7 @@ var linkElements,
 svg.append("svg:defs").append("svg:marker")
     .attr("id", "arrow")
     .attr("viewBox", "0 -5 10 10")
-    .attr('refX', 30)//so that it comes towards the center.
+    .attr('refX', 17)//so that it comes towards the center.
     .attr("markerWidth", 5)
     .attr("markerHeight", 5)
     .attr("orient", "auto")
