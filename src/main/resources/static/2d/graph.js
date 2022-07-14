@@ -155,6 +155,7 @@ function deleteLink() {
         links = linksNew;
         allLinks = links;
         nodes = inputFile.nodes;
+        changeColor = true;
         updateSimulation();
         resetZoom();
     }
@@ -240,12 +241,14 @@ function selectLinksExplicit(){
 }
 
 function closeBox() {
-    cb.checked = false;
+    clickedNode = null;
+    hoveredNode = null;
     resetData();
 }
 
 function closeLinkBox(){
-    cbl.checked = false;
+    clickedNode = null;
+    hoveredNode = null;
     resetData();
 }
 

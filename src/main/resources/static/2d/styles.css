@@ -201,6 +201,9 @@ div.tooltip {
 #menuToggle{
     display: none;
 }
+#linkMenuToggle{
+    display: none;
+}
 
 .infobox{
     visibility: hidden;
@@ -218,6 +221,7 @@ div.tooltip {
     -webkit-transition: visibility 0s .4s, opacity .4s 0s;
     transition: visibility 0s .4s, opacity .4s 0s;
 }
+
 :checked + .infobox{
     visibility: visible;
     opacity: 1;
