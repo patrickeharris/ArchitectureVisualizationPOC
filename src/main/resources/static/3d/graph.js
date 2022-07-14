@@ -243,7 +243,7 @@ function linkClick() {
 
     Graph.cameraPosition(
         newPos, // new position
-        link, // lookAt ({ x, y, z })
+        selectedLink, // lookAt ({ x, y, z })
         2000  // ms transition duration
     );
     // Hide all other nodes

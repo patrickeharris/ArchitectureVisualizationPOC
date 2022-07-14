@@ -202,25 +202,33 @@ export function selectSearchNodes(selectedNodes){
 
 export function selectLink(selectedLink) {
 
-    links = [selectedLink];
-    nodes = [selectedLink.source, selectedLink.target];
-    updateSimulation();
-    // Show info box
-    const cb = document.querySelector('#linkMenuToggle');
-    cb.checked = true;
-    // Set info box data
-    document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
+    if (clickedLink === selectedLink) {
+        clickedLink = null;
+        resetData();
+        const cb = document.querySelector('#linkMenuToggle');
+        cb.checked = false;
+    } else {
+        clickedLink = selectedLink;
+        links = [selectedLink];
+        nodes = [selectedLink.source, selectedLink.target];
+        updateSimulation();
+        // Show info box
+        const cb = document.querySelector('#linkMenuToggle');
+        cb.checked = true;
+        // Set info box data
+        document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
 
-    let newLinks = [];
-    selectedLink.functions.forEach(l => {
-        newLinks.push(l);
-    });
-    newLinks = newLinks.map((data) => {
-        data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
-            + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '<br></li>';
-        return data;
-    });
-    connections.innerHTML = newLinks.join('');
+        let newLinks = [];
+        selectedLink.functions.forEach(l => {
+            newLinks.push(l);
+        });
+        newLinks = newLinks.map((data) => {
+            data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
+                + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '<br></li>';
+            return data;
+        });
+        connections.innerHTML = newLinks.join('');
+    }
 }
 
 function selectLinksExplicit(){
@@ -251,7 +259,7 @@ function hoverNode(selectedNode){
 }
 
 function hoverLink(selectedLink) {
-    hoveredLink = selectedLink;
+    hoveredLink = selectedLink
     changeLinkColor = true;
     updateSimulation();
 }
@@ -280,7 +288,7 @@ function updateGraph() {
     let linkEnter = linkElements
         .enter().append( "path" )//append path
         .attr( "class", "link" )
-        .attr('stroke-width', 1)
+        .attr('stroke-width', 3)
         .attr('stroke', 'rgba(50, 50, 50, 0.2)')
         .attr('marker-end', (d) => "url(#arrow)")//attach the arrow from defs
         .on('click', function (e, link) {
@@ -344,14 +352,13 @@ export function updateSimulation() {
                 return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode);
             });
             linkElements.attr('stroke', function(link){
-                return getLinkColor(link, hoveredNode);
+                return getLinkColor(link, hoveredNode, null);
             });
         }
         if (changeLinkColor) {
-            changeLinkColor = false;
-            linkElements.attr('stroke', function(link) {
-                return 'pink';
-            })
+            linkElements.attr('stroke', function(link){
+                return getLinkColor(link, hoveredNode, hoveredLink);
+            });
         }
         nodeElements
             .attr('cx', function (node) { return node.x })

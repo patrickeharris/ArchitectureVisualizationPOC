@@ -150,7 +150,7 @@
       ]
     },
 
-    {"source": "ts-cancel-service",  "strength": 0.1, "target": "ts-order-other-service", "httpVerb": "PUT",
+    {"source": "ts-cancel-service",  "strength": 0.1, "target": "ts-order-other-service",
       "functions": [
         { "functionType": "PUT",
           "arguments":  "@RequestBody Order orderInfo, @RequestHeader HttpHeaders headers",
