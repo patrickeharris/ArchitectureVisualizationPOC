@@ -1,0 +1,360 @@
+{"nodes": [
+  {
+    "id": "Customer-cluter",
+    "group": 4,
+    "nodeType": "cluster",
+    "nodeID": 0,
+    "dependencies": [
+    ]
+  },
+  {
+    "id": "Insights-archive",
+    "group": 4,
+    "nodeType": "archive",
+    "nodeID": 1,
+    "dependencies": [
+      {
+        "nodeID": 0
+      }
+    ]
+  },
+  {
+    "id": "Ingress-service",
+    "group": 4,
+    "nodeType": "service",
+    "nodeID": 2,
+    "dependencies": [
+      {
+        "nodeID": 1
+      }
+    ]
+  },
+  {
+    "id": "Kafka-topic-platform.upload.buckit",
+    "group": 4,
+    "nodeType": "kafka",
+    "nodeID": 3,
+    "dependencies": [
+      {
+        "nodeID": 2
+      }
+    ]
+  },
+  {
+    "id": "SHA-extractor",
+    "group": 4,
+    "nodeType": "extractor",
+    "nodeID": 4,
+    "dependencies": [
+      {
+        "nodeID": 2
+      },
+      {
+        "nodeID": 7
+      }
+    ]
+  },
+  {
+    "id": "ccx-data-pipeline",
+    "group": 4,
+    "nodeType": "pipeline",
+    "nodeID": 5,
+    "dependencies": [
+      {
+        "nodeID": 3
+      }
+    ]
+  },
+  {
+    "id": "Insights-storage-broker",
+    "group": 4,
+    "nodeType": "storage-broker",
+    "nodeID": 6,
+    "dependencies": [
+      {
+        "nodeID": 3
+      }
+    ]
+  },
+  {
+    "id": "S3-bucket",
+    "group": 4,
+    "nodeType": "bucket",
+    "nodeID": 7,
+    "dependencies": [
+      {
+        "nodeID": 6
+      }
+    ]
+  },
+  {
+    "id": "Kafka-topic-ccx.ocp.results",
+    "group": 4,
+    "nodeType": "kafka",
+    "nodeID": 8,
+    "dependencies": [
+      {
+        "nodeID": 5
+      }
+    ]
+  },
+  {
+    "id": "Insights-results-db-writer",
+    "group": 4,
+    "nodeType": "writer",
+    "nodeID": 9,
+    "dependencies": [
+      {
+        "nodeID": 8
+      }
+    ]
+  },
+  {
+    "id": "AWS-RDS-DB",
+    "group": 4,
+    "nodeType": "database",
+    "nodeID": 10,
+    "dependencies": [
+      {
+        "nodeID": 9
+      },
+      {
+        "nodeID": 11
+      }
+    ]
+  },
+  {
+    "id": "Insights-results-aggregator",
+    "group": 4,
+    "nodeType": "aggregator",
+    "nodeID": 11,
+    "dependencies": [
+      {
+        "nodeID": 10
+      },
+      {
+        "nodeID": 12
+      }
+    ]
+  },
+  {
+    "id": "ccx-smart-proxy",
+    "group": 4,
+    "nodeType": "proxy",
+    "nodeID": 12,
+    "dependencies": [
+      {
+        "nodeID": 11
+      },
+      {
+        "nodeID": 13
+      },
+      {
+        "nodeID": 14
+      },
+      {
+        "nodeID": 15
+      },
+      {
+        "nodeID": 17
+      }
+    ]
+  },
+  {
+    "id": "ccx-Insights-content-service",
+    "group": 4,
+    "nodeType": "service",
+    "nodeID": 13,
+    "dependencies": [
+    ]
+  },
+  {
+    "id": "AMS",
+    "group": 4,
+    "nodeType": "service",
+    "nodeID": 14,
+    "dependencies": [
+      {
+        "nodeID": 12
+      }
+    ]
+  },
+  {
+    "id": "API-v1",
+    "group": 4,
+    "nodeType": "API",
+    "nodeID": 15,
+    "dependencies": [
+      {
+        "nodeID": 12
+      },
+      {
+        "nodeID": 16
+      }
+    ]
+  },
+  {
+    "id": "REST-API-consumers",
+    "group": 4,
+    "nodeType": "API",
+    "nodeID": 16,
+    "dependencies": [
+      {
+        "nodeID": 15
+      }
+    ]
+  },
+  {
+    "id": "API-v2",
+    "group": 4,
+    "nodeType": "API",
+    "nodeID": 17,
+    "dependencies": [
+      {
+        "nodeID": 12
+      },
+      {
+        "nodeID": 18
+      }
+    ]
+  },
+  {
+    "id": "Insights-Advisor",
+    "group": 4,
+    "nodeType": "advisor",
+    "nodeID": 18,
+    "dependencies": [
+      {
+        "nodeID": 17
+      }
+    ]
+  },
+  {
+    "id": "notification-writer",
+    "group": 4,
+    "nodeType": "writer",
+    "nodeID": 19,
+    "dependencies": [
+      {
+        "nodeID": 8
+      }
+    ]
+  },
+  {
+    "id": "Notification-DB",
+    "group": 4,
+    "nodeType": "database",
+    "nodeID": 20,
+    "dependencies": [
+      {
+        "nodeID": 19
+      }
+    ]
+  },
+  {
+    "id": "Notification-rules",
+    "group": 4,
+    "nodeType": "rules",
+    "nodeID": 21,
+    "dependencies": [
+    ]
+  },
+  {
+    "id": "ccx-notification-service",
+    "group": 4,
+    "nodeType": "service",
+    "nodeID": 22,
+    "dependencies": [
+      {
+        "nodeID": 20
+      }
+    ]
+  },
+  {
+    "id": "Kafka-topic-platform.notifications.ingress",
+    "group": 4,
+    "nodeType": "service",
+    "nodeID": 23,
+    "dependencies": [
+      {
+        "nodeID": 22
+      }
+    ]
+  },
+  {
+    "id": "Customer",
+    "group": 4,
+    "nodeType": "customer",
+    "nodeID": 24,
+    "dependencies": [
+    ]
+  },
+  {
+    "id": "Kafka-topic-archive-results",
+    "group": 4,
+    "nodeType": "kafka",
+    "nodeID": 25,
+    "dependencies": [
+      {
+        "nodeID": 4
+      }
+    ]
+  },
+  {
+    "id": "archive-db-writer",
+    "group": 4,
+    "nodeType": "writer",
+    "nodeID": 26,
+    "dependencies": [
+      {
+        "nodeID": 25
+      }
+    ]
+  },
+  {
+    "id": "CVEs-database",
+    "group": 4,
+    "nodeType": "database",
+    "nodeID": 27,
+    "dependencies": [
+      {
+        "nodeID": 26
+      }
+    ]
+  }
+],
+  "links":[
+    {"source":"Insights-archive", "strength": 0.1, "target":"Customer-cluter"},
+    {"source":"Ingress-service", "strength": 0.1, "target":"Insights-archive"},
+    {"source":"Kafka-topic-platform.upload.buckit", "strength": 0.1, "target":"Ingress-service"},
+    {"source":"SHA-extractor", "strength": 0.1, "target":"Ingress-service"},
+    {"source":"SHA-extractor", "strength": 0.1, "target":"S3-bucket"},
+    {"source":"ccx-data-pipeline", "strength": 0.1, "target":"Kafka-topic-platform.upload.buckit"},
+    {"source":"Insights-storage-broker", "strength": 0.1, "target":"Kafka-topic-platform.upload.buckit"},
+    {"source":"S3-bucket", "strength": 0.1, "target":"Insights-storage-broker"},
+    {"source":"Kafka-topic-ccx.ocp.results", "strength": 0.1, "target":"ccx-data-pipeline"},
+    {"source":"Insights-results-db-writer", "strength": 0.1, "target":"Kafka-topic-ccx.ocp.results"},
+    {"source":"AWS-RDS-DB", "strength": 0.1, "target":"Insights-results-db-writer"},
+    {"source":"AWS-RDS-DB", "strength": 0.1, "target":"Insights-results-aggregator"},
+    {"source":"Insights-results-aggregator", "strength": 0.1, "target":"AWS-RDS-DB"},
+    {"source":"Insights-results-aggregator", "strength": 0.1, "target":"ccx-smart-proxy"},
+    {"source":"ccx-smart-proxy", "strength": 0.1, "target":"Insights-results-aggregator"},
+    {"source":"ccx-smart-proxy", "strength": 0.1, "target":"ccx-Insights-content-service"},
+    {"source":"ccx-smart-proxy", "strength": 0.1, "target":"AMS"},
+    {"source":"ccx-smart-proxy", "strength": 0.1, "target":"API-v1"},
+    {"source":"ccx-smart-proxy", "strength": 0.1, "target":"API-v2"},
+    {"source":"AMS", "strength": 0.1, "target":"ccx-smart-proxy"},
+    {"source":"API-v1", "strength": 0.1, "target":"ccx-smart-proxy"},
+    {"source":"API-v1", "strength": 0.1, "target":"REST-API-consumers"},
+    {"source":"REST-API-consumers", "strength": 0.1, "target":"API-v1"},
+    {"source":"API-v2", "strength": 0.1, "target":"ccx-smart-proxy"},
+    {"source":"API-v2", "strength": 0.1, "target":"Insights-Advisor"},
+    {"source":"Insights-Advisor", "strength": 0.1, "target":"API-v2"},
+    {"source":"notification-writer", "strength": 0.1, "target":"Kafka-topic-ccx.ocp.results"},
+    {"source":"Notification-DB", "strength": 0.1, "target":"notification-writer"},
+    {"source":"ccx-notification-service", "strength": 0.1, "target":"Notification-DB"},
+    {"source":"Kafka-topic-platform.notifications.ingress", "strength": 0.1, "target":"ccx-notification-service"},
+    {"source":"Kafka-topic-archive-results", "strength": 0.1, "target":"SHA-extractor"},
+    {"source":"archive-db-writer", "strength": 0.1, "target":"Kafka-topic-archive-results"},
+    {"source":"CVEs-database", "strength": 0.1, "target":"archive-db-writer"}]
+}
