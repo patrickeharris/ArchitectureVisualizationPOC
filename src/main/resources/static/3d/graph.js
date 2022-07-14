@@ -279,7 +279,6 @@ function deleteNode() {
                 nodesNew.push(node);
             }
         })
-        visibleNodes = nodesNew;
         nodes = nodesNew;
         links.filter((data)=>{
            if(nodes.includes(data.source) && nodes.includes(data.target)) {
@@ -295,15 +294,21 @@ function deleteNode() {
 }
 
 function deleteLink() {
+    let {nodes, links} = Graph.graphData();
     let linksNew = [];
     if (window.confirm("Are you sure you want to delete this link?")) {
-        allLinks.forEach((link) => {
+        links.forEach((link) => {
             if (link !== selectedLink) {
                 linksNew.push(link);
             }
         });
-        allLinks = linksNew;
+        Graph.graphData({
+            nodes: nodes,
+            links: linksNew
+        })
         updateSimulation();
+        closeBox();
+        resetView();
     }
 }
 

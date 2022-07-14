@@ -13,6 +13,7 @@ const connections = document.querySelector(".connections");
 
 let nodes = [...inputFile.nodes];
 let links = [...inputFile.links];
+let allLinks = [...inputFile.links];
 let changeColor = true;
 let changeLinkColor = true;
 let clickedNode = null;
@@ -146,6 +147,22 @@ function deleteNode(){
         links = visibleLinks;
         nodes = visibleNodes;
         updateSimulation();
+    }
+}
+
+function deleteLink() {
+    let linksNew = [];
+    if (window.confirm("Are you sure you want to delete this link?")) {
+        allLinks.forEach((link) => {
+            if (link !== clickedLink) {
+                linksNew.push(link);
+            }
+        });
+        links = linksNew;
+        allLinks = links;
+        nodes = inputFile.nodes;
+        updateSimulation();
+        resetZoom();
     }
 }
 
@@ -375,7 +392,7 @@ export function updateSimulation() {
     });
 
     simulation.force('link').links(links);
-    simulation.alphaTarget(0.7).restart();
+    simulation.alphaTarget(0.3).restart();
 }
 
 // last but not least, we call updateSimulation
@@ -387,4 +404,5 @@ window.resetZoom=resetZoom;
 window.center=center;
 window.getNeighborsSelected = getNeighborsSelected;
 window.deleteNode = deleteNode;
+window.deleteLink = deleteLink;
 window.closeBox = closeBox;
