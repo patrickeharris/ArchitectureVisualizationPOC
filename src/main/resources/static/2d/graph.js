@@ -98,7 +98,7 @@ function addNode() {
 
 }
 
-function addLink(selectedNode) {
+function addLink() {
 
 }
 
@@ -384,7 +384,7 @@ export function updateSimulation() {
     });
 
     simulation.force('link').links(links);
-    simulation.alphaTarget(0.3).restart();
+    simulation.alphaTarget(0).restart();
 }
 
 // last but not least, we call updateSimulation
@@ -399,3 +399,4 @@ window.deleteNode = deleteNode;
 window.deleteLink = deleteLink;
 window.closeBox = closeBox;
 window.closeLinkBox = closeLinkBox;
+window.addLink = addLink;

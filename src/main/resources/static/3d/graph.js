@@ -270,6 +270,10 @@ function linkClick() {
     connections.innerHTML = newLinks.join('');
 }
 
+function addLink() {
+
+}
+
 function deleteNode() {
     let { nodes, links } = Graph.graphData();
     let nodesNew = [];
@@ -541,3 +545,4 @@ window.importGraph = importGraph;
 window.exportGraph = exportGraph;
 window.deleteLink = deleteLink;
 window.deleteNode = deleteNode;
+window.addLink = addLink;
