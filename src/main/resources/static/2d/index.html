@@ -5,6 +5,18 @@
 <script type="module" src="graph.js"></script>
 <script src="https://kit.fontawesome.com/31ba8b7d44.js" crossorigin="anonymous"></script>
 
+<ul class="hList">
+    <li>
+        <a class="menu">
+            <h2 class="menu-title menu-title_2nd">theme</h2>
+            <ul class="menu-dropdown">
+                <li onclick="lightMode()">Light</li>
+                <li onclick="darkMode()">Dark</li>
+            </ul>
+        </a>
+    </li>
+</ul>
+
 <div class="center">
 <div class="search-box">
     <input type="text" placeholder="what are you looking for?">
@@ -14,6 +26,7 @@
     </div>
 </div>
 </div>
+
 <div class="btn-group">
     <button id="zoom_in" class="button" onclick="zoomIn()">Zoom in</button>
     <button class="button" onclick="zoomOut()">Zoom out</button>

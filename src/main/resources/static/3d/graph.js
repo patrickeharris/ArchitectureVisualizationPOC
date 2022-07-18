@@ -16,6 +16,7 @@ let visibleNodes = [];
 let initX = null;
 let initY = null;
 let initZ = null;
+let defLinkColor = null;
 // HTML elements
 const searchWrapper = document.querySelector(".search-box");
 const inputBox = searchWrapper.querySelector("input");
@@ -445,6 +446,18 @@ function exportToJsonFile(jsonData) {
     linkElement.click();
 }
 
+function lightTheme(){
+    Graph.backgroundColor("#FFFFFF");
+    Graph.linkColor(() => "#000000");
+    document.querySelector(".scene-tooltip").classList.add("active");
+}
+
+function darkTheme(){
+    Graph.backgroundColor("#000000");
+    Graph.linkColor(defLinkColor);
+    document.querySelector(".scene-tooltip").classList.remove("active");
+}
+
 var a, downloads = 0;
 
 function download(){
@@ -520,6 +533,8 @@ delay(150).then(() => {
     initY = y;
     initZ = z;
 
+    defLinkColor = Graph.linkColor();
+
     //importGraph();
 
     /* Export stuff:
@@ -540,3 +555,5 @@ window.importGraph = importGraph;
 window.exportGraph = exportGraph;
 window.deleteLink = deleteLink;
 window.deleteNode = deleteNode;
+window.lightTheme = lightTheme;
+window.darkTheme = darkTheme;

@@ -23,6 +23,19 @@
         <button class="button" onclick="exportGraph()">Export</button>
         <button class="button" onclick="importGraph()">Import</button>
     </div>
+
+    <ul class="hList">
+        <li>
+            <a class="menu">
+                <h2 class="menu-title menu-title_2nd">theme</h2>
+                <ul class="menu-dropdown">
+                    <li onclick="lightTheme()">Light</li>
+                    <li onclick="darkTheme()">Dark</li>
+                </ul>
+            </a>
+        </li>
+    </ul>
+
     <div id="graph"></div>
 </div>
 
@@ -108,6 +121,8 @@
         </div>
     </div>
 </div>
+
+<input id="textColor" type="checkbox">
 
 <script type="module" src="graph.js"></script>
 </body>

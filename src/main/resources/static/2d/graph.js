@@ -22,6 +22,7 @@ let clickedNode = null;
 let clickedLink = null;
 let hoveredNode = null;
 let hoveredLink = null;
+let theme = 0;
 let zoom = d3.zoom().scaleExtent([1 / 4, 8]).on("zoom", zoomController);
 let svg = d3.select('#graph').append("svg")
     .attr("width",  width)
@@ -285,6 +286,22 @@ function stopHoverLink(selectedLink) {
     updateSimulation();
 }
 
+function darkMode(){
+    document.body.style.backgroundColor = "black";
+    theme = 1;
+    d3.selectAll("marker").style("fill", "rgba(255,255,255,1)")
+    changeLinkColor = true;
+    updateSimulation();
+}
+
+function lightMode(){
+    document.body.style.backgroundColor = "white";
+    theme = 0;
+    d3.selectAll("marker").style("fill", "rgba(0,0,0,1)")
+    changeLinkColor = true;
+    updateSimulation();
+}
+
 function updateGraph() {
     // links
     linkElements = linkGroup.selectAll('path')
@@ -361,12 +378,12 @@ export function updateSimulation() {
                 return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode);
             });
             linkElements.attr('stroke', function(link){
-                return getLinkColor(link, hoveredNode, null);
+                return getLinkColor(link, hoveredNode, null, theme);
             });
         }
         if (changeLinkColor) {
             linkElements.attr('stroke', function(link){
-                return getLinkColor(link, hoveredNode, hoveredLink);
+                return getLinkColor(link, hoveredNode, hoveredLink, theme);
             });
         }
         nodeElements
@@ -384,7 +401,7 @@ export function updateSimulation() {
     });
 
     simulation.force('link').links(links);
-    simulation.alphaTarget(0.3).restart();
+    simulation.alphaTarget(0).restart();
 }
 
 // last but not least, we call updateSimulation
@@ -399,3 +416,5 @@ window.deleteNode = deleteNode;
 window.deleteLink = deleteLink;
 window.closeBox = closeBox;
 window.closeLinkBox = closeLinkBox;
+window.darkMode = darkMode;
+window.lightMode = lightMode;
