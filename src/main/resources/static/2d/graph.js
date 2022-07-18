@@ -12,6 +12,9 @@ const dependson = document.querySelector(".dependson");
 const connections = document.querySelector(".connections");
 const cb = document.querySelector("#menuToggle");
 const cbl = document.querySelector("#linkMenuToggle");
+const nodeForm = document.getElementById('addNode')
+const linkForm = document.getElementById('addLink');
+const functionForm = document.getElementById('addFunction');
 
 let nodes = [...inputFile.nodes];
 let links = [...inputFile.links];
@@ -99,7 +102,11 @@ function addNode() {
 
 }
 
-function addLink(selectedNode) {
+function addLink() {
+
+}
+
+function addFunction() {
 
 }
 
@@ -418,3 +425,6 @@ window.closeBox = closeBox;
 window.closeLinkBox = closeLinkBox;
 window.darkMode = darkMode;
 window.lightMode = lightMode;
+window.addNode = addNode;
+window.addLink = addLink;
+window.addFunction = addFunction;
