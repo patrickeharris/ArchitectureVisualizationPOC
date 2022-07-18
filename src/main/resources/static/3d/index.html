@@ -23,6 +23,10 @@
         <button class="button" onclick="exportGraph()">Export</button>
         <button class="button" onclick="importGraph()">Import</button>
     </div>
+    <div class="slider">
+        <input type="range" min="0" max="100" value="8"   oninput="updateSlider(this.value)">
+        <p id="rangeValue">8</p>
+    </div>
 
     <ul class="hList">
         <li>
@@ -35,7 +39,6 @@
             </a>
         </li>
     </ul>
-
     <div id="graph"></div>
 </div>
 
@@ -63,13 +66,13 @@
                     </li>
                 </ul>
             </li>
-            <li class="item" onclick="resetNodeColor(node)">
+            <li class="item" onclick="recolor()">
                 <i class="uil uil-link-alt"></i>
                 <span>Highlight Nodes</span>
             </li>
-            <li class="item">
+            <li class="item" onclick="track()">
                 <i class="uil uil-edit"></i>
-                <span>Send Data Ping</span>
+                <span>Track Node</span>
             </li>
             <li class="item" onclick="deleteNode()">
                 <i class="uil uil-trash-alt"></i>
@@ -119,6 +122,24 @@
         <div class="md-card-btns">
             <label for="linkMenuToggle" class="md-button" onclick="closeBox()">Close Box</label>
             <label for="linkMenuToggle" class="md-button" onclick="deleteLink()">Delete Link</label>
+        </div>
+    </div>
+</div>
+
+<div>
+    <input id="trackMenu" type="checkbox">
+    <div class="infobox md-card">
+        <div class="md-card-content">
+            <h2>Track Nodes</h2>
+            <ul class="connections">
+                <a href="" style="color:red" onclick="closeBox()">X</a>
+                <label for="trackMenu" class="md-button" onclick="closeBox()">Name1</label>
+                <a href="" style="color:red" onclick="closeBox()">X</a>
+                <label for="trackMenu" class="md-button" onclick="closeBox()">Name2</label>
+            </ul>
+        </div>
+        <div class="md-card-btns">
+            <label for="trackMenu" class="md-button" onclick="closeBox()">Close Box</label>
         </div>
     </div>
 </div>

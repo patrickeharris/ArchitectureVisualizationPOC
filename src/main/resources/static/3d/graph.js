@@ -1,4 +1,5 @@
 // Import for lighting
+//import {UnrealBloomPass} from '../libraries/UnrealBloomPassFixed.ts';
 import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
 import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
@@ -17,6 +18,7 @@ let initX = null;
 let initY = null;
 let initZ = null;
 let defLinkColor = null;
+let threshold = 8;
 // HTML elements
 const searchWrapper = document.querySelector(".search-box");
 const inputBox = searchWrapper.querySelector("input");
@@ -24,6 +26,8 @@ const suggBox = searchWrapper.querySelector(".autocom_box");
 const dependencies = document.querySelector(".dependencies");
 const connections = document.querySelector(".connections");
 const dependson = document.querySelector(".dependson");
+const trackMenu = document.querySelector("#trackMenu");
+const coupling = document.querySelector("#rangeValue");
 
 // Make graph
 const Graph = ForceGraph3D()
@@ -157,14 +161,20 @@ inputBox.onkeyup = (e)=>{
     }
 }
 
+function updateSlider(newVal){
+    coupling.innerText = newVal;
+    threshold = parseInt(newVal);
+    updateHighlight();
+}
+
 function getColor(node){
     let { nodes, links } = Graph.graphData();
     let numNeighbors = getNeighbors(node, links).length;
 
-    if(numNeighbors > 8){
+    if(numNeighbors > threshold){
         return 'rgb(255,0,0)';
     }
-    if(numNeighbors > 4){
+    if(numNeighbors > threshold/2){
         //node.color =
         return 'rgba(255,160,0)';
     }
@@ -463,6 +473,10 @@ function darkTheme(){
     document.querySelector(".scene-tooltip").classList.remove("active");
 }
 
+function track(){
+    trackMenu.checked = true;
+}
+
 var a, downloads = 0;
 
 function download(){
@@ -563,3 +577,5 @@ window.deleteNode = deleteNode;
 window.lightTheme = lightTheme;
 window.darkTheme = darkTheme;
 window.addLink = addLink;
+window.track = track;
+window.updateSlider = updateSlider;

@@ -463,6 +463,7 @@ div.tooltip {
     margin-right: 0;
     right: 30px;
     z-index: 80;
+    list-style: none;
 }
 
 .hList > * + * {
