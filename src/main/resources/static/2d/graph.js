@@ -17,9 +17,10 @@ const linkForm = document.getElementById('addLink');
 const functionForm = document.getElementById('addFunction');
 const coupling = document.querySelector("#rangeValue");
 
-let nodes = [...inputFile.nodes];
+export let nodes = [...inputFile.nodes];
 let links = [...inputFile.links];
 let allLinks = [...inputFile.links];
+let allNodes = [...inputFile.nodes];
 let changeColor = true;
 let changeLinkColor = true;
 let clickedNode = null;
@@ -126,8 +127,8 @@ export function selectNode(selectedNode) {
 }
 
 function getNeighborsSelected(){
-    nodes = getNeighbors(clickedNode, inputFile.links);
-    links = inputFile.links.filter(function (link) {
+    nodes = getNeighbors(clickedNode, allLinks);
+    links = allLinks.filter(function (link) {
         return link.target.id === clickedNode.id || link.source.id === clickedNode.id;
     });
     changeColor = true;
@@ -165,7 +166,7 @@ function deleteLink() {
         });
         links = linksNew;
         allLinks = links;
-        nodes = inputFile.nodes;
+        nodes = allNodes;
         changeColor = true;
         updateSimulation();
         resetZoom();
@@ -183,7 +184,7 @@ function getInfoBox(selectedNode) {
     let newLinks = [];
     let dependLinks = [];
 
-    inputFile.links.forEach(link => {
+    allLinks.forEach(link => {
         if (link.source === selectedNode) {
             found = true;
             newLinks.push(link);
@@ -246,7 +247,7 @@ export function selectLink(selectedLink) {
 }
 
 function selectLinksExplicit(){
-    links = inputFile.links.filter(function (link) {
+    links = allLinks.filter(function (link) {
         return nodes.includes(link.source) && nodes.includes(link.target);
     });
 }
@@ -267,8 +268,8 @@ function closeLinkBox(){
 // this helper simple adds all nodes and links
 // that are missing, to recreate the initial state
 export function resetData() {
-    nodes = inputFile.nodes;
-    links = inputFile.links;
+    nodes = allNodes;
+    links = allLinks;
     changeColor = true;
     updateSimulation();
 }
@@ -318,6 +319,54 @@ function updateSlider(newVal){
     threshold = parseInt(newVal);
     changeColor = true;
     updateSimulation();
+}
+
+function exportGraph(){
+    exportToJsonFile(nodes)
+}
+
+function exportToJsonFile(jsonData) {
+    let map1 = new Map();
+    map1.set("nodes", jsonData);
+    let map2 = new Map();
+    map2.set("links", links);
+    let dataStr = JSON.stringify(Object.assign({},Object.fromEntries(map1), Object.fromEntries(map2)));
+    //let dataStr2 = JSON.stringify(Graph.cameraPosition());
+    let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
+
+    let exportFileDefaultName = 'data-out.json';
+
+    let linkElement = document.createElement('a');
+    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('download', exportFileDefaultName);
+    linkElement.click();
+}
+
+function importGraph(){
+    var input = document.createElement('input');
+    input.type = 'file';
+
+    input.onchange = e => {
+        var file = e.target.files[0];
+
+        // setting up the reader
+        var reader = new FileReader();
+        reader.readAsText(file, 'UTF-8');
+
+        // here we tell the reader what to do when it's done reading...
+        reader.onload = readerEvent => {
+            var content = readerEvent.target.result; // this is the content!
+            var parsedData = JSON.parse(content);
+            nodes = [...parsedData.nodes];
+            links = [...parsedData.links];
+            allLinks = links;
+            allNodes = nodes;
+            changeColor = true;
+            updateSimulation();
+        }
+    }
+
+    input.click();
 }
 
 function updateGraph() {
@@ -390,10 +439,10 @@ export function updateSimulation() {
         if(changeColor){
             changeColor = false;
             nodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode, threshold);
+                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
             });
             textElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode, threshold);
+                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
             });
             linkElements.attr('stroke', function(link){
                 return getLinkColor(link, hoveredNode, null, theme);
@@ -440,3 +489,5 @@ window.addNode = addNode;
 window.addLink = addLink;
 window.addFunction = addFunction;
 window.updateSlider = updateSlider;
+window.exportGraph = exportGraph;
+window.importGraph = importGraph;

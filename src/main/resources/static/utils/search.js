@@ -1,11 +1,11 @@
-import nodes from "../data/nodes.js";
-import {resetData, selectSearchNodes, selectNode} from "../2d/graph.js";
+import {resetData, selectSearchNodes, selectNode, nodes} from "../2d/graph.js";
 
 const searchWrapper = document.querySelector(".search-box")
 const inputBox = searchWrapper.querySelector("input")
 const suggBox = searchWrapper.querySelector(".autocom_box")
 
 inputBox.onkeyup = (e)=>{
+    resetData();
     let userData = e.target.value;
     let emptyArray = [];
     if (userData){
