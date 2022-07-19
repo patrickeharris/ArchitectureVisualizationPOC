@@ -4,7 +4,8 @@ import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postpr
 import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
 import rightClick from "../utils/rightClick.js";
-import {updateSimulation} from "../2d/graph.js";
+import {CustomSinCurve} from "../utils/CustomSinCurve.js";
+//import {updateSimulation} from "../2d/graph.js";
 
 // Data Abstraction
 let allLinks = null;
@@ -38,13 +39,12 @@ const Graph = ForceGraph3D()
     .nodeThreeObject((node) =>
         new THREE.Mesh(
             [
+                new THREE.SphereGeometry(5),
                 new THREE.BoxGeometry(10, 10, 10),
                 new THREE.ConeGeometry(5, 10),
                 new THREE.CylinderGeometry(5, 5, 10),
-                new THREE.DodecahedronGeometry(5),
-                new THREE.SphereGeometry(5),
-                new THREE.TorusGeometry(5, 1),
-                new THREE.TorusKnotGeometry(5, 1)][node.group % 7],
+                new THREE.TubeGeometry( new CustomSinCurve( 10 ), 5, 2, 8, false ),
+                new THREE.OctahedronGeometry(5)][getShape(node.nodeType)],
             new THREE.MeshLambertMaterial({
                 // Setup colors
                 color: highlightNodes.has(node) ? node === hoverNode ? 'rgb(50,50,200)' : 'rgba(0,200,200)' : getColor(node),
@@ -163,6 +163,30 @@ inputBox.onkeyup = (e)=>{
     }
 }
 
+function getShape(type){
+    if(type === "service"){
+        return 0;
+    }
+    else if(type === "processor"){
+        return 1;
+    }
+    else if(type === "handler"){
+        return 2;
+    }
+    else if(type === "storage"){
+        return 3;
+    }
+    else if(type === "interface"){
+        return 4;
+    }
+    else if(type === "configuration"){
+        return 5;
+    }
+    else{
+        return 0;
+    }
+}
+
 function updateSlider(newVal){
     coupling.innerText = newVal;
     threshold = parseInt(newVal);
@@ -273,9 +297,11 @@ function linkClick() {
     document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
 
     let newLinks = [];
-    selectedLink.functions.forEach(l => {
-        newLinks.push(l);
-    });
+    if(selectedLink.functions != null) {
+        selectedLink.functions.forEach(l => {
+            newLinks.push(l);
+        });
+    }
     newLinks = newLinks.map((data) => {
         data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
             + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '</li>';
@@ -308,7 +334,7 @@ function deleteNode() {
             nodes: nodesNew,
             links: newLinks
         });
-        updateSimulation();
+        //updateSimulation();
     }
 }
 
@@ -325,7 +351,7 @@ function deleteLink() {
             nodes: nodes,
             links: linksNew
         })
-        updateSimulation();
+        //updateSimulation();
         closeBox();
     } else {
         closeBox();
