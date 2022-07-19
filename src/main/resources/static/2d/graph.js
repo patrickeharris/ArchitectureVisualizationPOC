@@ -122,6 +122,7 @@ export function selectNode(selectedNode) {
     changeColor = true;
     updateSimulation();
     getInfoBox(selectedNode);
+    svg.transition().call(zoom.translateTo, selectedNode.x, selectedNode.y);
 }
 
 function getNeighborsSelected(){
@@ -253,6 +254,7 @@ function selectLinksExplicit(){
 function closeBox() {
     clickedNode = null;
     hoveredNode = null;
+    center();
     resetData();
 }
 
