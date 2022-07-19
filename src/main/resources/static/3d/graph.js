@@ -19,6 +19,8 @@ let initY = null;
 let initZ = null;
 let defLinkColor = null;
 let threshold = 8;
+let highlighted = false;
+let bloomPass = new UnrealBloomPass();
 // HTML elements
 const searchWrapper = document.querySelector(".search-box");
 const inputBox = searchWrapper.querySelector("input");
@@ -52,7 +54,7 @@ const Graph = ForceGraph3D()
         ))
     .nodeThreeObjectExtend(false)
     // Get data
-    .jsonUrl('../data/pipeline.json')
+    .jsonUrl('../data/train_ticket_new.json')
     // JSON column for node names
     .nodeLabel('id')
     // Setup link width
@@ -341,13 +343,19 @@ function select(element){
 }
 
 function recolor(){
-    // Create bloom
-    const bloomPass = new UnrealBloomPass();
-    bloomPass.strength = 3;
-    bloomPass.radius = 1;
-    bloomPass.threshold = 0.1;
-    // Add bloom to graph
-    Graph.postProcessingComposer().addPass(bloomPass);
+    if(!highlighted) {
+        highlighted = true;
+        // Create bloom
+        bloomPass.strength = 3;
+        bloomPass.radius = 1;
+        bloomPass.threshold = 0.1;
+        // Add bloom to graph
+        Graph.postProcessingComposer().addPass(bloomPass);
+    }
+    else{
+        highlighted = false;
+        Graph.postProcessingComposer().removePass(bloomPass);
+    }
 }
 
 function showSuggestions(list){
