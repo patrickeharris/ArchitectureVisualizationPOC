@@ -15,6 +15,7 @@ const cbl = document.querySelector("#linkMenuToggle");
 const nodeForm = document.getElementById('addNode')
 const linkForm = document.getElementById('addLink');
 const functionForm = document.getElementById('addFunction');
+const coupling = document.querySelector("#rangeValue");
 
 let nodes = [...inputFile.nodes];
 let links = [...inputFile.links];
@@ -26,6 +27,7 @@ let clickedLink = null;
 let hoveredNode = null;
 let hoveredLink = null;
 let theme = 0;
+let threshold = 8;
 let zoom = d3.zoom().scaleExtent([1 / 4, 8]).on("zoom", zoomController);
 let svg = d3.select('#graph').append("svg")
     .attr("width",  width)
@@ -309,6 +311,13 @@ function lightMode(){
     updateSimulation();
 }
 
+function updateSlider(newVal){
+    coupling.innerText = newVal;
+    threshold = parseInt(newVal);
+    changeColor = true;
+    updateSimulation();
+}
+
 function updateGraph() {
     // links
     linkElements = linkGroup.selectAll('path')
@@ -379,10 +388,10 @@ export function updateSimulation() {
         if(changeColor){
             changeColor = false;
             nodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode);
+                return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode, threshold);
             });
             textElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode);
+                return getNodeColor(node, getNeighbors(node, inputFile.links), clickedNode, hoveredNode, threshold);
             });
             linkElements.attr('stroke', function(link){
                 return getLinkColor(link, hoveredNode, null, theme);
@@ -428,3 +437,4 @@ window.lightMode = lightMode;
 window.addNode = addNode;
 window.addLink = addLink;
 window.addFunction = addFunction;
+window.updateSlider = updateSlider;

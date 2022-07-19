@@ -52,7 +52,7 @@ const Graph = ForceGraph3D()
         ))
     .nodeThreeObjectExtend(false)
     // Get data
-    .jsonUrl('../data/train_ticket_new.json')
+    .jsonUrl('../data/pipeline.json')
     // JSON column for node names
     .nodeLabel('id')
     // Setup link width
@@ -464,12 +464,14 @@ function exportToJsonFile(jsonData) {
 function lightTheme(){
     Graph.backgroundColor("#FFFFFF");
     Graph.linkColor(() => "#000000");
+    Graph.linkDirectionalParticleColor(() => "#FFFFFF");
     document.querySelector(".scene-tooltip").classList.add("active");
 }
 
 function darkTheme(){
     Graph.backgroundColor("#000000");
     Graph.linkColor(defLinkColor);
+    Graph.linkDirectionalParticleColor(defLinkColor);
     document.querySelector(".scene-tooltip").classList.remove("active");
 }
 
