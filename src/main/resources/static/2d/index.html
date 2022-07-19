@@ -119,6 +119,7 @@
             </ul>
         </div>
         <div class="md-card-btns">
+            <label for="linkMenuToggle" class="md-button" onclick="addFunction()">Add Function</label>
             <label for="linkMenuToggle" class="md-button" onclick="deleteLink()">Delete Link</label>
             <label for="linkMenuToggle" class="md-button" onclick="closeLinkBox()">Close Box</label>
         </div>
@@ -152,6 +153,22 @@
         <input type="text" id="return" placeholder="Enter Return Type of Function" required>
         <button type="submit" class="btn">Add</button>
         <button type="button" class="btn cancel" onclick="closeLinkForm()">Cancel</button>
+    </form>
+</div>
+
+<div class="form-popup" id="addFunction">
+    <form action="/add_function_form" class="form-container">
+        <h1>Add Function</h1>
+        <label for="funcName"><b>Function Name</b></label>
+        <input type="text" id="funcName" placeholder="Enter Name of Function" required>
+        <label for="funcType"><b>Function Type</b></label>
+        <input type="text" id="funcType" placeholder="Enter Type of Function" required>
+        <label for="funcArgs"><b>Arguments</b></label>
+        <input type="text" id="funcArgs" placeholder="Enter Arguments of Function" required>
+        <label for="funcRet"><b>Return</b></label>
+        <input type="text" id="funcRet" placeholder="Enter Return Type of Function" required>
+        <button type="submit" class="btn">Add</button>
+        <button type="button" class="btn cancel" onclick="closeFuncForm()">Cancel</button>
     </form>
 </div>
 

@@ -16,6 +16,8 @@ const nodeForm = document.getElementById('addNode');
 nodeForm.style.display = 'none';
 const linkForm = document.getElementById('addLink');
 linkForm.style.display = 'none'
+const funcForm = document.getElementById('addFunction');
+funcForm.style.display = 'none'
 const coupling = document.querySelector("#rangeValue");
 
 export let nodes = [...inputFile.nodes];
@@ -103,20 +105,32 @@ function center() {
 }
 
 function addNode() {
-    nodeForm.style.display = 'block';
     nodeForm.addEventListener('submit', (event) => {
         event.preventDefault();
         let newId = event.target.elements.name.value;
-        let node = {
-            id: newId,
-            group: 1
+        let found = false;
+
+        allNodes.forEach(node => {
+            if (node.id === newId) {
+                found = true;
+            }
+        })
+
+        if (found) {
+            window.alert("That node already exists! Try again.");
+        } else {
+            let node = {
+                id: newId,
+                group: 1
+            }
+            allNodes.push(node);
+            nodes = allNodes;
+            changeColor = true;
+            updateSimulation();
+            closeNodeForm();
         }
-        allNodes.push(node);
-        nodes = allNodes;
-        changeColor = true;
-        updateSimulation();
-        closeNodeForm();
     });
+    nodeForm.style.display = 'block';
 }
 
 function closeNodeForm() {
@@ -128,34 +142,86 @@ function closeLinkForm() {
 }
 
 function addLink() {
-    linkForm.style.display = 'block';
     linkForm.addEventListener('submit', (event) => {
+
         event.preventDefault();
         let newTarget = event.target.elements.target.value;
-        let newType = event.target.elements.type.value;
-        let newName = event.target.elements.fName.value;
-        let newArgs = event.target.elements.args.value;
-        let newRet = event.target.elements.return.value;
-        let link = {
-            source: clickedNode,
-            target: newTarget,
-            functions: [
-                {   functionType: newType,
-                    arguments: newArgs,
-                    returnData: newRet,
-                    endpointName: newName }
-            ]
+        let foundNode = false;
+
+        allNodes.forEach(node => {
+            if (node.id === newTarget) {
+                foundNode = true;
+            }
+        })
+
+        if (!foundNode) {
+            window.alert("The target you selected is not currently a node in this graph. Try again.");
+        } else {
+            let found = false;
+            links.forEach(link => {
+                if (link.source.id === clickedNode.id && link.target.id === newTarget) {
+                    found = true;
+                }
+            })
+
+            if (found) {
+                window.alert("That link already exists! Try adding a new function instead.");
+            } else {
+                let newType = event.target.elements.type.value;
+                let newName = event.target.elements.fName.value;
+                let newArgs = event.target.elements.args.value;
+                let newRet = event.target.elements.return.value;
+                let link = {
+                    source: clickedNode,
+                    target: newTarget,
+                    functions: [
+                        {   functionType: newType,
+                            arguments: newArgs,
+                            returnData: newRet,
+                            endpointName: newName }
+                    ]
+                }
+                allLinks.push(link);
+                changeColor = true;
+                updateSimulation();
+                closeLinkForm();
+                resetZoom();
+            }
         }
-        allLinks.push(link);
-        links = allLinks;
-        changeColor = true;
-        updateSimulation();
-        closeLinkForm();
     })
+    linkForm.style.display = 'block';
 }
 
 function addFunction() {
+    funcForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        let name = event.target.elements.funcName.value;
+        let type = event.target.elements.funcType.value;
+        let args = event.target.elements.funcArgs.value;
+        let ret = event.target.elements.funcRet.value;
 
+        let f = {
+            functionType: type,
+            arguments: args,
+            returnData: ret,
+            endpointName: name
+        }
+
+        clickedLink.functions.push(f);
+        links.forEach(link => {
+            if (link.source === clickedLink.source && link.target === clickedLink.target) {
+                link = clickedLink;
+            }
+        })
+        updateSimulation();
+        resetZoom();
+        closeFuncForm();
+    })
+    funcForm.style.display = 'block'
+}
+
+function closeFuncForm() {
+    funcForm.style.display = 'none'
 }
 
 // select node is called on every click
@@ -554,3 +620,4 @@ window.exportGraph = exportGraph;
 window.importGraph = importGraph;
 window.closeNodeForm = closeNodeForm;
 window.closeLinkForm = closeLinkForm;
+window.closeFuncForm = closeFuncForm;
