@@ -200,6 +200,7 @@ div.tooltip {
     cursor: pointer;
     -webkit-transition: all .3s;
     transition: all .3s;
+    float: left;
 }
 .md-button:hover{
     background-color: rgba(0,0,0, .1);
