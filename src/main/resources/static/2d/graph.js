@@ -3,7 +3,7 @@ import getNodeColor from '../utils/getNodeColor.js';
 import getNeighbors from '../utils/getNeighbors.js';
 import rightClick from "../utils/rightClick.js";
 
-import inputFile from '../data/train_ticket_new.json' assert { type: "json" };
+import inputFile from '../data/pipeline.json' assert { type: "json" };
 
 const width = window.innerWidth;
 const height = window.innerHeight;
@@ -59,7 +59,7 @@ let textGroup = g.attr('class', 'texts');
 let linkForce = d3
     .forceLink()
     .id(function (link) { return link.id })
-    .strength(function (link) { return link.strength });
+    .strength(function (link) { return 0.1 });
 
 let simulation = d3
     .forceSimulation()

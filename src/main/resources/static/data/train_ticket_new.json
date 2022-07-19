@@ -1,81 +1,81 @@
 {
   "nodes": [
     {"id": "ts-admin-user-service",
-      "group": 1},
+      "nodeType": "service"},
     {"id": "ts-user-service",
-      "group": 2},
+      "nodeType": "service"},
     {"id": "ts-basic-service",
-      "group": 3},
+      "nodeType": "service"},
     {"id": "ts-ticketinfo-service",
-      "group": 4},
+      "nodeType": "service"},
     {"id": "ts-price-service",
-      "group": 5},
+      "nodeType": "service"},
     {"id": "ts-train-service",
-      "group": 6},
+      "nodeType": "service"},
     {"id": "ts-station-service",
-      "group": 7},
+      "nodeType": "service"},
     {"id": "ts-route-service",
-      "group": 0},
+      "nodeType": "service"},
     {"id": "ts-cancel-service",
-      "group": 1},
+      "nodeType": "service"},
     {"id": "ts-order-service",
-      "group": 2},
+      "nodeType": "service"},
     {"id": "ts-order-other-service",
-      "group": 3},
+      "nodeType": "service"},
     {"id": "ts-notification-service",
-      "group": 4},
+      "nodeType": "service"},
     {"id": "ts-inside-payment-service",
-      "group": 5},
+      "nodeType": "service"},
     {"id": "ts-travel2-service",
-      "group": 6},
+      "nodeType": "service"},
     {"id": "ts-preserve-other-service",
-      "group": 7},
+      "nodeType": "service"},
     {"id": "ts-admin-travel-service",
-      "group": 0},
+      "nodeType": "service"},
     {"id": "ts-route-plan-service",
-      "group": 1},
+      "nodeType": "service"},
     {"id": "ts-travel-plan-service",
-      "group": 2},
+      "nodeType": "service"},
     {"id": "ts-seat-service",
-      "group": 3},
+      "nodeType": "service"},
     {"id": "ts-admin-basic-info-service",
-      "group": 4},
+      "nodeType": "service"},
     {"id": "ts-preserve-service",
-      "group": 5},
+      "nodeType": "service"},
     {"id": "ts-food-service",
-      "group": 6},
+      "nodeType": "service"},
     {"id": "ts-assurance-service",
-      "group": 7},
+      "nodeType": "service"},
     {"id": "ts-auth-service",
-      "group": 0},
+      "nodeType": "service"},
     {"id": "ts-food-map-service",
-      "group": 1},
+      "nodeType": "service"},
     {"id": "ts-security-service",
-      "group": 2},
+      "nodeType": "service"},
     {"id": "ts-execute-service",
-      "group": 3},
+      "nodeType": "service"},
     {"id": "ts-admin-route-service",
-      "group": 4},
+      "nodeType": "service"},
     {"id": "ts-consign-service",
-      "group": 5},
+      "nodeType": "service"},
     {"id": "ts-config-service",
-      "group": 6},
+      "nodeType": "service"},
     {"id": "ts-contacts-service",
-      "group": 7},
+      "nodeType": "service"},
     {"id": "ts-payment-service",
-      "group": 0},
+      "nodeType": "service"},
     {"id": "ts-rebook-service",
-      "group": 1},
+      "nodeType": "service"},
     {"id": "ts-admin-order-service",
-      "group": 2},
+      "nodeType": "service"},
     {"id": "ts-verification-code-service",
-      "group": 4},
+      "nodeType": "service"},
     {"id": "ts-consign-price-service",
-      "group": 5},
-    {"id":  "ts-travel-service", "group":  5}
+      "nodeType": "service"},
+    {"id":  "ts-travel-service", "nodeType": "service"}
   ],
   "links": [
-    {"source": "ts-admin-user-service",  "strength": 0.1, "target": "ts-user-service",
+    {"source": "ts-admin-user-service",  "target": "ts-user-service",
       "functions": [
         { "functionType": "PUT",
           "arguments": "@RequestBody UserDto user, @RequestHeader HttpHeaders headers",
@@ -95,7 +95,7 @@
       ]
     },
 
-    {"source": "ts-basic-service",  "strength": 0.1, "target": "ts-price-service",
+    {"source": "ts-basic-service",  "target": "ts-price-service",
       "functions": [
         { "functionType": "GET",
           "arguments": "@PathVariable String routeId, @PathVariable String trainType, @RequestHeader HttpHeaders headers",
@@ -105,7 +105,7 @@
       ]
     },
 
-    {"source": "ts-basic-service",  "strength": 0.1, "target": "ts-train-service",
+    {"source": "ts-basic-service",  "target": "ts-train-service",
       "functions": [
         {"functionType": "GET",
          "arguments":  "@PathVariable String id, @RequestHeader HttpHeaders headers",
@@ -115,7 +115,7 @@
       ]
     },
 
-    {"source": "ts-basic-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-basic-service",  "target": "ts-station-service",
       "functions": [
         {"functionType": "GET",
          "arguments": "@PathVariable(value = #quot;stationNameForId#quot;) String stationName, @RequestHeader HttpHeaders headers",
@@ -125,7 +125,7 @@
       ]
     },
 
-    {"source": "ts-basic-service",  "strength": 0.1, "target": "ts-route-service",
+    {"source": "ts-basic-service",  "target": "ts-route-service",
       "functions": [
         {"functionType": "GET",
          "arguments":  "@PathVariable String routeId, @RequestHeader HttpHeaders headers",
@@ -135,7 +135,7 @@
       ]
     },
 
-    {"source": "ts-cancel-service",  "strength": 0.1, "target": "ts-order-service",
+    {"source": "ts-cancel-service",  "target": "ts-order-service",
       "functions": [
         { "functionType": "PUT",
           "arguments": "@RequestBody Order orderInfo, @RequestHeader HttpHeaders headers",
@@ -150,7 +150,7 @@
       ]
     },
 
-    {"source": "ts-cancel-service",  "strength": 0.1, "target": "ts-order-other-service",
+    {"source": "ts-cancel-service",  "target": "ts-order-other-service",
       "functions": [
         { "functionType": "PUT",
           "arguments":  "@RequestBody Order orderInfo, @RequestHeader HttpHeaders headers",
@@ -165,7 +165,7 @@
       ]
     },
 
-    {"source": "ts-cancel-service",  "strength": 0.1, "target": "ts-notification-service",
+    {"source": "ts-cancel-service",  "target": "ts-notification-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody NotifyInfo info, @RequestHeader HttpHeaders headers",
@@ -175,7 +175,7 @@
       ]
     },
 
-    {"source": "ts-cancel-service",  "strength": 0.1, "target": "ts-inside-payment-service",
+    {"source": "ts-cancel-service",  "target": "ts-inside-payment-service",
       "functions": [
         { "functionType": "GET",
           "arguments": "@PathVariable String userId, @PathVariable String money, @RequestHeader HttpHeaders headers",
@@ -185,7 +185,7 @@
       ]
     },
 
-    {"source": "ts-cancel-service",  "strength": 0.1, "target": "ts-user-service",
+    {"source": "ts-cancel-service",  "target": "ts-user-service",
       "functions": [
         { "functionType": "GET",
           "arguments": "@PathVariable String userId, @RequestHeader HttpHeaders headers",
@@ -195,7 +195,7 @@
       ]
     },
 
-    {"source": "ts-travel2-service",  "strength": 0.1, "target": "ts-ticketinfo-service",
+    {"source": "ts-travel2-service",  "target": "ts-ticketinfo-service",
       "functions": [
         {"functionType": "POST",
          "arguments":  "@RequestBody Travel info, @RequestHeader HttpHeaders headers",
@@ -210,7 +210,7 @@
       ]
     },
 
-    {"source": "ts-travel2-service",  "strength": 0.1, "target": "ts-seat-service",
+    {"source": "ts-travel2-service",  "target": "ts-seat-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Seat seatRequest, @RequestHeader HttpHeaders headers",
@@ -220,7 +220,7 @@
       ]
     },
 
-    {"source": "ts-travel2-service",  "strength": 0.1, "target": "ts-train-service",
+    {"source": "ts-travel2-service",  "target": "ts-train-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String id, @RequestHeader HttpHeaders headers",
@@ -230,7 +230,7 @@
       ]
     },
 
-    {"source": "ts-travel2-service",  "strength": 0.1, "target": "ts-route-service",
+    {"source": "ts-travel2-service",  "target": "ts-route-service",
       "functions": [
         { "functionType": "GET",
           "arguments": "@PathVariable String routeId, @RequestHeader HttpHeaders headers",
@@ -240,7 +240,7 @@
       ]
     },
 
-    {"source": "ts-travel2-service",  "strength": 0.1, "target": "ts-order-other-service",
+    {"source": "ts-travel2-service",  "target": "ts-order-other-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable Date travelDate, @PathVariable String trainNumber, @RequestHeader HttpHeaders headers",
@@ -250,7 +250,7 @@
       ]
     },
 
-    {"source": "ts-travel-service",  "strength": 0.1, "target": "ts-ticketinfo-service",
+    {"source": "ts-travel-service",  "target": "ts-ticketinfo-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Travel info, @RequestHeader HttpHeaders headers",
@@ -265,7 +265,7 @@
       ]
     },
 
-    {"source": "ts-travel-service",  "strength": 0.1, "target": "ts-seat-service",
+    {"source": "ts-travel-service",  "target": "ts-seat-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Seat seatRequest, @RequestHeader HttpHeaders headers",
@@ -275,7 +275,7 @@
       ]
     },
 
-    {"source": "ts-travel-service",  "strength": 0.1, "target": "ts-train-service",
+    {"source": "ts-travel-service",  "target": "ts-train-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String id, @RequestHeader HttpHeaders headers",
@@ -285,7 +285,7 @@
       ]
     },
 
-    {"source": "ts-travel-service",  "strength": 0.1, "target": "ts-route-service",
+    {"source": "ts-travel-service",  "target": "ts-route-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String routeId, @RequestHeader HttpHeaders headers",
@@ -295,7 +295,7 @@
       ]
     },
 
-    {"source": "ts-travel-service",  "strength": 0.1, "target": "ts-order-service",
+    {"source": "ts-travel-service",  "target": "ts-order-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable Date travelDate, @PathVariable String trainNumber, @RequestHeader HttpHeaders headers",
@@ -305,7 +305,7 @@
       ]
     },
 
-    {"source": "ts-auth-service",  "strength": 0.1, "target": "ts-verification-code-service",
+    {"source": "ts-auth-service",  "target": "ts-verification-code-service",
       "functions": [
         { "functionType": "GET",
           "arguments": "@PathVariable String verifyCode, HttpServletRequest request, HttpServletResponse response, @RequestHeader HttpHeaders headers",
@@ -315,7 +315,7 @@
       ]
     },
 
-    {"source": "ts-admin-basic-info-service",  "strength": 0.1, "target": "ts-config-service",
+    {"source": "ts-admin-basic-info-service",  "target": "ts-config-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Config info, @RequestHeader HttpHeaders headers",
@@ -340,7 +340,7 @@
       ]
     },
 
-    {"source": "ts-admin-basic-info-service",  "strength": 0.1, "target": "ts-price-service",
+    {"source": "ts-admin-basic-info-service",  "target": "ts-price-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody PriceConfig info, @RequestHeader HttpHeaders headers",
@@ -365,7 +365,7 @@
       ]
     },
 
-    {"source": "ts-admin-basic-info-service",  "strength": 0.1, "target": "ts-train-service",
+    {"source": "ts-admin-basic-info-service",  "target": "ts-train-service",
       "functions": [
         { "functionType": "POST",
           "arguments": "@RequestBody TrainType trainType, @RequestHeader HttpHeaders headers",
@@ -390,7 +390,7 @@
       ]
     },
 
-    {"source": "ts-admin-basic-info-service",  "strength": 0.1, "target": "ts-contacts-service",
+    {"source": "ts-admin-basic-info-service",  "target": "ts-contacts-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Contacts aci, @RequestHeader HttpHeaders headers",
@@ -415,7 +415,7 @@
       ]
     },
 
-    {"source": "ts-admin-basic-info-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-admin-basic-info-service",  "target": "ts-station-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Station station, @RequestHeader HttpHeaders headers",
@@ -440,7 +440,7 @@
       ]
     },
 
-    {"source": "ts-security-service",  "strength": 0.1, "target": "ts-order-service",
+    {"source": "ts-security-service",  "target": "ts-order-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable Date checkDate, @PathVariable String accountId, @RequestHeader HttpHeaders headers",
@@ -450,7 +450,7 @@
       ]
     },
 
-    {"source": "ts-security-service",  "strength": 0.1, "target": "ts-order-other-service",
+    {"source": "ts-security-service",  "target": "ts-order-other-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable Date checkDate, @PathVariable String accountId, @RequestHeader HttpHeaders headers",
@@ -460,7 +460,7 @@
       ]
     },
 
-    {"source": "ts-user-service",  "strength": 0.1, "target": "ts-auth-service",
+    {"source": "ts-user-service",  "target": "ts-auth-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody AuthDto authDto",
@@ -470,7 +470,7 @@
       ]
     },
 
-    {"source": "ts-execute-service",  "strength": 0.1, "target": "ts-order-service",
+    {"source": "ts-execute-service",  "target": "ts-order-service",
       "functions": [
         { "functionType": "PUT",
           "arguments":  "@PathVariable String orderId, @PathVariable int status, @RequestHeader HttpHeaders headers",
@@ -485,7 +485,7 @@
       ]
     },
 
-    {"source": "ts-execute-service",  "strength": 0.1, "target": "ts-order-other-service",
+    {"source": "ts-execute-service",  "target": "ts-order-other-service",
       "functions": [
         { "functionType": "PUT",
           "arguments":  "@PathVariable String orderId, @PathVariable int status, @RequestHeader HttpHeaders headers",
@@ -500,7 +500,7 @@
       ]
     },
 
-    {"source": "ts-ticketinfo-service",  "strength": 0.1, "target": "ts-basic-service",
+    {"source": "ts-ticketinfo-service",  "target": "ts-basic-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Travel info, @RequestHeader HttpHeaders headers",
@@ -515,7 +515,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-travel2-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-travel2-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody TripAllDetailInfo gtdi, @RequestHeader HttpHeaders headers",
@@ -525,7 +525,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-ticketinfo-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-ticketinfo-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Travel info, @RequestHeader HttpHeaders headers",
@@ -535,7 +535,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-food-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-food-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody FoodOrder addFoodOrder, @RequestHeader HttpHeaders headers",
@@ -545,7 +545,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-seat-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-seat-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Seat seatRequest, @RequestHeader HttpHeaders headers",
@@ -555,7 +555,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-consign-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-consign-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Consign request, @RequestHeader HttpHeaders headers",
@@ -565,7 +565,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-notification-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-notification-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody NotifyInfo info, @RequestHeader HttpHeaders headers",
@@ -575,7 +575,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-order-other-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-order-other-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Order createOrder, @RequestHeader HttpHeaders headers",
@@ -585,7 +585,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-assurance-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-assurance-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable int typeIndex, @PathVariable String orderId, @RequestHeader HttpHeaders headers",
@@ -595,7 +595,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-contacts-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-contacts-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String id, @RequestHeader HttpHeaders headers",
@@ -605,7 +605,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-station-service",
       "functions": [
         { "functionType": "GET",
           "arguments": "@PathVariable(value = #quot;stationNameForId#quot;) String stationName, @RequestHeader HttpHeaders headers",
@@ -615,7 +615,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-security-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-security-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String accountId, @RequestHeader HttpHeaders headers",
@@ -625,7 +625,7 @@
       ]
     },
 
-    {"source": "ts-preserve-other-service",  "strength": 0.1, "target": "ts-user-service",
+    {"source": "ts-preserve-other-service",  "target": "ts-user-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String userId, @RequestHeader HttpHeaders headers",
@@ -635,7 +635,7 @@
       ]
     },
 
-    {"source": "ts-admin-travel-service",  "strength": 0.1, "target": "ts-travel2-service",
+    {"source": "ts-admin-travel-service",  "target": "ts-travel2-service",
       "functions": [
         { "functionType": "PUT",
           "arguments": "@RequestBody TravelInfo info, @RequestHeader HttpHeaders headers",
@@ -660,7 +660,7 @@
       ]
     },
 
-    {"source": "ts-admin-travel-service",  "strength": 0.1, "target": "ts-travel-service",
+    {"source": "ts-admin-travel-service",  "target": "ts-travel-service",
       "functions": [
         { "functionType": "PUT",
           "arguments":  "@RequestBody TravelInfo info, @RequestHeader HttpHeaders headers",
@@ -685,7 +685,7 @@
       ]
     },
 
-    {"source": "ts-admin-route-service",  "strength": 0.1, "target": "ts-route-service",
+    {"source": "ts-admin-route-service",  "target": "ts-route-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody RouteInfo createAndModifyRouteInfo, @RequestHeader HttpHeaders headers",
@@ -705,7 +705,7 @@
       ]
     },
 
-    {"source": "ts-route-plan-service",  "strength": 0.1, "target": "ts-travel2-service",
+    {"source": "ts-route-plan-service",  "target": "ts-travel2-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody TripInfo info, @RequestHeader HttpHeaders headers",
@@ -720,7 +720,7 @@
       ]
     },
 
-    {"source": "ts-route-plan-service",  "strength": 0.1, "target": "ts-travel-service",
+    {"source": "ts-route-plan-service",  "target": "ts-travel-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody TripInfo info, @RequestHeader HttpHeaders headers",
@@ -735,7 +735,7 @@
       ]
     },
 
-    {"source": "ts-route-plan-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-route-plan-service",  "target": "ts-station-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable(value = #quot;stationNameForId#quot;) String stationName, @RequestHeader HttpHeaders headers",
@@ -745,7 +745,7 @@
       ]
     },
 
-    {"source": "ts-route-plan-service",  "strength": 0.1, "target": "ts-route-service",
+    {"source": "ts-route-plan-service",  "target": "ts-route-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@PathVariable String routeId, @RequestHeader HttpHeaders headers",
@@ -760,7 +760,7 @@
       ]
     },
 
-    {"source": "ts-order-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-order-service",  "target": "ts-station-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody List<String> stationIdList, @RequestHeader HttpHeaders headers",
@@ -770,7 +770,7 @@
       ]
     },
 
-    {"source": "ts-consign-service",  "strength": 0.1, "target": "ts-consign-price-service",
+    {"source": "ts-consign-service",  "target": "ts-consign-price-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String weight, @PathVariable String isWithinRegion, @RequestHeader HttpHeaders headers",
@@ -780,7 +780,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-ticketinfo-service",
+    {"source": "ts-preserve-service",  "target": "ts-ticketinfo-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Travel info, @RequestHeader HttpHeaders headers",
@@ -790,7 +790,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-travel-service",
+    {"source": "ts-preserve-service",  "target": "ts-travel-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@RequestBody TripAllDetailInfo gtdi, @RequestHeader HttpHeaders headers",
@@ -800,7 +800,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-seat-service",
+    {"source": "ts-preserve-service",  "target": "ts-seat-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Seat seatRequest, @RequestHeader HttpHeaders headers",
@@ -810,7 +810,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-food-service",
+    {"source": "ts-preserve-service",  "target": "ts-food-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody FoodOrder addFoodOrder, @RequestHeader HttpHeaders headers",
@@ -820,7 +820,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-order-service",
+    {"source": "ts-preserve-service",  "target": "ts-order-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Order createOrder, @RequestHeader HttpHeaders headers",
@@ -830,7 +830,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-consign-service",
+    {"source": "ts-preserve-service",  "target": "ts-consign-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Consign request, @RequestHeader HttpHeaders headers",
@@ -840,7 +840,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-notification-service",
+    {"source": "ts-preserve-service",  "target": "ts-notification-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody NotifyInfo info, @RequestHeader HttpHeaders headers",
@@ -850,7 +850,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-assurance-service",
+    {"source": "ts-preserve-service",  "target": "ts-assurance-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@PathVariable int typeIndex, @PathVariable String orderId, @RequestHeader HttpHeaders headers",
@@ -860,7 +860,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-contacts-service",
+    {"source": "ts-preserve-service",  "target": "ts-contacts-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String id, @RequestHeader HttpHeaders headers",
@@ -870,7 +870,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-preserve-service",  "target": "ts-station-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable(value = #quot;stationNameForId#quot;) String stationName, @RequestHeader HttpHeaders headers",
@@ -880,7 +880,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-security-service",
+    {"source": "ts-preserve-service",  "target": "ts-security-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String accountId, @RequestHeader HttpHeaders headers",
@@ -890,7 +890,7 @@
       ]
     },
 
-    {"source": "ts-preserve-service",  "strength": 0.1, "target": "ts-user-service",
+    {"source": "ts-preserve-service",  "target": "ts-user-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String userId, @RequestHeader HttpHeaders headers",
@@ -900,7 +900,7 @@
       ]
     },
 
-    {"source": "ts-order-other-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-order-other-service",  "target": "ts-station-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody List<String> stationIdList, @RequestHeader HttpHeaders headers",
@@ -910,7 +910,7 @@
       ]
     },
 
-    {"source": "ts-food-service",  "strength": 0.1, "target": "ts-food-map-service",
+    {"source": "ts-food-service",  "target": "ts-food-map-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@RequestBody List<String> stationIdList",
@@ -925,7 +925,7 @@
       ]
     },
 
-    {"source": "ts-food-service",  "strength": 0.1, "target": "ts-travel-service",
+    {"source": "ts-food-service",  "target": "ts-travel-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String tripId, @RequestHeader HttpHeaders headers",
@@ -935,7 +935,7 @@
       ]
     },
 
-    {"source": "ts-food-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-food-service",  "target": "ts-station-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable(value = #quot;stationNameForId#quot;) String stationName, @RequestHeader HttpHeaders headers",
@@ -945,7 +945,7 @@
       ]
     },
 
-    {"source": "ts-rebook-service",  "strength": 0.1, "target": "ts-inside-payment-service",
+    {"source": "ts-rebook-service",  "target": "ts-inside-payment-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody PaymentInfo info, @RequestHeader HttpHeaders headers",
@@ -960,7 +960,7 @@
       ]
     },
 
-    {"source": "ts-rebook-service",  "strength": 0.1, "target": "ts-seat-service",
+    {"source": "ts-rebook-service",  "target": "ts-seat-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Seat seatRequest, @RequestHeader HttpHeaders headers",
@@ -970,7 +970,7 @@
       ]
     },
 
-    {"source": "ts-rebook-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-rebook-service",  "target": "ts-station-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable(value = #quot;stationIdForName#quot;) String stationId, @RequestHeader HttpHeaders headers",
@@ -980,7 +980,7 @@
       ]
     },
 
-    {"source": "ts-travel-plan-service",  "strength": 0.1, "target": "ts-travel2-service",
+    {"source": "ts-travel-plan-service",  "target": "ts-travel2-service",
       "functions": [
         { "functionType": "POST",
           "arguments": "@RequestBody TripInfo info, @RequestHeader HttpHeaders headers",
@@ -990,7 +990,7 @@
       ]
     },
 
-    {"source": "ts-travel-plan-service",  "strength": 0.1, "target": "ts-travel-service",
+    {"source": "ts-travel-plan-service",  "target": "ts-travel-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody TripInfo info, @RequestHeader HttpHeaders headers",
@@ -1000,7 +1000,7 @@
       ]
     },
 
-    {"source": "ts-travel-plan-service",  "strength": 0.1, "target": "ts-seat-service",
+    {"source": "ts-travel-plan-service",  "target": "ts-seat-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@RequestBody Seat seatRequest, @RequestHeader HttpHeaders headers",
@@ -1010,7 +1010,7 @@
       ]
     },
 
-    {"source": "ts-travel-plan-service",  "strength": 0.1, "target": "ts-station-service",
+    {"source": "ts-travel-plan-service",  "target": "ts-station-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody List<String> stationIdList, @RequestHeader HttpHeaders headers",
@@ -1020,7 +1020,7 @@
       ]
     },
 
-    {"source": "ts-travel-plan-service",  "strength": 0.1, "target": "ts-route-plan-service",
+    {"source": "ts-travel-plan-service",  "target": "ts-route-plan-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@RequestBody RoutePlanInfo info, @RequestHeader HttpHeaders headers",
@@ -1040,7 +1040,7 @@
       ]
     },
 
-    {"source": "ts-travel-plan-service",  "strength": 0.1, "target": "ts-ticketinfo-service",
+    {"source": "ts-travel-plan-service",  "target": "ts-ticketinfo-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String name, @RequestHeader HttpHeaders headers",
@@ -1050,7 +1050,7 @@
       ]
     },
 
-    {"source": "ts-admin-order-service",  "strength": 0.1, "target": "ts-order-service",
+    {"source": "ts-admin-order-service",  "target": "ts-order-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Order order, @RequestHeader HttpHeaders headers",
@@ -1075,7 +1075,7 @@
       ]
     },
 
-    {"source": "ts-admin-order-service",  "strength": 0.1, "target": "ts-order-other-service",
+    {"source": "ts-admin-order-service",  "target": "ts-order-other-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Order order, @RequestHeader HttpHeaders headers",
@@ -1100,7 +1100,7 @@
       ]
     },
 
-    {"source": "ts-inside-payment-service",  "strength": 0.1, "target": "ts-payment-service",
+    {"source": "ts-inside-payment-service",  "target": "ts-payment-service",
       "functions": [
         { "functionType": "POST",
           "arguments":  "@RequestBody Payment info, @RequestHeader HttpHeaders headers",
@@ -1110,7 +1110,7 @@
       ]
     },
 
-    {"source": "ts-inside-payment-service",  "strength": 0.1, "target": "ts-order-service",
+    {"source": "ts-inside-payment-service",  "target": "ts-order-service",
       "functions": [
         { "functionType": "PUT",
           "arguments":  "@PathVariable String orderId, @PathVariable int status, @RequestHeader HttpHeaders headers",
@@ -1120,7 +1120,7 @@
       ]
     },
 
-    {"source": "ts-inside-payment-service",  "strength": 0.1, "target": "ts-order-other-service",
+    {"source": "ts-inside-payment-service",  "target": "ts-order-other-service",
       "functions": [
         { "functionType": "PUT",
           "arguments":  "@PathVariable String orderId, @PathVariable int status, @RequestHeader HttpHeaders headers",
@@ -1130,7 +1130,7 @@
       ]
     },
 
-    {"source": "ts-seat-service",  "strength": 0.1, "target": "ts-order-service",
+    {"source": "ts-seat-service",  "target": "ts-order-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@RequestBody Seat seatRequest, @RequestHeader HttpHeaders headers",
@@ -1140,7 +1140,7 @@
       ]
     },
 
-    {"source": "ts-seat-service",  "strength": 0.1, "target": "ts-order-other-service",
+    {"source": "ts-seat-service",  "target": "ts-order-other-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@RequestBody Seat seatRequest, @RequestHeader HttpHeaders headers",
@@ -1150,7 +1150,7 @@
       ]
     },
 
-    {"source": "ts-seat-service",  "strength": 0.1, "target": "ts-config-service",
+    {"source": "ts-seat-service",  "target": "ts-config-service",
       "functions": [
         { "functionType": "GET",
           "arguments": "@PathVariable String configName, @RequestHeader HttpHeaders headers",
@@ -1160,7 +1160,7 @@
       ]
     },
 
-    {"source": "ts-seat-service",  "strength": 0.1, "target": "ts-travel2-service",
+    {"source": "ts-seat-service",  "target": "ts-travel2-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String tripId, @RequestHeader HttpHeaders headers",
@@ -1175,7 +1175,7 @@
       ]
     },
 
-    {"source": "ts-seat-service",  "strength": 0.1, "target": "ts-travel-service",
+    {"source": "ts-seat-service",  "target": "ts-travel-service",
       "functions": [
         { "functionType": "GET",
           "arguments":  "@PathVariable String tripId, @RequestHeader HttpHeaders headers",
