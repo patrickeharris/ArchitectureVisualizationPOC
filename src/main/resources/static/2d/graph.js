@@ -12,9 +12,12 @@ const dependson = document.querySelector(".dependson");
 const connections = document.querySelector(".connections");
 const cb = document.querySelector("#menuToggle");
 const cbl = document.querySelector("#linkMenuToggle");
-const nodeForm = document.getElementById('addNode')
+const nodeForm = document.getElementById('addNode');
+nodeForm.style.display = 'none';
 const linkForm = document.getElementById('addLink');
+linkForm.style.display = 'none'
 const functionForm = document.getElementById('addFunction');
+functionForm.style.display = 'none'
 const coupling = document.querySelector("#rangeValue");
 
 export let nodes = [...inputFile.nodes];
@@ -102,8 +105,26 @@ function center() {
 }
 
 function addNode() {
-
+    nodeForm.style.display = 'block';
+    nodeForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        let newId = nodeForm.getElementsByClassName('form-container').item(0);
+        console.log(newId);
+        /*let node = {
+            id: newId,
+            group: 1
+        }
+        nodes.push(node);
+        updateSimulation();
+        */
+        nodeForm.style.display = 'none';
+    });
 }
+
+function closeNodeForm() {
+    nodeForm.style.display = 'none';
+}
+
 
 function addLink() {
 
@@ -494,3 +515,4 @@ window.addFunction = addFunction;
 window.updateSlider = updateSlider;
 window.exportGraph = exportGraph;
 window.importGraph = importGraph;
+window.closeNodeForm = closeNodeForm;

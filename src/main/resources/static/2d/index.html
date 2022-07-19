@@ -101,7 +101,6 @@
             </ul>
         </div>
         <div class="md-card-btns">
-            <label for="menuToggle" class="md-button" onclick="addLink()">Add Link</label>
             <label for="menuToggle" class="md-button" onclick="closeBox()">Close Box</label>
         </div>
     </div>
@@ -128,15 +127,19 @@
 
 <script type="module" src="../utils/search.js"></script>
 
-<form action="/addNode" method="get" id="addNode">
-    <h1>Add Node</h1>
-    <div class="field">
-        <label for="name">Service Name:</label>
-        <input type="text" id="name" name="name" placeholder="Enter the service name" />
-        <small></small>
-    </div>
-    <button type="submit">Add</button>
-</form>
+<div class="form-popup" id="addNode">
+    <form action="/add_node_form" class="form-container">
+        <h1>Add Node</h1>
+        <div>
+            <label for="name"><b>Service Name</b></label>
+            <input type="text" id="name" placeholder="Enter Name of Service" required>
+        </div>
+        <div>
+            <button type="submit" class="btn">Add</button>
+            <button type="button" class="btn cancel" onclick="closeNodeForm()">Cancel</button>
+        </div>
+    </form>
+</div>
 
 <form action="/addLink" method="get" id="addLink">
     <h1>Add Link</h1>
