@@ -108,7 +108,7 @@ function addNode() {
     nodeForm.style.display = 'block';
     nodeForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        let newId = nodeForm.getElementsByClassName('form-container').item(0);
+        let newId = event.target.elements.name.value;
         console.log(newId);
         /*let node = {
             id: newId,
@@ -345,6 +345,13 @@ function updateSlider(newVal){
     updateSimulation();
 }
 
+function replacer(key,value)
+{
+    if (key=="source") return value.id;
+    else if (key=="target") return value.id;
+    else return value;
+}
+
 function exportGraph(){
     exportToJsonFile(nodes)
 }
@@ -354,7 +361,8 @@ function exportToJsonFile(jsonData) {
     map1.set("nodes", jsonData);
     let map2 = new Map();
     map2.set("links", links);
-    let dataStr = JSON.stringify(Object.assign({},Object.fromEntries(map1), Object.fromEntries(map2)));
+    let obj1 = Object.assign({},Object.fromEntries(map1), Object.fromEntries(map2), zoom, svg._groups[0][0].__zoom);
+    let dataStr = JSON.stringify(obj1, replacer);
     //let dataStr2 = JSON.stringify(Graph.cameraPosition());
     let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
 
@@ -386,6 +394,11 @@ function importGraph(){
             allLinks = links;
             allNodes = nodes;
             changeColor = true;
+            console.log(parsedData.x);
+            console.log(parsedData.y);
+            zoom.translateTo(svg, parsedData.x, parsedData.y);
+            //zoom.scaleBy(svg, parsedData.k);
+            //zoom.scaleTo(svg, parsedData.k);
             updateSimulation();
         }
     }
