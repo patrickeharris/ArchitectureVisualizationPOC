@@ -130,50 +130,28 @@
 <div class="form-popup" id="addNode">
     <form action="/add_node_form" class="form-container">
         <h1>Add Node</h1>
-        <div>
-            <label for="name"><b>Service Name</b></label>
-            <input type="text" id="name" placeholder="Enter Name of Service" required>
-        </div>
-        <div>
-            <button type="submit" class="btn">Add</button>
-            <button type="button" class="btn cancel" onclick="closeNodeForm()">Cancel</button>
-        </div>
+        <label for="name"><b>Service Name</b></label>
+        <input type="text" id="name" placeholder="Enter Name of Service" required>
+        <button type="submit" class="btn">Add</button>
+        <button type="button" class="btn cancel" onclick="closeNodeForm()">Cancel</button>
     </form>
 </div>
 
-<form action="/addLink" method="get" id="addLink">
-    <h1>Add Link</h1>
-    <div class="field">
-        <label for="tName">Target Name:</label>
-        <input type="text" id="tName" name="tName" placeholder="Enter the node you want connected" />
-        <small></small>
-    </div>
-    <button type="button" onclick="addFunction()">Add Function</button>
-    <button type="submit">Add</button>
-</form>
-
-<form action="/addFunction" method="get" id="addFunction">
-    <h1>Add Function</h1>
-    <div class="field">
-        <label for="fName">Name</label>
-        <input type="text" id="fName" name="fName" placeholder="Enter the function name"/>
-        <small></small>
-    </div>
-    <div class="field">
-        <label for="fType">Type</label>
-        <input type="text" id="fType" name="fType" placeholder="Enter the function type"/>
-        <small></small>
-    </div>
-    <div class="field">
-        <label for="fArg">Arguments</label>
-        <input type="text" id="fArg" name="fArg" placeholder="Enter the function arguments"/>
-        <small></small>
-    </div>
-    <div class="field">
-        <label for="fReturn">Return</label>
-        <input type="text" id="fReturn" name="fReturn" placeholder="Enter the function return"/>
-        <small></small>
-    </div>
-    <button type="submit">Add</button>
-</form>
+<div class="form-popup" id="addLink">
+    <form action="/add-link-form" class="form-container">
+        <h1>Add Link</h1>
+        <label for="target"><b>Target Name</b></label>
+        <input type="text" id="target" placeholder="Enter Name of Target" required>
+        <label for="fName"><b>Function Name</b></label>
+        <input type="text" id="fName" placeholder="Enter Name of Function" required>
+        <label for="type"><b>Function Type</b></label>
+        <input type="text" id="type" placeholder="Enter Type of Function" required>
+        <label for="args"><b>Arguments</b></label>
+        <input type="text" id="args" placeholder="Enter Arguments of Function" required>
+        <label for="return"><b>Return</b></label>
+        <input type="text" id="return" placeholder="Enter Return Type of Function" required>
+        <button type="submit" class="btn">Add</button>
+        <button type="button" class="btn cancel" onclick="closeLinkForm()">Cancel</button>
+    </form>
+</div>
 

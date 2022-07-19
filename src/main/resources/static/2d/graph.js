@@ -16,8 +16,6 @@ const nodeForm = document.getElementById('addNode');
 nodeForm.style.display = 'none';
 const linkForm = document.getElementById('addLink');
 linkForm.style.display = 'none'
-const functionForm = document.getElementById('addFunction');
-functionForm.style.display = 'none'
 const coupling = document.querySelector("#rangeValue");
 
 export let nodes = [...inputFile.nodes];
@@ -109,15 +107,15 @@ function addNode() {
     nodeForm.addEventListener('submit', (event) => {
         event.preventDefault();
         let newId = event.target.elements.name.value;
-        console.log(newId);
-        /*let node = {
+        let node = {
             id: newId,
             group: 1
         }
-        nodes.push(node);
+        allNodes.push(node);
+        nodes = allNodes;
+        changeColor = true;
         updateSimulation();
-        */
-        nodeForm.style.display = 'none';
+        closeNodeForm();
     });
 }
 
@@ -125,9 +123,35 @@ function closeNodeForm() {
     nodeForm.style.display = 'none';
 }
 
+function closeLinkForm() {
+    linkForm.style.display = 'none';
+}
 
 function addLink() {
-
+    linkForm.style.display = 'block';
+    linkForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        let newTarget = event.target.elements.target.value;
+        let newType = event.target.elements.type.value;
+        let newName = event.target.elements.fName.value;
+        let newArgs = event.target.elements.args.value;
+        let newRet = event.target.elements.return.value;
+        let link = {
+            source: clickedNode,
+            target: newTarget,
+            functions: [
+                {   functionType: newType,
+                    arguments: newArgs,
+                    returnData: newRet,
+                    endpointName: newName }
+            ]
+        }
+        allLinks.push(link);
+        links = allLinks;
+        changeColor = true;
+        updateSimulation();
+        closeLinkForm();
+    })
 }
 
 function addFunction() {
@@ -529,3 +553,4 @@ window.updateSlider = updateSlider;
 window.exportGraph = exportGraph;
 window.importGraph = importGraph;
 window.closeNodeForm = closeNodeForm;
+window.closeLinkForm = closeLinkForm;
