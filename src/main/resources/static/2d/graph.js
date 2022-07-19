@@ -170,6 +170,9 @@ function deleteLink() {
         changeColor = true;
         updateSimulation();
         resetZoom();
+    } else {
+        closeBox();
+        resetZoom();
     }
 }
 

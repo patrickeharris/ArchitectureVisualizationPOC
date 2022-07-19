@@ -247,17 +247,18 @@ function nodeClick(node){
 }
 
 function linkClick() {
-    const distance = 200;
-    const distRatio = 1 + distance/Math.hypot(selectedLink.x, selectedLink.y, selectedLink.z);
+    const distance = 100;
+    const distRatio = 1 + distance/Math.hypot((selectedLink.source.x + selectedLink.target.x) / 2,
+        (selectedLink.source.y + selectedLink.target.y) / 2, (selectedLink.source.z + selectedLink.target.z) / 2);
 
-    const newPos = selectedLink.x || selectedLink.y || selectedLink.z
+    const newPos = (selectedLink.source.x + selectedLink.target.x) / 2 || (selectedLink.source.y + selectedLink.target.y) / 2 || (selectedLink.source.z + selectedLink.target.z) / 2
         ? { x: (selectedLink.source.x + selectedLink.target.x) / 2 * distRatio, y: (selectedLink.source.y + selectedLink.target.y) / 2 * distRatio, z: (selectedLink.source.z + selectedLink.target.z) / 2 * distRatio }
         : { x: 0, y: 0, z: distance }; // special case if link is in (0,0,0)
 
     Graph.cameraPosition(
         newPos, // new position
-        selectedLink, // lookAt ({ x, y, z })
-        2000  // ms transition duration
+        (selectedLink.source + selectedLink.target) / 2, // lookAt ({ x, y, z })
+        1000  // ms transition duration
     );
     // Hide all other nodes
     visibleNodes = []
@@ -326,7 +327,8 @@ function deleteLink() {
         })
         updateSimulation();
         closeBox();
-        resetView();
+    } else {
+        closeBox();
     }
 }
 
