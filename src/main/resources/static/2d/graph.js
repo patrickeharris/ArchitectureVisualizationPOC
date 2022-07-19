@@ -394,11 +394,7 @@ function importGraph(){
             allLinks = links;
             allNodes = nodes;
             changeColor = true;
-            console.log(parsedData.x);
-            console.log(parsedData.y);
-            zoom.translateTo(svg, parsedData.x, parsedData.y);
-            //zoom.scaleBy(svg, parsedData.k);
-            //zoom.scaleTo(svg, parsedData.k);
+            zoom.transform(svg, d3.zoomIdentity.translate(parsedData.x, parsedData.y).scale(parsedData.k));
             updateSimulation();
         }
     }
