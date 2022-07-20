@@ -5,6 +5,8 @@ import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
 import rightClick from "../utils/rightClick.js";
 import {CustomSinCurve} from "../utils/CustomSinCurve.js";
+import {nodes, updateSimulation} from "../2d/graph.js";
+import rightClickLink from "../utils/rightClickLink.js"
 //import {updateSimulation} from "../2d/graph.js";
 
 // Data Abstraction
@@ -27,10 +29,12 @@ const searchWrapper = document.querySelector(".search-box");
 const inputBox = searchWrapper.querySelector("input");
 const suggBox = searchWrapper.querySelector(".autocom_box");
 const dependencies = document.querySelector(".dependencies");
-const connections = document.querySelector(".connections");
 const dependson = document.querySelector(".dependson");
 const trackMenu = document.querySelector("#trackMenu");
-const coupling = document.querySelector("#rangeValue");
+const nodeForm = document.getElementById('addNode');
+nodeForm.style.display = 'none';
+const linkForm = document.getElementById('addLink');
+linkForm.style.display = 'none';
 
 // Make graph
 const Graph = ForceGraph3D()
@@ -54,7 +58,7 @@ const Graph = ForceGraph3D()
         ))
     .nodeThreeObjectExtend(false)
     // Get data
-    .jsonUrl('../data/train_ticket_new.json')
+    .jsonUrl('../data/pipeline.json')
     // JSON column for node names
     .nodeLabel('id')
     // Setup link width
@@ -123,8 +127,10 @@ const Graph = ForceGraph3D()
         updateHighlight();
     }).onLinkClick(link => {
         selectedLink = link;
-        linkClick();
-    });
+    }).onLinkRightClick((link, e) => {
+        rightClickLink(e);
+        selectedLink = link;
+    })
 
 // When user types something in search box
 inputBox.onkeyup = (e)=>{
@@ -232,6 +238,8 @@ function nodeClick(node){
     cb.checked = true;
     // Set info box data
     document.getElementById("nodeName").innerHTML = node.id;
+    document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + node.nodeType;
+    document.getElementById("nodeID").innerHTML = "<b>Node ID: </b>" + node.nodeID;
 
     let found = false;
     let found2 = false;
@@ -270,48 +278,112 @@ function nodeClick(node){
     }
 }
 
-function linkClick() {
-    const distance = 100;
-    const distRatio = 1 + distance/Math.hypot((selectedLink.source.x + selectedLink.target.x) / 2,
-        (selectedLink.source.y + selectedLink.target.y) / 2, (selectedLink.source.z + selectedLink.target.z) / 2);
+function addNode() {
+    nodeForm.addEventListener('submit', (event) => {
+        event.preventDefault();
 
-    const newPos = (selectedLink.source.x + selectedLink.target.x) / 2 || (selectedLink.source.y + selectedLink.target.y) / 2 || (selectedLink.source.z + selectedLink.target.z) / 2
-        ? { x: (selectedLink.source.x + selectedLink.target.x) / 2 * distRatio, y: (selectedLink.source.y + selectedLink.target.y) / 2 * distRatio, z: (selectedLink.source.z + selectedLink.target.z) / 2 * distRatio }
-        : { x: 0, y: 0, z: distance }; // special case if link is in (0,0,0)
+        let {nodes, links} = Graph.graphData();
+        let newName = event.target.elements.name.value;
+        let found = false;
 
-    Graph.cameraPosition(
-        newPos, // new position
-        (selectedLink.source + selectedLink.target) / 2, // lookAt ({ x, y, z })
-        1000  // ms transition duration
-    );
-    // Hide all other nodes
-    visibleNodes = []
-    visibleNodes.push(selectedLink.source);
-    visibleNodes.push(selectedLink.target);
-    // Update visible nodes
-    reset()
-    // Show info box
-    const cb = document.querySelector('#linkMenuToggle');
-    cb.checked = true;
-    // Set info box data
-    document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
+        nodes.forEach(node => {
+            if (node.id === newName) {
+                found = true;
+            }
+        })
 
-    let newLinks = [];
-    if(selectedLink.functions != null) {
-        selectedLink.functions.forEach(l => {
-            newLinks.push(l);
-        });
-    }
-    newLinks = newLinks.map((data) => {
-        data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
-            + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '</li>';
-        return data;
+        if (found) {
+            window.alert("That node already exists! Try again.");
+        } else {
+
+            let newType = event.target.elements.node_type.value;
+            let newDeps = event.target.elements.dependencies.value;
+            let deps = newDeps.split(',');
+
+            let node = {
+                id: newName,
+                nodeType: newType,
+                dependencies: deps,
+                nodeID: 23
+            }
+            nodes.push(node);
+
+            deps.forEach(d => {
+                nodes.forEach(n => {
+                    if (n.nodeID.toString() === d) {
+                        let link = {
+                            source: newName,
+                            target: n.id
+                        }
+                        links.push(link);
+                    }
+                })
+            })
+
+            Graph.graphData({
+                nodes: nodes,
+                links: links
+            })
+
+            updateSimulation();
+            closeNodeForm();
+        }
     });
-    connections.innerHTML = newLinks.join('');
+    nodeForm.style.display = 'block';
+}
+
+function closeNodeForm() {
+    nodeForm.style.display = 'none';
 }
 
 function addLink() {
+    linkForm.addEventListener('submit', (event) => {
 
+        event.preventDefault();
+        let {nodes, links} = Graph.graphData();
+        let newTarget = event.target.elements.target.value;
+        let foundNode = false;
+
+        nodes.forEach(node => {
+            if (node.id === newTarget) {
+                foundNode = true;
+            }
+        })
+
+        if (!foundNode) {
+            window.alert("The target you selected is not currently a node in this graph. Try again.");
+        } else {
+            let found = false;
+            links.forEach(link => {
+                if (link.source.id === selectedNode.id && link.target.id === newTarget) {
+                    found = true;
+                }
+            })
+
+            if (found) {
+                window.alert("That link already exists! Try again.");
+            } else {
+                let link = {
+                    source: selectedNode,
+                    target: newTarget
+                }
+                links.push(link);
+                Graph.graphData({
+                    nodes: nodes,
+                    links: links
+                })
+                selectedNode = null;
+                //updateSimulation();
+                closeLinkForm();
+                resetZoom();
+            }
+        }
+    })
+    linkForm.style.display = 'block';
+}
+
+function closeLinkForm() {
+    linkForm.style.display = 'none';
 }
 
 function deleteNode() {
@@ -474,13 +546,13 @@ function exportGraph(){
 
 function replacer(key,value)
 {
-    if (key=="__threeObj") return undefined;
-    else if (key=="__lineObj") return undefined;
-    else if (key=="__arrowObj") return undefined;
-    else if (key=="__curve") return undefined;
-    else if (key=="index") return undefined;
-    else if (key=="source") return value.id;
-    else if (key=="target") return value.id;
+    if (key==="__threeObj") return undefined;
+    else if (key==="__lineObj") return undefined;
+    else if (key==="__arrowObj") return undefined;
+    else if (key==="__curve") return undefined;
+    else if (key==="index") return undefined;
+    else if (key==="source") return value.id;
+    else if (key==="target") return value.id;
     else return value;
 }
 
@@ -617,3 +689,4 @@ window.darkTheme = darkTheme;
 window.addLink = addLink;
 window.track = track;
 window.updateSlider = updateSlider;
+window.addNode = addNode;

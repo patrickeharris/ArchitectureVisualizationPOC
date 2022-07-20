@@ -1,6 +1,6 @@
 const contextMenu = document.querySelector(".wrapper2");
 
-export default function rightClick(e) {
+export default function rightClickLink(e) {
     e.preventDefault();
     let x = e.offsetX,
         y = e.offsetY,
