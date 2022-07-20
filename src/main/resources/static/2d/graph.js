@@ -40,6 +40,11 @@ let svg = d3.select('#graph').append("svg")
 let g = svg.append("g");
 var linkElements,
     nodeElements,
+    rectNodeElements,
+    starNodeElements,
+    ringNodeElements,
+    triangleNodeElements,
+    yNodeElements,
     textElements;
 
 svg.append("svg:defs").append("svg:marker")
@@ -349,9 +354,11 @@ export function selectLink(selectedLink) {
     document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
 
     let newLinks = [];
-    selectedLink.functions.forEach(l => {
-        newLinks.push(l);
-    });
+    if(selectedLink.functions != null) {
+        selectedLink.functions.forEach(l => {
+            newLinks.push(l);
+        });
+    }
     newLinks = newLinks.map((data) => {
         data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
             + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '<br></li>';
@@ -494,7 +501,7 @@ function importGraph(){
 
 function updateGraph() {
     // links
-    linkElements = linkGroup.selectAll('path')
+    linkElements = linkGroup.selectAll('.link')
         .data(links, function (link) {
             return link.target.id + link.source.id
         });
@@ -517,7 +524,7 @@ function updateGraph() {
 
     // nodes
     nodeElements = nodeGroup.selectAll('circle')
-        .data(nodes, function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "service"){return node;}}), function (node) { return node.id });
 
     nodeElements.exit().remove();
 
@@ -537,6 +544,129 @@ function updateGraph() {
         });
 
     nodeElements = nodeEnter.merge(nodeElements);
+
+    rectNodeElements = nodeGroup.selectAll('rect')
+        .data(nodes.filter((node) => {if(node.nodeType == "processor"){return node;}}), function (node) { return node.id });
+
+    rectNodeElements.exit().remove();
+
+    let rectNodeEnter = rectNodeElements
+        .enter()
+        .append('rect')
+        .attr('width', 17)
+        .attr('height', 17)
+        .call(dragDrop)
+        // we link the selectNode method here
+        // to update the graph on every click
+        .on('click', function(e, node){selectNode(node)})
+        .on('mouseover', function(e, node){hoverNode(node)})
+        .on('mouseout', function(e, node){stopHoverNode(node)})
+        .on("contextmenu", function (e, node) {
+            rightClick(e);
+            clickedNode = node;
+        });
+
+    rectNodeElements = rectNodeEnter.merge(rectNodeElements);
+
+    starNodeElements = nodeGroup.selectAll('.star')
+        .data(nodes.filter((node) => {if(node.nodeType === "handler"){return node;}}), function (node) { return node.id });
+
+    starNodeElements.exit().remove();
+
+    let starNodeEnter = starNodeElements
+        .enter()
+        .append("path")
+        .attr( "class", "star" )
+        .attr("d", d3.symbol().type(d3.symbolStar).size(50))
+        .call(dragDrop)
+        // we link the selectNode method here
+        // to update the graph on every click
+        .on('click', function(e, node){selectNode(node)})
+        .on('mouseover', function(e, node){hoverNode(node)})
+        .on('mouseout', function(e, node){stopHoverNode(node)})
+        .on("contextmenu", function (e, node) {
+            rightClick(e);
+            clickedNode = node;
+        });
+
+    starNodeElements = starNodeEnter.merge(starNodeElements);
+
+    ringNodeElements = nodeGroup.selectAll('.ring')
+        .data(nodes.filter((node) => {if(node.nodeType === "storage"){return node;}}), function (node) { return node.id });
+
+    ringNodeElements.exit().remove();
+
+    let ringNodeEnter = ringNodeElements
+        .enter()
+        .append("path")
+        .attr( "class", "ring" )
+        .attr("transform", "translate(400,200)")
+        .attr("d", d3.arc()
+            .innerRadius( 100 )
+            .outerRadius( 150 )
+            .startAngle( 3.14 )     // It's in radian, so Pi = 3.14 = bottom.
+            .endAngle( 6.28 )       // 2*Pi = 6.28 = top
+        )
+        .call(dragDrop)
+        // we link the selectNode method here
+        // to update the graph on every click
+        .on('click', function(e, node){selectNode(node)})
+        .on('mouseover', function(e, node){hoverNode(node)})
+        .on('mouseout', function(e, node){stopHoverNode(node)})
+        .on("contextmenu", function (e, node) {
+            rightClick(e);
+            clickedNode = node;
+        });
+
+    ringNodeElements = ringNodeEnter.merge(ringNodeElements);
+
+    triangleNodeElements = nodeGroup.selectAll('.triangle')
+        .data(nodes.filter((node) => {if(node.nodeType === "configuration"){return node;}}), function (node) { return node.id });
+
+    triangleNodeElements.exit().remove();
+
+    let triangleNodeEnter = triangleNodeElements
+        .enter()
+        .append("path")
+        .attr( "class", "triangle" )
+        .attr("d", d3.symbol().type(d3.symbolTriangle).size(200))
+        .call(dragDrop)
+        // we link the selectNode method here
+        // to update the graph on every click
+        .on('click', function(e, node){selectNode(node)})
+        .on('mouseover', function(e, node){hoverNode(node)})
+        .on('mouseout', function(e, node){stopHoverNode(node)})
+        .on("contextmenu", function (e, node) {
+            rightClick(e);
+            clickedNode = node;
+        });
+
+    triangleNodeElements = triangleNodeEnter.merge(triangleNodeElements);
+
+
+    yNodeElements = nodeGroup.selectAll('.y')
+        .data(nodes.filter((node) => {if(node.nodeType === "interface"){return node;}}), function (node) { return node.id });
+
+    yNodeElements.exit().remove();
+
+    let yNodeEnter = yNodeElements
+        .enter()
+        .append("path")
+        .attr( "class", "y" )
+        .attr("d", d3.symbol().type(d3.symbolWye).size(200))
+        .call(dragDrop)
+        // we link the selectNode method here
+        // to update the graph on every click
+        .on('click', function(e, node){selectNode(node)})
+        .on('mouseover', function(e, node){hoverNode(node)})
+        .on('mouseout', function(e, node){stopHoverNode(node)})
+        .on("contextmenu", function (e, node) {
+            rightClick(e);
+            clickedNode = node;
+        });
+
+    yNodeElements = yNodeEnter.merge(yNodeElements);
+
 
     // texts
     textElements = textGroup.selectAll('text')
@@ -564,6 +694,21 @@ export function updateSimulation() {
             nodeElements.attr('fill', function (node) {
                 return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
             });
+            rectNodeElements.attr('fill', function (node) {
+                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+            });
+            starNodeElements.attr('fill', function (node) {
+                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+            });
+            ringNodeElements.attr('fill', function (node) {
+                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+            });
+            triangleNodeElements.attr('fill', function (node) {
+                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+            });
+            yNodeElements.attr('fill', function (node) {
+                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+            });
             textElements.attr('fill', function (node) {
                 return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
             });
@@ -579,6 +724,23 @@ export function updateSimulation() {
         nodeElements
             .attr('cx', function (node) { return node.x })
             .attr('cy', function (node) { return node.y })
+        rectNodeElements
+            .attr('x', function (node) { return node.x - 17 / 2 })
+            .attr('y', function (node) { return node.y - 17 / 2})
+        starNodeElements
+            .attr("d", function(node) { return "m" + (node.x + 3) + " " + (node.y + 3) + "l 7 4 l -1 -8 l 6 -6 l -9 -1 l -3 -7 l -4 7 l -9 1 l 6 6 l -1 8 l 8 -4"})
+        ringNodeElements
+            .attr("d", d3.arc()
+                .innerRadius( 7 )
+                .outerRadius( 10 )
+                .startAngle( 3.14 )     // It's in radian, so Pi = 3.14 = bottom.
+                .endAngle( 2 * 6.28 )       // 2*Pi = 6.28 = top
+            )
+            .attr("transform", function(node){return "translate("+node.x+","+node.y+")"})
+        triangleNodeElements
+            .attr("transform", function(node){return "translate("+node.x+","+node.y+")"})
+        yNodeElements
+            .attr("transform", function(node){return "translate("+node.x+","+node.y+")"})
         textElements
             .attr('x', function (node) { return node.x })
             .attr('y', function (node) { return node.y });
