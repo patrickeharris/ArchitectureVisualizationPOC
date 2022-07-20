@@ -1,4 +1,4 @@
-const contextMenu = document.querySelector(".wrapper");
+const contextMenu = document.querySelector(".wrapper2");
 
 export default function rightClick(e) {
     e.preventDefault();
