@@ -274,7 +274,8 @@ function getInfoBox(selectedNode) {
     cb.checked = true;
     // Set info box data
     document.getElementById("nodeName").innerHTML = selectedNode.id;
-    document.getElementById("nodeType").innerHTMl = "Node Type: " + selectedNode.nodeType;
+    document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + selectedNode.nodeType;
+    document.getElementById("nodeID").innerHTML = "<b>Node ID: </b>" + selectedNode.nodeID;
 
     let found = false;
     let found2 = false;
