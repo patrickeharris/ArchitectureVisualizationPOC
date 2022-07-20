@@ -392,8 +392,8 @@ function updateSlider(newVal){
 
 function replacer(key,value)
 {
-    if (key=="source") return value.id;
-    else if (key=="target") return value.id;
+    if (key==="source") return value.id;
+    else if (key==="target") return value.id;
     else return value;
 }
 
@@ -498,7 +498,7 @@ function updateGraph() {
     nodeElements = nodeEnter.merge(nodeElements);
 
     rectNodeElements = nodeGroup.selectAll('rect')
-        .data(nodes.filter((node) => {if(node.nodeType == "processor"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "processor"){return node;}}), function (node) { return node.id });
 
     rectNodeElements.exit().remove();
 
