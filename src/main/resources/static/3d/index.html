@@ -26,6 +26,7 @@
         <button class="button" onclick="importGraph()">Import</button>
         <button class="button" onclick="requestAnimationFrame(download)">Screenshot</button>
         <button class="button" onclick="addNode()">Add Node</button>
+        <button class="button" onclick="toggleTrack()">Track Menu</button>
     </div>
     <div class="slider">
         <input type="range" min="0" max="100" value="8"   oninput="updateSlider(this.value)">
@@ -116,14 +117,14 @@
 
 <div>
     <input id="trackMenu" type="checkbox">
-    <div class="infobox md-card">
+    <div id="trackdiv" class="infobox md-card">
         <div class="md-card-content">
             <h2>Track Nodes</h2>
             <ul class="connections">
             </ul>
         </div>
-        <div class="md-card-btns">
-            <label for="trackMenu" class="md-button" onclick="closeBox()">Close Box</label>
+        <div class="md-card-btns-2">
+            <label for="trackMenu" class="md-button-2 red-text" onclick="closeBox()">Close Box</label>
         </div>
     </div>
 </div>
@@ -167,4 +168,5 @@
     </form>
 </div>
 
+<script src="../utils/drag.js"></script>
 </body>

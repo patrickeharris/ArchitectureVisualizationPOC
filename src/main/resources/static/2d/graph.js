@@ -19,6 +19,8 @@ const linkForm = document.getElementById('addLink');
 linkForm.style.display = 'none'
 const coupling = document.querySelector("#rangeValue");
 const searchWrapper = document.querySelector(".search-box");
+const trackMenu = document.querySelector("#trackMenu");
+const connections = document.querySelector(".connections");
 
 // Data Abstraction
 export let nodes = [...inputFile.nodes];
@@ -26,6 +28,7 @@ let links = [...inputFile.links];
 let allLinks = [...inputFile.links];
 let allNodes = [...inputFile.nodes];
 let changeColor = true;
+let removing = false;
 let changeLinkColor = true;
 let clickedNode = null;
 let clickedLink = null;
@@ -251,21 +254,28 @@ function addLink() {
 
 // Event if node is clicked on
 export function selectNode(selectedNode) {
+    if(!removing) {
+        selectedNode.fx = selectedNode.x;
+        selectedNode.fy = selectedNode.y;
 
-    // Only display node that is clicked on
-    clickedNode = selectedNode;
-    nodes = [selectedNode];
-    links = [];
+        // Only display node that is clicked on
+        clickedNode = selectedNode;
+        nodes = [selectedNode];
+        links = [];
 
-    // Update simulation
-    changeColor = true;
-    updateSimulation();
+        // Update simulation
+        changeColor = true;
+        updateSimulation();
 
-    // Display info box
-    getInfoBox(selectedNode);
+        // Display info box
+        getInfoBox(selectedNode);
 
-    // Zoom in on selected node
-    svg.transition().call(zoom.translateTo, selectedNode.x, selectedNode.y);
+        // Zoom in on selected node
+        svg.transition().call(zoom.translateTo, selectedNode.x, selectedNode.y);
+    }
+    else{
+        removing = false;
+    }
 }
 
 // Get neighbors of selected node
@@ -657,6 +667,43 @@ function forceReset() {
     center();
 }
 
+function resetHoveredNode(){
+    clickedNode = null;
+    hoveredNode = null;
+    changeColor = true;
+    updateSimulation();
+}
+
+function track() {
+    trackMenu.checked = true;
+    if(!connections.innerHTML.includes(clickedNode.id)) {
+        connections.innerHTML = connections.innerHTML + "<li for=\"trackMenu\" class=\"md-button-2\"  onclick=\"selectTrack(this.textContent)\">" + clickedNode.id + "<i class=\"fas fa-trash\" onclick=\"removeTrack(this.parentElement.textContent)\"></i></li>";
+    }
+}
+
+function selectTrack(selectUserData){
+    let emptyArray = nodes.filter((data)=>{
+        return data.id.startsWith(selectUserData);
+    });
+    selectNode(emptyArray.values().next().value);
+}
+
+function toggleTrack(){
+    if(trackMenu.checked){
+        trackMenu.checked = false;
+    }
+    else{
+        trackMenu.checked = true;
+    }
+}
+
+function removeTrack(node) {
+    removing = true;
+    let firstHalf = connections.innerHTML.substring(0, connections.innerHTML.indexOf(node) - 64);
+    let secondHalf = connections.innerHTML.substring(connections.innerHTML.indexOf(node) + node.length + 109, connections.innerHTML.length);
+    connections.innerHTML = firstHalf + secondHalf;
+}
+
 function updateGraph() {
 
     // links
@@ -946,3 +993,8 @@ window.closeNodeForm = closeNodeForm;
 window.closeLinkForm = closeLinkForm;
 window.download = download;
 window.forceReset = forceReset;
+window.track = track;
+window.removeTrack = removeTrack;
+window.toggleTrack = toggleTrack;
+window.selectTrack = selectTrack;
+window.resetHoveredNode = resetHoveredNode;

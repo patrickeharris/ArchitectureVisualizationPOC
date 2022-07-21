@@ -618,3 +618,67 @@ a:hover {
     background-color: #ddd;
     color: black;
 }
+
+#trackMenu{
+    display: none;
+    visibility: hidden;
+}
+#trackdiv{
+    position: absolute;
+    cursor: move;
+}
+
+.md-button-2{
+    display: inline-block;
+    font-weight: 500;
+    font-size: 1em;
+    padding: 8px;
+    min-width: 288px;
+    border-radius: 2px;
+    border: none;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    float: left;
+}
+
+.md-button-2:hover{
+    background-color: rgba(0,0,0, .1);
+}
+.md-button-2.md-button--raised{
+    background-color: rgb(64,81,181);
+    color: rgb(255,255,255);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+.md-button-2.md-button--raised:hover{
+    background-color: rgb(64,81,181);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+}
+
+.md-card-btns-2{
+    width: 100%;
+    text-align: right;
+    padding: 8px 12px;
+}
+
+.fa-trash{
+    display: inline-block;
+    padding: 4px;
+    min-width: 18px;
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    -webkit-transition: all .3s;
+    transition: all .3s;
+    float: right;
+    margin-left: 10px;
+}
+.fa-trash:hover{
+    background-color: rgba(0,0,0, .1);
+}
+
+.red-text{
+    color: red;
+}

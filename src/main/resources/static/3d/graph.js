@@ -651,7 +651,16 @@ function darkTheme() {
 function track() {
     trackMenu.checked = true;
     if(!connections.innerHTML.includes(selectedNode.id)) {
-        connections.innerHTML = connections.innerHTML + "<label for=\"trackMenu\" class=\"md-button\" onclick=\"select(this)\">" + selectedNode.id + "<i class=\"fas fa-trash\" onclick=\"removeTrack(this.parentElement.textContent)\"></i></label>";
+        connections.innerHTML = connections.innerHTML + "<li for=\"trackMenu\" class=\"md-button-2\" onclick=\"select(this)\">" + selectedNode.id + "<i class=\"fas fa-trash\" onclick=\"removeTrack(this.parentElement.textContent)\"></i></li>";
+    }
+}
+
+function toggleTrack(){
+    if(trackMenu.checked){
+        trackMenu.checked = false;
+    }
+    else{
+        trackMenu.checked = true;
     }
 }
 
@@ -750,3 +759,4 @@ window.updateSlider = updateSlider;
 window.addNode = addNode;
 window.forceReset = forceReset;
 window.removeTrack = removeTrack;
+window.toggleTrack = toggleTrack;

@@ -40,6 +40,7 @@
     <button class="button" onclick="importGraph()">Import</button>
     <button class="button" onclick="exportGraph()">Export</button>
     <button class="button" onclick="download()">Screenshot</button>
+    <button class="button" onclick="toggleTrack()">Track Menu</button>
     <a onclick="forceReset()" class="previous round">&#8249;</a>
 </div>
 <svg width="0" height="0"><div id="graph"></div></svg>
@@ -58,6 +59,10 @@
             <li class="item">
                 <i class="uil uil-link-alt"></i>
                 <span>Highlight Nodes</span>
+            </li>
+            <li class="item" onclick="track()">
+                <i class="uil uil-edit"></i>
+                <span>Track Node</span>
             </li>
             <li class="item">
                 <i class="uil uil-edit"></i>
@@ -79,6 +84,20 @@
                 <span>Delete</span>
             </li>
         </ul>
+    </div>
+</div>
+
+<div>
+    <input id="trackMenu" type="checkbox">
+    <div id="trackdiv" class="infobox md-card">
+        <div class="md-card-content">
+            <h2>Track Nodes</h2>
+            <ul class="connections">
+            </ul>
+        </div>
+        <div class="md-card-btns-2">
+            <label for="trackMenu" class="md-button-2 red-text" onclick="closeBox()">Close Box</label>
+        </div>
     </div>
 </div>
 
@@ -144,4 +163,4 @@
         <button type="button" class="btn cancel" onclick="closeLinkForm()">Cancel</button>
     </form>
 </div>
-
+<script src="../utils/drag.js"></script>
