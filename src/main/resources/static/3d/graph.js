@@ -23,7 +23,7 @@ let threshold = 8;
 let highlighted = false;
 let removing = false;
 let bloomPass = new UnrealBloomPass();
-var a, downloads = 0;
+let a, downloads = 0;
 
 // HTML elements
 const searchWrapper = document.querySelector(".search-box");
@@ -38,6 +38,7 @@ const cb = document.querySelector('#menuToggle');
 nodeForm.style.display = 'none';
 const linkForm = document.getElementById('addLink');
 linkForm.style.display = 'none';
+const connections = document.querySelector(".connections");
 
 // Make graph
 const Graph = ForceGraph3D()
@@ -654,7 +655,7 @@ function track() {
     }
 }
 
-function removeTrack(node){
+function removeTrack(node) {
     removing = true;
     let firstHalf = connections.innerHTML.substring(0, connections.innerHTML.indexOf(node) - 64);
     let secondHalf = connections.innerHTML.substring(connections.innerHTML.indexOf(node) + node.length + 109, connections.innerHTML.length);
@@ -662,15 +663,14 @@ function removeTrack(node){
     resetView();
 }
 
-var a, downloads = 0;
-
-function download(){
-        cancelAnimationFrame(a);
-        //Obviously, you should swap this out for a selector that gets only the 3D graph
-        Graph.renderer().domElement.toBlob(function(blob){
-            //Powered by [FileSaver](https://github.com/eligrey/FileSaver.js/)
-            saveAs(blob, 'a.png');
-        });
+downloads = 0;
+function download() {
+    cancelAnimationFrame(a);
+    // Obviously, you should swap this out for a selector that gets only the 3D graph
+    Graph.renderer().domElement.toBlob(function(blob) {
+        // Powered by [FileSaver](https://github.com/eligrey/FileSaver.js/)
+        saveAs(blob, 'a.png');
+    });
 }
 
 function forceReset() {
