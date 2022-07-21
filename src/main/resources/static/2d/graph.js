@@ -2,6 +2,7 @@ import getLinkColor from '../utils/getLinkColor.js';
 import getNodeColor from '../utils/getNodeColor.js';
 import getNeighbors from '../utils/getNeighbors.js';
 import rightClick from "../utils/rightClick.js";
+import rightClickLink from "../utils/rightClickLink.js";
 
 import inputFile from '../data/pipeline.json' assert { type: "json" };
 import {saveAs} from "../utils/file-saver.js";
@@ -10,15 +11,11 @@ const width = window.innerWidth;
 const height = window.innerHeight;
 const dependencies = document.querySelector(".dependencies");
 const dependson = document.querySelector(".dependson");
-const connections = document.querySelector(".connections");
 const cb = document.querySelector("#menuToggle");
-const cbl = document.querySelector("#linkMenuToggle");
 const nodeForm = document.getElementById('addNode');
 nodeForm.style.display = 'none';
 const linkForm = document.getElementById('addLink');
 linkForm.style.display = 'none'
-const funcForm = document.getElementById('addFunction');
-funcForm.style.display = 'none'
 const coupling = document.querySelector("#rangeValue");
 
 export let nodes = [...inputFile.nodes];
@@ -113,11 +110,11 @@ function center() {
 function addNode() {
     nodeForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        let newId = event.target.elements.name.value;
+        let newName = event.target.elements.name.value;
         let found = false;
 
         allNodes.forEach(node => {
-            if (node.id === newId) {
+            if (node.id === newName) {
                 found = true;
             }
         })
@@ -125,12 +122,32 @@ function addNode() {
         if (found) {
             window.alert("That node already exists! Try again.");
         } else {
+
+            let newType = event.target.elements.node_type.value;
+            let newDeps = event.target.elements.dependencies.value;
+            let deps = newDeps.split(',');
+
             let node = {
-                id: newId,
-                group: 1
+                id: newName,
+                nodeType: newType,
+                dependencies: deps,
+                nodeID: 23
             }
             allNodes.push(node);
             nodes = allNodes;
+
+            deps.forEach(d => {
+                nodes.forEach(n => {
+                    if (n.nodeID.toString() === d) {
+                        let link = {
+                            source: newName,
+                            target: n.id
+                        }
+                        allLinks.push(link);
+                    }
+                })
+            })
+            links = allLinks;
             changeColor = true;
             updateSimulation();
             closeNodeForm();
@@ -171,23 +188,15 @@ function addLink() {
             })
 
             if (found) {
-                window.alert("That link already exists! Try adding a new function instead.");
+                window.alert("That link already exists! Try again.");
             } else {
-                let newType = event.target.elements.type.value;
-                let newName = event.target.elements.fName.value;
-                let newArgs = event.target.elements.args.value;
-                let newRet = event.target.elements.return.value;
                 let link = {
                     source: clickedNode,
-                    target: newTarget,
-                    functions: [
-                        {   functionType: newType,
-                            arguments: newArgs,
-                            returnData: newRet,
-                            endpointName: newName }
-                    ]
+                    target: newTarget
                 }
                 allLinks.push(link);
+                links = allLinks;
+                clickedNode = null;
                 changeColor = true;
                 updateSimulation();
                 closeLinkForm();
@@ -196,38 +205,6 @@ function addLink() {
         }
     })
     linkForm.style.display = 'block';
-}
-
-function addFunction() {
-    funcForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        let name = event.target.elements.funcName.value;
-        let type = event.target.elements.funcType.value;
-        let args = event.target.elements.funcArgs.value;
-        let ret = event.target.elements.funcRet.value;
-
-        let f = {
-            functionType: type,
-            arguments: args,
-            returnData: ret,
-            endpointName: name
-        }
-
-        clickedLink.functions.push(f);
-        links.forEach(link => {
-            if (link.source === clickedLink.source && link.target === clickedLink.target) {
-                link = clickedLink;
-            }
-        })
-        updateSimulation();
-        resetZoom();
-        closeFuncForm();
-    })
-    funcForm.style.display = 'block'
-}
-
-function closeFuncForm() {
-    funcForm.style.display = 'none'
 }
 
 // select node is called on every click
@@ -298,6 +275,8 @@ function getInfoBox(selectedNode) {
     cb.checked = true;
     // Set info box data
     document.getElementById("nodeName").innerHTML = selectedNode.id;
+    document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + selectedNode.nodeType;
+    document.getElementById("nodeID").innerHTML = "<b>Node ID: </b>" + selectedNode.nodeID;
 
     let found = false;
     let found2 = false;
@@ -343,31 +322,6 @@ export function selectSearchNodes(selectedNodes){
     updateSimulation();
 }
 
-export function selectLink(selectedLink) {
-
-    clickedLink = selectedLink;
-    links = [selectedLink];
-    nodes = [selectedLink.source, selectedLink.target];
-    updateSimulation();
-    // Show info box
-    cbl.checked = true;
-    // Set info box data
-    document.getElementById("linkName").innerHTML = selectedLink.source.id + " => " + selectedLink.target.id;
-
-    let newLinks = [];
-    if(selectedLink.functions != null) {
-        selectedLink.functions.forEach(l => {
-            newLinks.push(l);
-        });
-    }
-    newLinks = newLinks.map((data) => {
-        data = '<li> Function Name: ' + data.endpointName + '<br>Function Type: ' + data.functionType
-            + '<br>Arguments: ' + data.arguments + '<br>Return: ' + data.returnData + '<br></li>';
-        return data;
-    });
-    connections.innerHTML = newLinks.join('');
-}
-
 function selectLinksExplicit(){
     links = allLinks.filter(function (link) {
         return nodes.includes(link.source) && nodes.includes(link.target);
@@ -377,13 +331,8 @@ function selectLinksExplicit(){
 function closeBox() {
     clickedNode = null;
     hoveredNode = null;
+    changeColor = true;
     center();
-    resetData();
-}
-
-function closeLinkBox(){
-    clickedNode = null;
-    hoveredNode = null;
     resetData();
 }
 
@@ -445,8 +394,8 @@ function updateSlider(newVal){
 
 function replacer(key,value)
 {
-    if (key=="source") return value.id;
-    else if (key=="target") return value.id;
+    if (key==="source") return value.id;
+    else if (key==="target") return value.id;
     else return value;
 }
 
@@ -631,10 +580,14 @@ function updateGraph() {
         .attr('stroke', 'rgba(50, 50, 50, 0.2)')
         .attr('marker-end', (d) => "url(#arrow)")//attach the arrow from defs
         .on('click', function (e, link) {
-            selectLink(link);
+            clickedLink = link;
         })
+        .on('contextmenu', function (e, link) {
+            clickedLink = link;
+            rightClickLink(e);
+         })
         .on('mouseover', function(e, link){hoverLink(link)})
-        .on('mouseout', function(e, link){stopHoverLink(link)})
+        .on('mouseout', function(e, link){stopHoverLink(link)});
 
     linkElements = linkEnter.merge(linkElements);
 
@@ -662,7 +615,7 @@ function updateGraph() {
     nodeElements = nodeEnter.merge(nodeElements);
 
     rectNodeElements = nodeGroup.selectAll('rect')
-        .data(nodes.filter((node) => {if(node.nodeType == "processor"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "processor"){return node;}}), function (node) { return node.id });
 
     rectNodeElements.exit().remove();
 
@@ -759,7 +712,6 @@ function updateGraph() {
 
     triangleNodeElements = triangleNodeEnter.merge(triangleNodeElements);
 
-
     yNodeElements = nodeGroup.selectAll('.y')
         .data(nodes.filter((node) => {if(node.nodeType === "interface"){return node;}}), function (node) { return node.id });
 
@@ -783,7 +735,6 @@ function updateGraph() {
 
     yNodeElements = yNodeEnter.merge(yNodeElements);
 
-
     // texts
     textElements = textGroup.selectAll('text')
         .data(nodes, function (node) { return node.id });
@@ -805,7 +756,7 @@ export function updateSimulation() {
     updateGraph();
 
     simulation.nodes(nodes).on('tick', () => {
-        if(changeColor){
+        if(changeColor) {
             changeColor = false;
             nodeElements.attr('fill', function (node) {
                 return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
@@ -828,7 +779,7 @@ export function updateSimulation() {
             textElements.attr('fill', function (node) {
                 return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
             });
-            linkElements.attr('stroke', function(link){
+            linkElements.attr('stroke', function (link) {
                 return getLinkColor(link, hoveredNode, null, theme);
             });
         }
@@ -883,16 +834,13 @@ window.getNeighborsSelected = getNeighborsSelected;
 window.deleteNode = deleteNode;
 window.deleteLink = deleteLink;
 window.closeBox = closeBox;
-window.closeLinkBox = closeLinkBox;
 window.darkMode = darkMode;
 window.lightMode = lightMode;
 window.addNode = addNode;
 window.addLink = addLink;
-window.addFunction = addFunction;
 window.updateSlider = updateSlider;
 window.exportGraph = exportGraph;
 window.importGraph = importGraph;
 window.closeNodeForm = closeNodeForm;
 window.closeLinkForm = closeLinkForm;
-window.closeFuncForm = closeFuncForm;
 window.download = download;

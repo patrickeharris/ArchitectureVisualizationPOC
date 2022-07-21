@@ -22,6 +22,7 @@
     <div class="buttons">
         <button class="button" onclick="exportGraph()">Export</button>
         <button class="button" onclick="importGraph()">Import</button>
+        <button class="button" onclick="addNode()">Add Node</button>
     </div>
     <div class="slider">
         <input type="range" min="0" max="100" value="8"   oninput="updateSlider(this.value)">
@@ -60,7 +61,7 @@
                         <i class="uil uil-twitter-alt"></i>
                         <span>Download</span>
                     </li>
-                    <li class="item">
+                    <li class="item" onclick="addLink()">
                         <i class="uil uil-add-link"></i>
                         <span>Add Link</span>
                     </li>
@@ -74,8 +75,23 @@
                 <i class="uil uil-edit"></i>
                 <span>Track Node</span>
             </li>
+            <li class="item">
+                <i class="uil uil-data-ping"></i>
+                <span>Send Data Ping</span>
+            </li>
             <li class="item" onclick="deleteNode()">
                 <i class="uil uil-trash-alt"></i>
+                <span>Delete</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div class="wrapper2">
+    <div class="content">
+        <ul class="menu">
+            <li class="item" onclick="deleteLink()">
+                <i class="uil uil-eye"></i>
                 <span>Delete</span>
             </li>
         </ul>
@@ -87,13 +103,15 @@
     <div class="infobox md-card">
         <div class="md-card-content">
             <h2 id="nodeName">Name</h2>
-            <p><br>Dependencies</p>
+            <p id="nodeType">Type</p>
+            <p id="nodeID">ID</p>
+            <p><b>Dependencies:</b></p>
             <ul class="dependencies">
                 <li class="md-caption">Coffee</li>
                 <li class="md-caption">Tea</li>
                 <li class="md-caption">Milk</li>
             </ul>
-            <p><br>Depends On</p>
+            <p><b>Depends On:</b></p>
             <ul class="dependson">
                 <li class="md-caption">Coffee</li>
                 <li class="md-caption">Tea</li>
@@ -102,25 +120,6 @@
         </div>
         <div class="md-card-btns">
             <label for="menuToggle" class="md-button" onclick="closeBox()">Close Box</label>
-        </div>
-    </div>
-</div>
-
-<div>
-    <input id="linkMenuToggle" type="checkbox">
-    <div class="infobox md-card">
-        <div class="md-card-content">
-            <h2 id="linkName">Name</h2>
-            <p>Functions</p>
-            <ul class="connections">
-                <li class="md-caption">Coffee</li>
-                <li class="md-caption">Tea</li>
-                <li class="md-caption">Milk</li>
-            </ul>
-        </div>
-        <div class="md-card-btns">
-            <label for="linkMenuToggle" class="md-button" onclick="deleteLink()">Delete Link</label>
-            <label for="linkMenuToggle" class="md-button" onclick="closeBox()">Close Box</label>
         </div>
     </div>
 </div>
@@ -146,4 +145,40 @@
 <input id="textColor" type="checkbox">
 
 <script type="module" src="graph.js"></script>
+
+<div class="form-popup" id="addNode">
+    <form action="/add_node_form" class="form-container">
+        <h1>Add Node</h1>
+        <label for="name"><br><b>Node Name:</b></label>
+        <input type="text" id="name" placeholder="Enter name of service" required>
+        <p><b>Node Type:</b></p>
+        <input type="radio" id="service" name="node_type" value="service">
+        <label for="service">service</label><br>
+        <input type="radio" id="processor" name="node_type" value="processor">
+        <label for="processor">processor</label><br>
+        <input type="radio" id="handler" name="node_type" value="handler">
+        <label for="handler">handler</label><br>
+        <input type="radio" id="configuration" name="node_type" value="configuration">
+        <label for="configuration">configuration</label><br>
+        <input type="radio" id="storage" name="node_type" value="storage">
+        <label for="storage">storage</label><br>
+        <input type="radio" id="interface" name="node_type" value="interface">
+        <label for="interface">interface</label><br>
+        <label for="dependencies"><b><br>Dependencies:</b></label>
+        <input type="text" id="dependencies" placeholder="Enter dependency IDs separated by commas" required>
+        <button type="submit" class="btn">Add</button>
+        <button type="button" class="btn cancel" onclick="closeNodeForm()">Cancel</button>
+    </form>
+</div>
+
+<div class="form-popup" id="addLink">
+    <form action="/add-link-form" class="form-container">
+        <h1>Add Link</h1>
+        <label for="target"><b><br>Target Name:</b></label>
+        <input type="text" id="target" placeholder="Enter Name of Target" required>
+        <button type="submit" class="btn">Add</button>
+        <button type="button" class="btn cancel" onclick="closeLinkForm()">Cancel</button>
+    </form>
+</div>
+
 </body>

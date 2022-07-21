@@ -14,6 +14,17 @@
     background: #fff;
     box-shadow: 0 12px 35px rgba(0,0,0,0.1);
 }
+.wrapper2 {
+    visibility: hidden;
+    position: absolute;
+    width: 300px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.1);
+}
+.wrapper2 .menu {
+    padding: 10px 12px;
+}
 .wrapper .menu{
     padding: 10px 12px;
 }
@@ -550,8 +561,8 @@ div.tooltip {
 }
 
 /* Full-width input fields */
-.form-container input[type=text], .form-container input[type=password] {
-    width: 100%;
+.form-container input[type=text] {
+    width: 90%;
     padding: 15px;
     margin: 5px 0 22px 0;
     border: none;

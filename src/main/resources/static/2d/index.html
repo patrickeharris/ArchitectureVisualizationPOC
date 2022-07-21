@@ -50,22 +50,9 @@
                 <i class="uil uil-eye"></i>
                 <span>Show Neighbors</span>
             </li>
-            <li class="item share">
-                <div>
-                    <i class="uil uil-share"></i>
-                    <span>Manipulation</span>
-                </div>
-                <i class="uil uil-angle-right"></i>
-                <ul class="share-menu">
-                    <li class="item">
-                        <i class="uil uil-twitter-alt"></i>
-                        <span>Download</span>
-                    </li>
-                    <li class="item" onclick="addLink()">
-                        <i class="uil uil-add-link"></i>
-                        <span>Add Link</span>
-                    </li>
-                </ul>
+            <li class="item" onclick="addLink()">
+                <i class="uil uil-add-link"></i>
+                <span>Add Link</span>
             </li>
             <li class="item">
                 <i class="uil uil-link-alt"></i>
@@ -83,18 +70,31 @@
     </div>
 </div>
 
+<div class="wrapper2">
+    <div class="content">
+        <ul class="menu">
+            <li class="item" onclick="deleteLink()">
+                <i class="uil uil-trash-alt"></i>
+                <span>Delete</span>
+            </li>
+        </ul>
+    </div>
+</div>
+
 <div>
     <input id="menuToggle" type="checkbox">
     <div class="infobox md-card">
         <div class="md-card-content">
-            <h2 id="nodeName">Name</h2>
-            <p><br>Dependencies</p>
+            <h2 id="nodeName">Name</h2><br>
+            <p id="nodeType">Type</p>
+            <p id="nodeID">ID</p>
+            <p><b>Dependencies:</b></p>
             <ul class="dependencies">
                 <li class="md-caption">Coffee</li>
                 <li class="md-caption">Tea</li>
                 <li class="md-caption">Milk</li>
             </ul>
-            <p><br>Depends On</p>
+            <p><b>Depends On:</b></p>
             <ul class="dependson">
                 <li class="md-caption">Coffee</li>
                 <li class="md-caption">Tea</li>
@@ -107,33 +107,28 @@
     </div>
 </div>
 
-<div>
-    <input id="linkMenuToggle" type="checkbox">
-    <div class="infobox md-card">
-        <div class="md-card-content">
-            <h2 id="linkName">Name</h2>
-            <p><br>Functions<br></p>
-            <ul class="connections">
-                <li class="md-caption">Coffee</li>
-                <li class="md-caption">Tea</li>
-                <li class="md-caption">Milk</li>
-            </ul>
-        </div>
-        <div class="md-card-btns">
-            <label for="linkMenuToggle" class="md-button" onclick="addFunction()">Add Function</label>
-            <label for="linkMenuToggle" class="md-button" onclick="deleteLink()">Delete Link</label>
-            <label for="linkMenuToggle" class="md-button" onclick="closeLinkBox()">Close Box</label>
-        </div>
-    </div>
-</div>
-
 <script type="module" src="../utils/search.js"></script>
 
 <div class="form-popup" id="addNode">
     <form action="/add_node_form" class="form-container">
         <h1>Add Node</h1>
-        <label for="name"><b>Service Name</b></label>
-        <input type="text" id="name" placeholder="Enter Name of Service" required>
+        <label for="name"><br><b>Node Name:</b></label>
+        <input type="text" id="name" placeholder="Enter name of service" required>
+        <p><b>Node Type:</b></p>
+        <input type="radio" id="service" name="node_type" value="service">
+        <label for="service">service</label><br>
+        <input type="radio" id="processor" name="node_type" value="processor">
+        <label for="processor">processor</label><br>
+        <input type="radio" id="handler" name="node_type" value="handler">
+        <label for="handler">handler</label><br>
+        <input type="radio" id="configuration" name="node_type" value="configuration">
+        <label for="configuration">configuration</label><br>
+        <input type="radio" id="storage" name="node_type" value="storage">
+        <label for="storage">storage</label><br>
+        <input type="radio" id="interface" name="node_type" value="interface">
+        <label for="interface">interface</label><br>
+        <label for="dependencies"><b><br>Dependencies:</b></label>
+        <input type="text" id="dependencies" placeholder="Enter dependency IDs separated by commas" required>
         <button type="submit" class="btn">Add</button>
         <button type="button" class="btn cancel" onclick="closeNodeForm()">Cancel</button>
     </form>
@@ -142,34 +137,10 @@
 <div class="form-popup" id="addLink">
     <form action="/add-link-form" class="form-container">
         <h1>Add Link</h1>
-        <label for="target"><b>Target Name</b></label>
+        <label for="target"><b><br>Target Name:</b></label>
         <input type="text" id="target" placeholder="Enter Name of Target" required>
-        <label for="fName"><b>Function Name</b></label>
-        <input type="text" id="fName" placeholder="Enter Name of Function" required>
-        <label for="type"><b>Function Type</b></label>
-        <input type="text" id="type" placeholder="Enter Type of Function" required>
-        <label for="args"><b>Arguments</b></label>
-        <input type="text" id="args" placeholder="Enter Arguments of Function" required>
-        <label for="return"><b>Return</b></label>
-        <input type="text" id="return" placeholder="Enter Return Type of Function" required>
         <button type="submit" class="btn">Add</button>
         <button type="button" class="btn cancel" onclick="closeLinkForm()">Cancel</button>
-    </form>
-</div>
-
-<div class="form-popup" id="addFunction">
-    <form action="/add_function_form" class="form-container">
-        <h1>Add Function</h1>
-        <label for="funcName"><b>Function Name</b></label>
-        <input type="text" id="funcName" placeholder="Enter Name of Function" required>
-        <label for="funcType"><b>Function Type</b></label>
-        <input type="text" id="funcType" placeholder="Enter Type of Function" required>
-        <label for="funcArgs"><b>Arguments</b></label>
-        <input type="text" id="funcArgs" placeholder="Enter Arguments of Function" required>
-        <label for="funcRet"><b>Return</b></label>
-        <input type="text" id="funcRet" placeholder="Enter Return Type of Function" required>
-        <button type="submit" class="btn">Add</button>
-        <button type="button" class="btn cancel" onclick="closeFuncForm()">Cancel</button>
     </form>
 </div>
 
