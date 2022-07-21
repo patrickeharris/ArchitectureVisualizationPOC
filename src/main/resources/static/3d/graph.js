@@ -1,5 +1,4 @@
 // Import for lighting
-//import {UnrealBloomPass} from '../libraries/UnrealBloomPassFixed.ts';
 import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
 import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
@@ -7,7 +6,6 @@ import rightClick from "../utils/rightClick.js";
 import {CustomSinCurve} from "../utils/CustomSinCurve.js";
 import {nodes, updateSimulation} from "../2d/graph.js";
 import rightClickLink from "../utils/rightClickLink.js"
-//import {updateSimulation} from "../2d/graph.js";
 
 // Data Abstraction
 let allLinks = null;
@@ -24,6 +22,7 @@ let defLinkColor = null;
 let threshold = 8;
 let highlighted = false;
 let bloomPass = new UnrealBloomPass();
+
 // HTML elements
 const searchWrapper = document.querySelector(".search-box");
 const inputBox = searchWrapper.querySelector("input");
@@ -127,42 +126,48 @@ const Graph = ForceGraph3D()
 
         // Update highlighted nodes on graph
         updateHighlight();
-    }).onLinkClick(link => {
+    })
+    // Setup clicking on links
+    .onLinkClick(link => {
         selectedLink = link;
-    }).onLinkRightClick((link, e) => {
+    })
+    // Setup right clicking on links
+    .onLinkRightClick((link, e) => {
         rightClickLink(e);
         selectedLink = link;
     })
 
 // When user types something in search box
-inputBox.onkeyup = (e)=>{
+inputBox.onkeyup = (e)=> {
+
     // Get data
     let { nodes, links } = Graph.graphData();
+
     // Get rid of info box
     cb.checked = false;
-    // Get text in searchbox
+
+    // Get text in search box
     let userData = e.target.value;
     let emptyArray = [];
     visibleNodes = []
-    if(userData){
+    if (userData) {
         emptyArray = nodes.filter((data)=>{
-            if(data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase())){
+            if (data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase())) {
                 visibleNodes.push(data)
             }
             return data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
         });
-        emptyArray = emptyArray.map((data)=>{
+        emptyArray = emptyArray.map((data) => {
             return data = '<li>' + data.id + '</li>';
         });
         reset()
         searchWrapper.classList.add("active");
         showSuggestions(emptyArray);
         let allList = suggBox.querySelectorAll("li");
-        for(let index = 0; index < allList.length; index++){
+        for (let index = 0; index < allList.length; index++) {
             allList[index].setAttribute("onclick", "select(this)")
         }
-    }
-    else{
+    } else {
         searchWrapper.classList.remove("active");
         visibleNodes = nodes;
         reset();
@@ -170,26 +175,21 @@ inputBox.onkeyup = (e)=>{
     }
 }
 
-function getShape(type){
-    if(type === "service"){
+// Sets shape based on type of node
+function getShape(type) {
+    if (type === "service") {
         return 0;
-    }
-    else if(type === "processor"){
+    } else if (type === "processor") {
         return 1;
-    }
-    else if(type === "handler"){
+    } else if (type === "handler") {
         return 2;
-    }
-    else if(type === "storage"){
+    } else if (type === "storage") {
         return 3;
-    }
-    else if(type === "interface"){
+    } else if (type === "interface") {
         return 4;
-    }
-    else if(type === "configuration"){
+    } else if (type === "configuration") {
         return 5;
-    }
-    else{
+    } else {
         return 0;
     }
 }
@@ -200,14 +200,16 @@ function updateSlider(newVal){
     updateHighlight();
 }
 
-function getColor(node){
+// Sets color of node
+function getColor(node) {
+
     let { nodes, links } = Graph.graphData();
     let numNeighbors = getNeighbors(node, links).length;
 
-    if(numNeighbors > threshold){
+    if (numNeighbors > threshold) {
         return 'rgb(255,0,0)';
     }
-    if(numNeighbors > threshold/2){
+    if (numNeighbors > threshold/2) {
         //node.color =
         return 'rgba(255,160,0)';
     }
@@ -215,7 +217,9 @@ function getColor(node){
     return 'rgba(0,255,0)';
 }
 
-function nodeClick(node){
+// Event when node is clicked on
+function nodeClick(node) {
+
     // Aim at node from outside it
     const distance = 40;
     const distRatio = 1 + distance/Math.hypot(node.x, node.y, node.z);
@@ -229,14 +233,18 @@ function nodeClick(node){
         node, // lookAt ({ x, y, z })
         2000  // ms transition duration
     );
+
     // Hide all other nodes
     visibleNodes = []
     visibleNodes.push(node)
+
     // Update visible nodes
     reset()
+
     // Show info box
     const cb = document.querySelector('#menuToggle');
     cb.checked = true;
+
     // Set info box data
     document.getElementById("nodeName").innerHTML = node.id;
     document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + node.nodeType;
@@ -247,6 +255,7 @@ function nodeClick(node){
     let newLinks = [];
     let dependLinks = [];
 
+    // Searching for dependencies to display them
     allLinks.forEach(link => {
         if (link.source === node) {
             found = true;
@@ -258,6 +267,7 @@ function nodeClick(node){
         }
     });
 
+    // Display dependencies in info box
     if (found) {
         newLinks = newLinks.map((data) => {
             data = '<li>' + data.target.id + '</li>';
@@ -268,6 +278,7 @@ function nodeClick(node){
         dependencies.innerHTML = '<li>N/A</li>';
     }
 
+    // Display depends on in info box
     if (found2) {
         dependLinks = dependLinks.map((data) => {
             data = '<li>' + data.source.id + '</li>';
@@ -279,28 +290,37 @@ function nodeClick(node){
     }
 }
 
+// Add node button
 function addNode() {
+
+    // When the add node form is submitted, this happens.
     nodeForm.addEventListener('submit', (event) => {
+
         event.preventDefault();
 
+        // Data Abstraction
         let {nodes, links} = Graph.graphData();
         let newName = event.target.elements.name.value;
         let found = false;
 
+        // Check if node already exists
         nodes.forEach(node => {
             if (node.id === newName) {
                 found = true;
             }
         })
 
+        // If node already exists, warn the user. If not, continue adding node.
         if (found) {
             window.alert("That node already exists! Try again.");
         } else {
 
+            // Extract info about new node.
             let newType = event.target.elements.node_type.value;
             let newDeps = event.target.elements.dependencies.value;
             let deps = newDeps.split(',');
 
+            // Create new node with info from form.
             let node = {
                 id: newName,
                 nodeType: newType,
@@ -309,6 +329,7 @@ function addNode() {
             }
             nodes.push(node);
 
+            // Create new links if new node has dependencies.
             deps.forEach(d => {
                 nodes.forEach(n => {
                     if (n.nodeID.toString() === d) {
@@ -321,39 +342,53 @@ function addNode() {
                 })
             })
 
+            // Update graph data
             Graph.graphData({
                 nodes: nodes,
                 links: links
             })
 
+            // Update the simulation
             updateSimulation();
             closeNodeForm();
         }
     });
+
+    // Show the add node form
     nodeForm.style.display = 'block';
 }
 
+// Close the add node form
 function closeNodeForm() {
     nodeForm.style.display = 'none';
 }
 
+// Add link button
 function addLink() {
+
+    // When the add link form is submitted, this happens
     linkForm.addEventListener('submit', (event) => {
 
         event.preventDefault();
+
+        // Data Abstraction
         let {nodes, links} = Graph.graphData();
         let newTarget = event.target.elements.target.value;
         let foundNode = false;
 
+        // Check if target node exists
         nodes.forEach(node => {
             if (node.id === newTarget) {
                 foundNode = true;
             }
         })
 
+        // If the node doesn't exist, warn the user. If it does, continue adding link
         if (!foundNode) {
             window.alert("The target you selected is not currently a node in this graph. Try again.");
         } else {
+
+            // Check if link already exists
             let found = false;
             links.forEach(link => {
                 if (link.source.id === selectedNode.id && link.target.id === newTarget) {
@@ -361,37 +396,52 @@ function addLink() {
                 }
             })
 
+            // If found, warn the user. If not, continue adding the link
             if (found) {
                 window.alert("That link already exists! Try again.");
             } else {
+
+                // Create new link with info from form
                 let link = {
                     source: selectedNode,
                     target: newTarget
                 }
                 links.push(link);
+
+                // Update graph data
                 Graph.graphData({
                     nodes: nodes,
                     links: links
                 })
                 selectedNode = null;
-                //updateSimulation();
+
                 closeLinkForm();
                 resetZoom();
             }
         }
     })
+
+    // Show link form
     linkForm.style.display = 'block';
 }
 
+// Close link form
 function closeLinkForm() {
     linkForm.style.display = 'none';
 }
 
+// Delete node button
 function deleteNode() {
+
+    // Data Abstraction
     let { nodes, links } = Graph.graphData();
     let nodesNew = [];
     let newLinks = [];
+
+    // Check with the user to make sure they want to delete
     if (window.confirm("Are you sure you want to delete this node and all its links?")) {
+
+        // Update nodes and links without the node and links that are being deleted
         nodes.forEach((node) => {
             if (node !== selectedNode) {
                 nodesNew.push(node);
@@ -403,48 +453,59 @@ function deleteNode() {
             }
         })
 
+        // Update graph data
         Graph.graphData({
             nodes: nodesNew,
             links: newLinks
         });
-        //updateSimulation();
     }
 }
 
+// Delete link button
 function deleteLink() {
-    let {nodes, links} = Graph.graphData();
+
+    // Data Abstraction
+    let { nodes, links } = Graph.graphData();
     let linksNew = [];
+
+    // Check with the user to make sure they want to delete the link
     if (window.confirm("Are you sure you want to delete this link?")) {
+
+        // Update the links to not include the link being deleted
         links.forEach((link) => {
             if (link !== selectedLink) {
                 linksNew.push(link);
             }
         });
+
+        // Update graph data
         Graph.graphData({
             nodes: nodes,
             links: linksNew
         })
-        //updateSimulation();
+
         closeBox();
     } else {
         closeBox();
     }
 }
 
-function select(element){
+function select(element) {
     let { nodes, links } = Graph.graphData();
     let selectUserData = element.textContent;
     inputBox.value = selectUserData;
+
     searchWrapper.classList.remove("active");
-    for(let i = 0; i < nodes.length; i++){
-        if(nodes[i].id.startsWith(selectUserData)){
+
+    for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].id.startsWith(selectUserData)) {
             nodeClick(nodes[i])
         }
     }
 }
 
-function recolor(){
-    if(!highlighted) {
+function recolor() {
+    if (!highlighted) {
         highlighted = true;
         // Create bloom
         bloomPass.strength = 3;
@@ -452,20 +513,18 @@ function recolor(){
         bloomPass.threshold = 0.1;
         // Add bloom to graph
         Graph.postProcessingComposer().addPass(bloomPass);
-    }
-    else{
+    } else {
         highlighted = false;
         Graph.postProcessingComposer().removePass(bloomPass);
     }
 }
 
-function showSuggestions(list){
+function showSuggestions(list) {
     let listData;
-    if(!list.length){
+    if (!list.length) {
         let userValue = inputBox.value;
         listData = '<li>' + userValue + '</li>';
-    }
-    else{
+    } else {
         listData = list.join('');
     }
     suggBox.innerHTML = listData;
@@ -481,9 +540,10 @@ function updateHighlight() {
 }
 
 // Highlight neighbors
-function getHighlightNeighbors(node){
+function getHighlightNeighbors(node) {
     let { nodes, links } = Graph.graphData();
     highlightNodes = new Set(getNeighbors(node, links))
+
     links.forEach((link) => {
         if ((highlightNodes.has(link.source) && link.target === node) || (highlightNodes.has(link.target)) && link.source === node) {
             highlightLinks.add(link)
@@ -493,14 +553,14 @@ function getHighlightNeighbors(node){
 }
 
 // Refresh visible nodes
-function reset(){
+function reset() {
     Graph.nodeVisibility((node) => customNodeVisibility(node)).linkVisibility((link) => customLinkVisibility(link));
     Graph.refresh();
 }
 
 // Set camera back to default view
 function resetView() {
-    const coords = {x: initX, y: initY, z: initZ};
+    const coords = { x: initX, y: initY, z: initZ };
     Graph.cameraPosition(
         coords, // new position
         { x: 0, y: 0, z: 0 }, // lookAt ({ x, y, z })
@@ -508,7 +568,7 @@ function resetView() {
     );
 }
 
-function closeBox(){
+function closeBox() {
     let { nodes, links } = Graph.graphData();
     visibleNodes = nodes;
     reset();
@@ -516,7 +576,7 @@ function closeBox(){
 }
 
 // Get neighbors of a selected node
-function getNeighborsSelected(){
+function getNeighborsSelected() {
     let { nodes, links } = Graph.graphData();
     // Set neighbors
     visibleNodes = getNeighbors(selectedNode, links)
@@ -526,9 +586,7 @@ function getNeighborsSelected(){
 
 // Node is visible if contained in visibleNodes
 function customNodeVisibility(node) {
-    if(visibleNodes.includes(node))
-        return true;
-    return false;
+    return visibleNodes.includes(node);
 }
 
 // Link is visible if nodes on either end are visible
@@ -541,12 +599,12 @@ function delay(time) {
     return new Promise(resolve => setTimeout(resolve, time));
 }
 
-function exportGraph(){
+function exportGraph() {
     exportToJsonFile(Graph.graphData())
 }
 
-function replacer(key,value)
-{
+function replacer(key,value) {
+
     if (key==="__threeObj") return undefined;
     else if (key==="__lineObj") return undefined;
     else if (key==="__arrowObj") return undefined;
@@ -559,6 +617,7 @@ function replacer(key,value)
 
 function exportToJsonFile(jsonData) {
     let dataStr = JSON.stringify(Object.assign({}, jsonData, Graph.cameraPosition()), replacer);
+
     //let dataStr2 = JSON.stringify(Graph.cameraPosition());
     let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
 
@@ -570,37 +629,37 @@ function exportToJsonFile(jsonData) {
     linkElement.click();
 }
 
-function lightTheme(){
+function lightTheme() {
     Graph.backgroundColor("#FFFFFF");
     Graph.linkColor(() => "#000000");
     Graph.linkDirectionalParticleColor(() => "#FFFFFF");
     document.querySelector(".scene-tooltip").classList.add("active");
 }
 
-function darkTheme(){
+function darkTheme() {
     Graph.backgroundColor("#000000");
     Graph.linkColor(defLinkColor);
     Graph.linkDirectionalParticleColor(defLinkColor);
     document.querySelector(".scene-tooltip").classList.remove("active");
 }
 
-function track(){
+function track() {
     trackMenu.checked = true;
 }
 
-var a, downloads = 0;
+let a, downloads = 0;
 
-function download(){
-        cancelAnimationFrame(a);
-        //Obviously, you should swap this out for a selector that gets only the 3D graph
-        Graph.renderer().domElement.toBlob(function(blob){
-            //Powered by [FileSaver](https://github.com/eligrey/FileSaver.js/)
-            saveAs(blob, 'a.png');
-        });
+function download() {
+    cancelAnimationFrame(a);
+    // Obviously, you should swap this out for a selector that gets only the 3D graph
+    Graph.renderer().domElement.toBlob(function(blob) {
+        // Powered by [FileSaver](https://github.com/eligrey/FileSaver.js/)
+        saveAs(blob, 'a.png');
+    });
 }
 
-function forceReset(){
-    let {nodes, links} = Graph.graphData();
+function forceReset() {
+    let { nodes, links } = Graph.graphData();
     cb.checked = false;
     searchWrapper.classList.remove("active");
     visibleNodes = nodes;
@@ -608,31 +667,31 @@ function forceReset(){
     resetView();
 }
 
-function importGraph(){
-    var input = document.createElement('input');
+function importGraph() {
+    let input = document.createElement('input');
     input.type = 'file';
 
     input.onchange = e => {
-        var file = e.target.files[0];
+        let file = e.target.files[0];
 
         // setting up the reader
-        var reader = new FileReader();
+        let reader = new FileReader();
         reader.readAsText(file,'UTF-8');
 
         // here we tell the reader what to do when it's done reading...
         reader.onload = readerEvent => {
-            var content = readerEvent.target.result; // this is the content!
-            var parsedData = JSON.parse(content);
+            let content = readerEvent.target.result; // this is the content!
+            let parsedData = JSON.parse(content);
             Graph.graphData(parsedData)
             delay(150).then(() => {
-                let {nodes, links} = Graph.graphData();
+                let { nodes, links } = Graph.graphData();
                 allLinks = links;
                 visibleNodes = nodes;
                 reset();
 
                 Graph.cameraPosition(
                     { x: parsedData.x, y: parsedData.y, z: parsedData.z }, // new position
-                    {x: 0, y: 0, z:0 },//parsedData.lookAt, // lookAt ({ x, y, z })
+                    { x: 0, y: 0, z: 0 },//parsedData.lookAt, // lookAt ({ x, y, z })
                     0  // ms transition duration
                 );
             })
@@ -640,24 +699,6 @@ function importGraph(){
     }
 
     input.click();
-    /*var request = new XMLHttpRequest();
-    request.open("GET", "./import.json", false);
-    request.send(null)
-    var parsedData = JSON.parse(request.responseText);
-    //Graph.jsonUrl('./import.json')
-    Graph.graphData(parsedData)
-    delay(150).then(() => {
-        let {nodes, links} = Graph.graphData();
-        allLinks = links;
-        visibleNodes = nodes;
-        reset();
-
-        Graph.cameraPosition(
-            { x: parsedData.x, y: parsedData.y, z: parsedData.z }, // new position
-            {x: 0, y: 0, z:0 },//parsedData.lookAt, // lookAt ({ x, y, z })
-            0  // ms transition duration
-        );
-    })*/
 }
 
 // Populate graph after 150ms (after async jsonURL runs)
@@ -667,20 +708,12 @@ delay(150).then(() => {
     visibleNodes = nodes;
     reset();
 
-    let {x, y, z, lookAt} = Graph.cameraPosition();
+    let { x, y, z, lookAt } = Graph.cameraPosition();
     initX = x;
     initY = y;
     initZ = z;
 
     defLinkColor = Graph.linkColor();
-
-    //importGraph();
-
-    /* Export stuff:
-    for(let j = 0; j < nodes.length; j++){
-        let oldNode = {node: nodes[j], x: nodes[j].fx, y: nodes[j].fy, z: nodes[j].fz, x2: nodes[j].x, y2: nodes[j].y, z2: nodes[j].z};
-        movedNodes.push(oldNode);
-    }*/
 });
 
 // Make functions global (accessible from html)

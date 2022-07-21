@@ -1,3 +1,5 @@
+
+// find neighbors of node
 export default function getNeighbors(node, links) {
     return links.reduce(
         (neighbors, link) => {

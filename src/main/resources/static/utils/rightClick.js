@@ -1,5 +1,6 @@
 const contextMenu = document.querySelector(".wrapper");
 
+// set right click menu's location on screen and show it
 export default function rightClick(e) {
     e.preventDefault();
     let x = e.offsetX,
