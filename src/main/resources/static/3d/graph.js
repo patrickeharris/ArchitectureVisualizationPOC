@@ -23,6 +23,7 @@ let initZ = null;
 let defLinkColor = null;
 let threshold = 8;
 let highlighted = false;
+let removing = false;
 let bloomPass = new UnrealBloomPass();
 // HTML elements
 const searchWrapper = document.querySelector(".search-box");
@@ -32,6 +33,7 @@ const dependencies = document.querySelector(".dependencies");
 const dependson = document.querySelector(".dependson");
 const trackMenu = document.querySelector("#trackMenu");
 const coupling = document.querySelector("#rangeValue");
+const connections = document.querySelector(".connections");
 const nodeForm = document.getElementById('addNode');
 const cb = document.querySelector('#menuToggle');
 nodeForm.style.display = 'none';
@@ -432,14 +434,19 @@ function deleteLink() {
 }
 
 function select(element){
-    let { nodes, links } = Graph.graphData();
-    let selectUserData = element.textContent;
-    inputBox.value = selectUserData;
-    searchWrapper.classList.remove("active");
-    for(let i = 0; i < nodes.length; i++){
-        if(nodes[i].id.startsWith(selectUserData)){
-            nodeClick(nodes[i])
+    if(!removing) {
+        let {nodes, links} = Graph.graphData();
+        let selectUserData = element.textContent;
+        inputBox.value = selectUserData;
+        searchWrapper.classList.remove("active");
+        for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].id.startsWith(selectUserData)) {
+                nodeClick(nodes[i])
+            }
         }
+    }
+    else{
+        removing = false;
     }
 }
 
@@ -586,6 +593,17 @@ function darkTheme(){
 
 function track(){
     trackMenu.checked = true;
+    if(!connections.innerHTML.includes(selectedNode.id)) {
+        connections.innerHTML = connections.innerHTML + "<label for=\"trackMenu\" class=\"md-button\" onclick=\"select(this)\">" + selectedNode.id + "<i class=\"fas fa-trash\" onclick=\"removeTrack(this.parentElement.textContent)\"></i></label>";
+    }
+}
+
+function removeTrack(node){
+    removing = true;
+    let firstHalf = connections.innerHTML.substring(0, connections.innerHTML.indexOf(node) - 64);
+    let secondHalf = connections.innerHTML.substring(connections.innerHTML.indexOf(node) + node.length + 109, connections.innerHTML.length);
+    connections.innerHTML = firstHalf + secondHalf;
+    resetView();
 }
 
 var a, downloads = 0;
@@ -701,3 +719,4 @@ window.track = track;
 window.updateSlider = updateSlider;
 window.addNode = addNode;
 window.forceReset = forceReset;
+window.removeTrack = removeTrack;
