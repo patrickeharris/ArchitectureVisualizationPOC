@@ -22,6 +22,7 @@
     <div class="buttons">
         <button class="button" onclick="exportGraph()">Export</button>
         <button class="button" onclick="importGraph()">Import</button>
+        <button class="button" onclick="requestAnimationFrame(download)">Screenshot</button>
         <button class="button" onclick="addNode()">Add Node</button>
     </div>
     <div class="slider">
@@ -50,22 +51,9 @@
                 <i class="uil uil-eye"></i>
                 <span>Show Neighbors</span>
             </li>
-            <li class="item share">
-                <div>
-                    <i class="uil uil-share"></i>
-                    <span>Manipulation</span>
-                </div>
-                <i class="uil uil-angle-right"></i>
-                <ul class="share-menu">
-                    <li class="item" onclick="requestAnimationFrame(download)">
-                        <i class="uil uil-twitter-alt"></i>
-                        <span>Download</span>
-                    </li>
-                    <li class="item" onclick="addLink()">
-                        <i class="uil uil-add-link"></i>
-                        <span>Add Link</span>
-                    </li>
-                </ul>
+            <li class="item" onclick="addLink()">
+                <i class="uil uil-add-link"></i>
+                <span>Add Link</span>
             </li>
             <li class="item" onclick="recolor()">
                 <i class="uil uil-link-alt"></i>

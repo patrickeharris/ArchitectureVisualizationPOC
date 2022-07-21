@@ -455,7 +455,7 @@ function download(){
     svgString2Image( svgString, 2*width, 2*height, 'png', save );
 
     function save( dataBlob, filesize ){
-        saveAs( dataBlob, 'D3 vis exported to PNG.png' ); // FileSaver.js function
+        saveAs( dataBlob, 'screenshot.png' ); // FileSaver.js function
     }
 }
 
