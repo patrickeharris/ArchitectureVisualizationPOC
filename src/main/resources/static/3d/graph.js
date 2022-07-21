@@ -25,6 +25,7 @@ let threshold = 8;
 let highlighted = false;
 let removing = false;
 let bloomPass = new UnrealBloomPass();
+var a, downloads = 0;
 // HTML elements
 const searchWrapper = document.querySelector(".search-box");
 const inputBox = searchWrapper.querySelector("input");
@@ -605,8 +606,6 @@ function removeTrack(node){
     connections.innerHTML = firstHalf + secondHalf;
     resetView();
 }
-
-var a, downloads = 0;
 
 function download(){
         cancelAnimationFrame(a);
