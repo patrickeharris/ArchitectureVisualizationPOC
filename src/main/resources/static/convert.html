@@ -1,0 +1,15 @@
+<!DOCTYPE HTML>
+<html xmlns:th="https://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Handling Form Submission</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<h1>Convert Architectural Language to Visualization Input</h1>
+<form th:action="@{/convert}">
+    <textarea name="json" cols="40" rows="5" type="text" th:name="json"></textarea>
+    <input type="submit"/>
+</form>
+<p th:text=${output}>Username will be rendered here</p>
+</body>
+</html>
