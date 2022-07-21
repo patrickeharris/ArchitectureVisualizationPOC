@@ -17,6 +17,7 @@ nodeForm.style.display = 'none';
 const linkForm = document.getElementById('addLink');
 linkForm.style.display = 'none'
 const coupling = document.querySelector("#rangeValue");
+const searchWrapper = document.querySelector(".search-box");
 
 export let nodes = [...inputFile.nodes];
 let links = [...inputFile.links];
@@ -341,6 +342,8 @@ function closeBox() {
 export function resetData() {
     nodes = allNodes;
     links = allLinks;
+    clickedNode = null;
+    hoveredNode = null;
     changeColor = true;
     updateSimulation();
 }
@@ -562,6 +565,14 @@ function svgString2Image( svgString, width, height, format, callback ) {
     };
 
     image.src = imgsrc;
+}
+
+function forceReset(){
+    searchWrapper.classList.remove("active");
+    cb.checked = false;
+    resetData();
+    resetZoom();
+    center();
 }
 
 function updateGraph() {
@@ -844,3 +855,4 @@ window.importGraph = importGraph;
 window.closeNodeForm = closeNodeForm;
 window.closeLinkForm = closeLinkForm;
 window.download = download;
+window.forceReset = forceReset;

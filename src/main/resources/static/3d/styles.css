@@ -615,3 +615,26 @@ div.tooltip {
 .form-container .btn:hover, .open-button:hover {
     opacity: 1;
 }
+
+
+.previous {
+    position: absolute;
+    background-color: #f1f1f1;
+    color: black;
+    z-index: 90;
+    display: flex;
+    margin-top: 25%;
+    margin-left: 10px;
+}
+
+.round {
+    border-radius: 50%;
+    text-decoration: none;
+    display: inline-block;
+    padding: 8px 16px;
+}
+
+a:hover {
+    background-color: #ddd;
+    color: black;
+}

@@ -33,6 +33,7 @@ const dependson = document.querySelector(".dependson");
 const trackMenu = document.querySelector("#trackMenu");
 const coupling = document.querySelector("#rangeValue");
 const nodeForm = document.getElementById('addNode');
+const cb = document.querySelector('#menuToggle');
 nodeForm.style.display = 'none';
 const linkForm = document.getElementById('addLink');
 linkForm.style.display = 'none';
@@ -138,7 +139,6 @@ inputBox.onkeyup = (e)=>{
     // Get data
     let { nodes, links } = Graph.graphData();
     // Get rid of info box
-    const cb = document.querySelector('#menuToggle');
     cb.checked = false;
     // Get text in searchbox
     let userData = e.target.value;
@@ -164,9 +164,9 @@ inputBox.onkeyup = (e)=>{
     }
     else{
         searchWrapper.classList.remove("active");
-        visibleNodes = nodes
-        reset()
-        resetView()
+        visibleNodes = nodes;
+        reset();
+        resetView();
     }
 }
 
@@ -599,6 +599,15 @@ function download(){
         });
 }
 
+function forceReset(){
+    let {nodes, links} = Graph.graphData();
+    cb.checked = false;
+    searchWrapper.classList.remove("active");
+    visibleNodes = nodes;
+    reset();
+    resetView();
+}
+
 function importGraph(){
     var input = document.createElement('input');
     input.type = 'file';
@@ -691,3 +700,4 @@ window.addLink = addLink;
 window.track = track;
 window.updateSlider = updateSlider;
 window.addNode = addNode;
+window.forceReset = forceReset;
