@@ -348,6 +348,13 @@ export function resetData() {
     updateSimulation();
 }
 
+function resetHoveredNode(){
+    clickedNode = null;
+    hoveredNode = null;
+    changeColor = true;
+    updateSimulation();
+}
+
 function hoverNode(selectedNode){
     hoveredNode = selectedNode;
     changeColor = true;
@@ -856,3 +863,4 @@ window.closeNodeForm = closeNodeForm;
 window.closeLinkForm = closeLinkForm;
 window.download = download;
 window.forceReset = forceReset;
+window.resetHoveredNode = resetHoveredNode;
