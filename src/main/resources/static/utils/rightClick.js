@@ -21,4 +21,5 @@ export default function rightClick(e) {
 // Hide right click menu when clicking out of it
 document.addEventListener("click", () => {
     contextMenu.style.visibility = "hidden";
+    resetHoveredNode();
 });

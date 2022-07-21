@@ -1,13 +1,12 @@
-// Import functions from utils files
 import getLinkColor from '../utils/getLinkColor.js';
 import getNodeColor from '../utils/getNodeColor.js';
 import getNeighbors from '../utils/getNeighbors.js';
 import rightClick from "../utils/rightClick.js";
 import rightClickLink from "../utils/rightClickLink.js";
+
 import inputFile from '../data/pipeline.json' assert { type: "json" };
 import {saveAs} from "../utils/file-saver.js";
 
-// HTML elements
 const width = window.innerWidth;
 const height = window.innerHeight;
 const dependencies = document.querySelector(".dependencies");
@@ -20,7 +19,6 @@ linkForm.style.display = 'none'
 const coupling = document.querySelector("#rangeValue");
 const searchWrapper = document.querySelector(".search-box");
 
-// Data Abstraction
 export let nodes = [...inputFile.nodes];
 let links = [...inputFile.links];
 let allLinks = [...inputFile.links];
@@ -39,7 +37,7 @@ let svg = d3.select('#graph').append("svg")
     .attr("height",  height)
     .call(zoom);
 let g = svg.append("g");
-let linkElements,
+var linkElements,
     nodeElements,
     rectNodeElements,
     starNodeElements,
@@ -90,61 +88,46 @@ let dragDrop = d3.drag().on('start', function (event, node) {
     node.fy = event.y;
 })
 
-// Zoom controller
-function zoomController(event) {
+function zoomController(event){
     g.attr("transform", event.transform);
 }
 
-// Zoom in button
 function zoomIn() {
     svg.transition().call(zoom.scaleBy, 2);
 }
 
-// Zoom out button
 function zoomOut() {
     svg.transition().call(zoom.scaleBy, 0.5);
 }
 
-// Reset zoom button
 function resetZoom() {
     svg.transition().call(zoom.scaleTo, 1);
 }
 
-// Center camera button
 function center() {
     svg.transition().call(zoom.translateTo, 0.5 * width, 0.5 * height);
 }
 
-// Add node button
 function addNode() {
-
-    // When the add node form is submitted, this happens
     nodeForm.addEventListener('submit', (event) => {
-
         event.preventDefault();
-
-        // Data Abstraction
         let newName = event.target.elements.name.value;
         let found = false;
 
-        // Check to see if node already exists
         allNodes.forEach(node => {
             if (node.id === newName) {
                 found = true;
             }
         })
 
-        // If node is found, warn user. If not, continue adding node
         if (found) {
             window.alert("That node already exists! Try again.");
         } else {
 
-            // Extract info from add node form
             let newType = event.target.elements.node_type.value;
             let newDeps = event.target.elements.dependencies.value;
             let deps = newDeps.split(',');
 
-            // Create node with info
             let node = {
                 id: newName,
                 nodeType: newType,
@@ -154,7 +137,6 @@ function addNode() {
             allNodes.push(node);
             nodes = allNodes;
 
-            // Create new links if there are dependencies
             deps.forEach(d => {
                 nodes.forEach(n => {
                     if (n.nodeID.toString() === d) {
@@ -167,53 +149,38 @@ function addNode() {
                 })
             })
             links = allLinks;
-
-            // Update simulation
             changeColor = true;
             updateSimulation();
             closeNodeForm();
         }
     });
-
-    // Show add node form
     nodeForm.style.display = 'block';
 }
 
-// Close add node form
 function closeNodeForm() {
     nodeForm.style.display = 'none';
 }
 
-// Close add link form
 function closeLinkForm() {
     linkForm.style.display = 'none';
 }
 
-// Add link button
 function addLink() {
-
-    // When the add link form is submitted, this happens
     linkForm.addEventListener('submit', (event) => {
 
         event.preventDefault();
-
-        // Extract info from add link form
         let newTarget = event.target.elements.target.value;
         let foundNode = false;
 
-        // Check to see if target node exists
         allNodes.forEach(node => {
             if (node.id === newTarget) {
                 foundNode = true;
             }
         })
 
-        // If node not found, warn user. If found, continue adding link
         if (!foundNode) {
             window.alert("The target you selected is not currently a node in this graph. Try again.");
         } else {
-
-            // Check to see if link already exists
             let found = false;
             links.forEach(link => {
                 if (link.source.id === clickedNode.id && link.target.id === newTarget) {
@@ -221,20 +188,15 @@ function addLink() {
                 }
             })
 
-            // If link exists, warn user. If not, continue adding link
             if (found) {
                 window.alert("That link already exists! Try again.");
             } else {
-
-                // Create link with info from form
                 let link = {
                     source: clickedNode,
                     target: newTarget
                 }
                 allLinks.push(link);
                 links = allLinks;
-
-                // Update simulation
                 clickedNode = null;
                 changeColor = true;
                 updateSimulation();
@@ -243,54 +205,36 @@ function addLink() {
             }
         }
     })
-
-    // Display add link form
     linkForm.style.display = 'block';
 }
 
-// Event when node is clicked on
+// select node is called on every click
+// we either update the data according to the selection
+// or reset the data if the same node is clicked twice
 export function selectNode(selectedNode) {
-
-    // Only show node that is clicked on
     clickedNode = selectedNode;
     nodes = [selectedNode];
     links = [];
-
-    // Update simulation
     changeColor = true;
     updateSimulation();
-
-    // Display info box
     getInfoBox(selectedNode);
-
     svg.transition().call(zoom.translateTo, selectedNode.x, selectedNode.y);
 }
 
-// Get neighbors of the node that is currently clicked on
-function getNeighborsSelected() {
-
-    // Only show node that is clicked on and its neighbors
+function getNeighborsSelected(){
     nodes = getNeighbors(clickedNode, allLinks);
     links = allLinks.filter(function (link) {
         return link.target.id === clickedNode.id || link.source.id === clickedNode.id;
     });
-
-    // Update simulation
     changeColor = true;
     updateSimulation();
 }
 
-// Delete node button
 function deleteNode(){
 
-    // Data Abstraction
     let visibleNodes = [];
     let visibleLinks = [];
-
-    // Check if user wants to delete node and its links.
     if (window.confirm("Are you sure you want to delete this node and all its links?")) {
-
-        // Update nodes and links to not include the selected node and its links.
         nodes.forEach((node) => {
             if (node !== clickedNode) {
                 visibleNodes.push(node);
@@ -301,24 +245,15 @@ function deleteNode(){
                 visibleLinks.push(link);
             }
         });
-
-        // Update simulation
         links = visibleLinks;
         nodes = visibleNodes;
         updateSimulation();
     }
 }
 
-// Delete link button
 function deleteLink() {
-
-    // Data Abstraction
     let linksNew = [];
-
-    // Check if user wants to delete link
     if (window.confirm("Are you sure you want to delete this link?")) {
-
-        // Update links to not include selected link
         allLinks.forEach((link) => {
             if (link !== clickedLink) {
                 linksNew.push(link);
@@ -327,8 +262,6 @@ function deleteLink() {
         links = linksNew;
         allLinks = links;
         nodes = allNodes;
-
-        // Update simulation
         changeColor = true;
         updateSimulation();
         resetZoom();
@@ -339,10 +272,8 @@ function deleteLink() {
 }
 
 function getInfoBox(selectedNode) {
-
     // Show info box
     cb.checked = true;
-
     // Set info box data
     document.getElementById("nodeName").innerHTML = selectedNode.id;
     document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + selectedNode.nodeType;
@@ -353,7 +284,6 @@ function getInfoBox(selectedNode) {
     let newLinks = [];
     let dependLinks = [];
 
-    // Find dependencies to display them
     allLinks.forEach(link => {
         if (link.source === selectedNode) {
             found = true;
@@ -365,7 +295,6 @@ function getInfoBox(selectedNode) {
         }
     });
 
-    // Display dependencies if found
     if (found) {
         newLinks = newLinks.map((data) => {
             data = '<li>' + data.target.id + '</li>';
@@ -376,7 +305,6 @@ function getInfoBox(selectedNode) {
         dependencies.innerHTML = '<li>N/A</li>';
     }
 
-    // Display depends on if found
     if (found2) {
         dependLinks = dependLinks.map((data) => {
             data = '<li>' + data.source.id + '</li>';
@@ -388,20 +316,19 @@ function getInfoBox(selectedNode) {
     }
 }
 
-export function selectSearchNodes(selectedNodes) {
+export function selectSearchNodes(selectedNodes){
     nodes = selectedNodes;
     selectLinksExplicit();
     changeColor = true;
     updateSimulation();
 }
 
-function selectLinksExplicit() {
+function selectLinksExplicit(){
     links = allLinks.filter(function (link) {
         return nodes.includes(link.source) && nodes.includes(link.target);
     });
 }
 
-// Close info box
 function closeBox() {
     clickedNode = null;
     hoveredNode = null;
@@ -421,35 +348,31 @@ export function resetData() {
     updateSimulation();
 }
 
-// Hover over node
-function hoverNode(selectedNode) {
+function hoverNode(selectedNode){
     hoveredNode = selectedNode;
     changeColor = true;
     updateSimulation();
 }
 
-// Hover over link
 function hoverLink(selectedLink) {
     hoveredLink = selectedLink
     changeLinkColor = true;
     updateSimulation();
 }
 
-// Stop hovering over node
-function stopHoverNode(selectedNode) {
+function stopHoverNode(selectedNode){
     hoveredNode = null;
     changeColor = true;
     updateSimulation();
 }
 
-// Stop hovering over link
 function stopHoverLink(selectedLink) {
     hoveredLink = null;
     changeLinkColor = true;
     updateSimulation();
 }
 
-function darkMode() {
+function darkMode(){
     document.body.style.backgroundColor = "black";
     theme = 1;
     d3.selectAll("marker").style("fill", "rgba(255,255,255,1)")
@@ -457,7 +380,7 @@ function darkMode() {
     updateSimulation();
 }
 
-function lightMode() {
+function lightMode(){
     document.body.style.backgroundColor = "white";
     theme = 0;
     d3.selectAll("marker").style("fill", "rgba(0,0,0,1)")
@@ -465,20 +388,21 @@ function lightMode() {
     updateSimulation();
 }
 
-function updateSlider(newVal) {
+function updateSlider(newVal){
     coupling.innerText = newVal;
     threshold = parseInt(newVal);
     changeColor = true;
     updateSimulation();
 }
 
-function replacer(key,value) {
+function replacer(key,value)
+{
     if (key==="source") return value.id;
     else if (key==="target") return value.id;
     else return value;
 }
 
-function exportGraph() {
+function exportGraph(){
     exportToJsonFile(nodes)
 }
 
@@ -489,6 +413,7 @@ function exportToJsonFile(jsonData) {
     map2.set("links", links);
     let obj1 = Object.assign({},Object.fromEntries(map1), Object.fromEntries(map2), zoom, svg._groups[0][0].__zoom);
     let dataStr = JSON.stringify(obj1, replacer);
+    //let dataStr2 = JSON.stringify(Graph.cameraPosition());
     let dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr);
 
     let exportFileDefaultName = 'data-out.json';
@@ -499,21 +424,21 @@ function exportToJsonFile(jsonData) {
     linkElement.click();
 }
 
-function importGraph() {
-    let input = document.createElement('input');
+function importGraph(){
+    var input = document.createElement('input');
     input.type = 'file';
 
     input.onchange = e => {
-        let file = e.target.files[0];
+        var file = e.target.files[0];
 
         // setting up the reader
-        let reader = new FileReader();
+        var reader = new FileReader();
         reader.readAsText(file, 'UTF-8');
 
         // here we tell the reader what to do when it's done reading...
         reader.onload = readerEvent => {
-            let content = readerEvent.target.result; // this is the content!
-            let parsedData = JSON.parse(content);
+            var content = readerEvent.target.result; // this is the content!
+            var parsedData = JSON.parse(content);
             nodes = [...parsedData.nodes];
             links = [...parsedData.links];
             allLinks = links;
@@ -527,108 +452,106 @@ function importGraph() {
     input.click();
 }
 
-function download() {
 
-    let svgString = getSVGString(svg.node());
+function download(){
+    var svgString = getSVGString(svg.node());
     svgString2Image( svgString, 2*width, 2*height, 'png', save );
 
-    function save( dataBlob, filesize ) {
+    function save( dataBlob, filesize ){
         saveAs( dataBlob, 'screenshot.png' ); // FileSaver.js function
     }
 }
 
-function getSVGString(svgNode) {
-
+function getSVGString( svgNode ) {
     svgNode.setAttribute('xlink', 'http://www.w3.org/1999/xlink');
-    let cssStyleText = getCSSStyles(svgNode);
-    appendCSS(cssStyleText, svgNode);
+    var cssStyleText = getCSSStyles( svgNode );
+    appendCSS( cssStyleText, svgNode );
 
-    let serializer = new XMLSerializer();
-    let svgString = serializer.serializeToString(svgNode);
+    var serializer = new XMLSerializer();
+    var svgString = serializer.serializeToString(svgNode);
     svgString = svgString.replace(/(\w+)?:?xlink=/g, 'xmlns:xlink='); // Fix root xlink without namespace
     svgString = svgString.replace(/NS\d+:href/g, 'xlink:href'); // Safari NS namespace fix
 
     return svgString;
 
-    function getCSSStyles(parentElement) {
-        let i;
-        let c;
-        let selectorTextArr = [];
+    function getCSSStyles( parentElement ) {
+        var selectorTextArr = [];
 
         // Add Parent element Id and Classes to the list
         selectorTextArr.push( '#'+parentElement.id );
-        for (c = 0; c < parentElement.classList.length; c++)
-            if (!contains('.'+parentElement.classList[c], selectorTextArr))
+        for (var c = 0; c < parentElement.classList.length; c++)
+            if ( !contains('.'+parentElement.classList[c], selectorTextArr) )
                 selectorTextArr.push( '.'+parentElement.classList[c] );
 
         // Add Children element Ids and Classes to the list
         var nodes = parentElement.getElementsByTagName("*");
-        for (i = 0; i < nodes.length; i++) {
+        for (var i = 0; i < nodes.length; i++) {
             var id = nodes[i].id;
-            if (!contains('#'+id, selectorTextArr))
+            if ( !contains('#'+id, selectorTextArr) )
                 selectorTextArr.push( '#'+id );
 
-            let classes = nodes[i].classList;
-            for (c = 0; c < classes.length; c++)
-                if (!contains('.'+classes[c], selectorTextArr))
+            var classes = nodes[i].classList;
+            for (var c = 0; c < classes.length; c++)
+                if ( !contains('.'+classes[c], selectorTextArr) )
                     selectorTextArr.push( '.'+classes[c] );
         }
 
         // Extract CSS Rules
-        let extractedCSSText = "";
-        for (i = 0; i < document.styleSheets.length; i++) {
-            let s = document.styleSheets[i];
+        var extractedCSSText = "";
+        for (var i = 0; i < document.styleSheets.length; i++) {
+            var s = document.styleSheets[i];
 
             try {
-                if (!s.cssRules) continue;
-            } catch (e) {
-                if (e.name !== 'SecurityError') throw e; // for Firefox
+                if(!s.cssRules) continue;
+            } catch( e ) {
+                if(e.name !== 'SecurityError') throw e; // for Firefox
                 continue;
             }
 
-            let cssRules = s.cssRules;
-            for (let r = 0; r < cssRules.length; r++) {
-                if (contains(cssRules[r].selectorText, selectorTextArr))
+            var cssRules = s.cssRules;
+            for (var r = 0; r < cssRules.length; r++) {
+                if ( contains( cssRules[r].selectorText, selectorTextArr ) )
                     extractedCSSText += cssRules[r].cssText;
             }
         }
 
+
         return extractedCSSText;
 
         function contains(str,arr) {
-            return arr.indexOf(str) !== -1;
+            return arr.indexOf( str ) === -1 ? false : true;
         }
+
     }
 
-    function appendCSS(cssText, element) {
-
-        let styleElement = document.createElement("style");
+    function appendCSS( cssText, element ) {
+        var styleElement = document.createElement("style");
         styleElement.setAttribute("type","text/css");
         styleElement.innerHTML = cssText;
-        let refNode = element.hasChildNodes() ? element.children[0] : null;
+        var refNode = element.hasChildNodes() ? element.children[0] : null;
         element.insertBefore( styleElement, refNode );
     }
 }
 
 
-function svgString2Image(svgString, width, height, format, callback) {
+function svgString2Image( svgString, width, height, format, callback ) {
     var format = format ? format : 'png';
 
-    let imgsrc = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgString))); // Convert SVG string to data URL
+    var imgsrc = 'data:image/svg+xml;base64,'+ btoa( unescape( encodeURIComponent( svgString ) ) ); // Convert SVG string to data URL
 
-    let canvas = document.createElement("canvas");
-    let context = canvas.getContext("2d");
+    var canvas = document.createElement("canvas");
+    var context = canvas.getContext("2d");
 
     canvas.width = width;
     canvas.height = height;
 
-    let image = new Image();
+    var image = new Image();
     image.onload = function() {
         context.fillStyle='white';
-        if (theme === 0) {
+        if(theme === 0) {
             context.fillRect(0, 0, canvas.width, canvas.height);
         }
-        if (theme === 1) {
+        if(theme === 1) {
             context.clearRect(0, 0, width, height);
         }
         context.drawImage(image, 0, 0, width, height);
@@ -637,12 +560,14 @@ function svgString2Image(svgString, width, height, format, callback) {
             var filesize = Math.round( blob.length/1024 ) + ' KB';
             if ( callback ) callback( blob, filesize );
         });
+
+
     };
+
     image.src = imgsrc;
 }
 
-// Completely reset graph
-function forceReset() {
+function forceReset(){
     searchWrapper.classList.remove("active");
     cb.checked = false;
     resetData();
@@ -650,9 +575,7 @@ function forceReset() {
     center();
 }
 
-// Update graph
 function updateGraph() {
-
     // links
     linkElements = linkGroup.selectAll('.link')
         .data(links, function (link) {
@@ -702,7 +625,6 @@ function updateGraph() {
 
     nodeElements = nodeEnter.merge(nodeElements);
 
-    // Rectangle nodes
     rectNodeElements = nodeGroup.selectAll('rect')
         .data(nodes.filter((node) => {if(node.nodeType === "processor"){return node;}}), function (node) { return node.id });
 
@@ -726,7 +648,6 @@ function updateGraph() {
 
     rectNodeElements = rectNodeEnter.merge(rectNodeElements);
 
-    // Star nodes
     starNodeElements = nodeGroup.selectAll('.star')
         .data(nodes.filter((node) => {if(node.nodeType === "handler"){return node;}}), function (node) { return node.id });
 
@@ -750,7 +671,6 @@ function updateGraph() {
 
     starNodeElements = starNodeEnter.merge(starNodeElements);
 
-    // Ring nodes
     ringNodeElements = nodeGroup.selectAll('.ring')
         .data(nodes.filter((node) => {if(node.nodeType === "storage"){return node;}}), function (node) { return node.id });
 
@@ -780,7 +700,6 @@ function updateGraph() {
 
     ringNodeElements = ringNodeEnter.merge(ringNodeElements);
 
-    // Triangle nodes
     triangleNodeElements = nodeGroup.selectAll('.triangle')
         .data(nodes.filter((node) => {if(node.nodeType === "configuration"){return node;}}), function (node) { return node.id });
 
@@ -804,7 +723,6 @@ function updateGraph() {
 
     triangleNodeElements = triangleNodeEnter.merge(triangleNodeElements);
 
-    // Y nodes
     yNodeElements = nodeGroup.selectAll('.y')
         .data(nodes.filter((node) => {if(node.nodeType === "interface"){return node;}}), function (node) { return node.id });
 
@@ -845,12 +763,9 @@ function updateGraph() {
     textElements = textEnter.merge(textElements);
 }
 
-// Update simulation
 export function updateSimulation() {
-
     updateGraph();
 
-    // Set colors and position
     simulation.nodes(nodes).on('tick', () => {
         if(changeColor) {
             changeColor = false;
@@ -919,10 +834,9 @@ export function updateSimulation() {
     simulation.alphaTarget(0).restart();
 }
 
-// Call update simulation to trigger final render
+// last but not least, we call updateSimulation
+// to trigger the initial render
 updateSimulation();
-
-// Global variables (accessible by HTML)
 window.zoomIn=zoomIn;
 window.zoomOut=zoomOut;
 window.resetZoom=resetZoom;
