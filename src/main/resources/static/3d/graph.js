@@ -31,6 +31,7 @@ const suggBox = searchWrapper.querySelector(".autocom_box");
 const dependencies = document.querySelector(".dependencies");
 const dependson = document.querySelector(".dependson");
 const trackMenu = document.querySelector("#trackMenu");
+const coupling = document.querySelector("#rangeValue");
 const nodeForm = document.getElementById('addNode');
 nodeForm.style.display = 'none';
 const linkForm = document.getElementById('addLink');
