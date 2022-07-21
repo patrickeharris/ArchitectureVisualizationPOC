@@ -182,15 +182,15 @@ inputBox.onkeyup = (e)=> {
 function getShape(type) {
     if (type === "service") {
         return 0;
-    } else if (type === "processor") {
+    } else if (type === "kafka" || type === "proxy" || type === "writer" || type === "pipeline") {
         return 1;
-    } else if (type === "handler") {
+    } else if (type === "customer" || "srcSink") {
         return 2;
-    } else if (type === "storage") {
+    } else if (type === "archive" || type === "database" || type === "bucket") {
         return 3;
-    } else if (type === "interface") {
+    } else if (type === "API") {
         return 4;
-    } else if (type === "configuration") {
+    } else if (type === "config") {
         return 5;
     } else {
         return 0;

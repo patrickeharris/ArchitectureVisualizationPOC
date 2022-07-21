@@ -757,7 +757,7 @@ function updateGraph() {
 
     // rectangle nodes
     rectNodeElements = nodeGroup.selectAll('rect')
-        .data(nodes.filter((node) => {if(node.nodeType === "processor"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "kafka" || node.nodeType === "proxy" || node.nodeType === "writer" || node.nodeType === "pipeline"){return node;}}), function (node) { return node.id });
 
     rectNodeElements.exit().remove();
 
@@ -781,7 +781,7 @@ function updateGraph() {
 
     // star nodes
     starNodeElements = nodeGroup.selectAll('.star')
-        .data(nodes.filter((node) => {if(node.nodeType === "handler"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "customer" || node.nodeType === "srcSink"){return node;}}), function (node) { return node.id });
 
     starNodeElements.exit().remove();
 
@@ -805,7 +805,7 @@ function updateGraph() {
 
     // ring nodes
     ringNodeElements = nodeGroup.selectAll('.ring')
-        .data(nodes.filter((node) => {if(node.nodeType === "storage"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "archive" || node.nodeType === "bucket" || node.nodeType === "database"){return node;}}), function (node) { return node.id });
 
     ringNodeElements.exit().remove();
 
@@ -835,7 +835,7 @@ function updateGraph() {
 
     // triangle nodes
     triangleNodeElements = nodeGroup.selectAll('.triangle')
-        .data(nodes.filter((node) => {if(node.nodeType === "configuration"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "config"){return node;}}), function (node) { return node.id });
 
     triangleNodeElements.exit().remove();
 
@@ -859,7 +859,7 @@ function updateGraph() {
 
     // y nodes
     yNodeElements = nodeGroup.selectAll('.y')
-        .data(nodes.filter((node) => {if(node.nodeType === "interface"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "API"){return node;}}), function (node) { return node.id });
 
     yNodeElements.exit().remove();
 
