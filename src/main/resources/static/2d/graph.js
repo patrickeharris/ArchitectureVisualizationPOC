@@ -668,7 +668,7 @@ function forceReset() {
 }
 
 function resetHoveredNode(){
-    clickedNode = null;
+    //clickedNode = null;
     hoveredNode = null;
     changeColor = true;
     updateSimulation();
