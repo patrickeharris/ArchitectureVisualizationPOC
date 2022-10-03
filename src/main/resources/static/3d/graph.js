@@ -76,8 +76,6 @@ const Graph = ForceGraph3D()
     .nodeThreeObjectExtend(false)
     // Get data
     .jsonUrl('../data/pipeline.json')
-    // JSON column for node names
-    .nodeLabel('id')
     // Setup link width
     .linkWidth(link => highlightLinks.has(link) ? 4 : 1)
     // Setup data transfer visualization across links
