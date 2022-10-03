@@ -56,16 +56,16 @@ const Graph = ForceGraph3D()
                 new THREE.OctahedronGeometry(5)][getShape(node.nodeType)],
             new THREE.MeshLambertMaterial({
                 // Setup colors
-                color: highlightNodes.has(node) ? node === hoverNode ? 'rgb(50,50,200)' : 'rgba(0,200,200)' : getColor(node),
+                color: getColor(node),
                 transparent: true,
                 opacity: getNodeOpacity(node)
             })
         )
         const sprite = new SpriteText(node.id);
         sprite.material.depthWrite = false; // make sprite background transparent
-        sprite.color = getColor(node);
+        sprite.color = getSpriteColor(node);
         sprite.textHeight = 8;
-        sprite.position.set(10,10,0);
+        sprite.position.set(0,10,0);
 
         const group = new THREE.Group();
         group.add(nodes);
@@ -211,7 +211,7 @@ function getShape(type) {
         return 0;
     } else if (type === "kafka" || type === "proxy" || type === "writer" || type === "pipeline") {
         return 1;
-    } else if (type === "customer" || "srcSink") {
+    } else if (type === "customer" || type === "srcSink") {
         return 2;
     } else if (type === "archive" || type === "database" || type === "bucket") {
         return 3;
@@ -230,8 +230,23 @@ function updateSlider(newVal){
     updateHighlight();
 }
 
+function getSpriteColor(node){
+    if (!node.id.toLowerCase().includes(search.toLowerCase())) {
+        return 'rgba(255,255,255,0)';
+    }
+    return getColor(node);
+}
+
 // Sets color of node
 function getColor(node) {
+    if(highlightNodes.has(node)){
+        if(node === hoverNode){
+            return 'rgb(50,50,200)';
+        }
+        else{
+            return 'rgba(0,200,200)';
+        }
+    }
 
     let { nodes, links } = Graph.graphData();
     let numNeighbors = getNeighbors(node, links).length;

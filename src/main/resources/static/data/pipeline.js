@@ -1,4 +1,4 @@
-{
+export default {
 	"nodes": [
 		{
 			"id": "Customer-cluster",

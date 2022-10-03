@@ -4,7 +4,7 @@ import getNodeColor from '../utils/getNodeColor.js';
 import getNeighbors from '../utils/getNeighbors.js';
 import rightClick from "../utils/rightClick.js";
 import rightClickLink from "../utils/rightClickLink.js";
-import inputFile from '../data/pipeline.json' assert { type: "json" };
+import inputFile from '../data/pipeline.js';
 import {saveAs} from "../utils/file-saver.js";
 
 // HTML elements
@@ -902,6 +902,7 @@ function updateGraph() {
 }
 
 export function updateSimulation() {
+    console.log(inputFile)
     updateGraph();
 
     // Set color of nodes and links
