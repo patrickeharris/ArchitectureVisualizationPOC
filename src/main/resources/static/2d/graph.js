@@ -204,11 +204,13 @@ function addLink() {
         // Extract name of target from add link form
         let newTarget = event.target.elements.target.value;
         let foundNode = false;
+        let linkNode;
 
         // Check to make sure target exists
         allNodes.forEach(node => {
             if (node.id === newTarget) {
                 foundNode = true;
+                linkNode = node;
             }
         })
 
@@ -219,7 +221,7 @@ function addLink() {
 
             // Check to make sure link doesn't already exist
             let found = false;
-            links.forEach(link => {
+            allLinks.forEach(link => {
                 if (link.source.id === clickedNode.id && link.target.id === newTarget) {
                     found = true;
                 }
@@ -233,7 +235,7 @@ function addLink() {
                 // Create link with extracted info
                 let link = {
                     source: clickedNode,
-                    target: newTarget
+                    target: linkNode
                 }
                 allLinks.push(link);
                 links = allLinks;
@@ -254,6 +256,7 @@ function addLink() {
 
 // Event if node is clicked on
 export function selectNode(selectedNode) {
+    clickedNode = selectedNode;
     if(!removing) {
         selectedNode.fx = selectedNode.x;
         selectedNode.fy = selectedNode.y;
@@ -749,8 +752,8 @@ function updateGraph() {
         .on('mouseover', function(e, node){hoverNode(node)})
         .on('mouseout', function(e, node){stopHoverNode(node)})
         .on("contextmenu", function (e, node) {
-            rightClick(e);
             clickedNode = node;
+            rightClick(e);
         });
 
     nodeElements = nodeEnter.merge(nodeElements);

@@ -14,6 +14,7 @@ let highlightLinks = new Set();
 let hoverNode = null;
 let selectedNode = null;
 let selectedLink = null;
+let search = "";
 let visibleNodes = [];
 let initX = null;
 let initY = null;
@@ -44,8 +45,8 @@ const connections = document.querySelector(".connections");
 const Graph = ForceGraph3D()
 (document.getElementById('graph'))
     // Setup shapes
-    .nodeThreeObject((node) =>
-        new THREE.Mesh(
+    .nodeThreeObject((node) => {
+        const nodes = new THREE.Mesh(
             [
                 new THREE.SphereGeometry(5),
                 new THREE.BoxGeometry(10, 10, 10),
@@ -57,9 +58,21 @@ const Graph = ForceGraph3D()
                 // Setup colors
                 color: highlightNodes.has(node) ? node === hoverNode ? 'rgb(50,50,200)' : 'rgba(0,200,200)' : getColor(node),
                 transparent: true,
-                opacity: 0.75
+                opacity: getNodeOpacity(node)
             })
-        ))
+        )
+        const sprite = new SpriteText(node.id);
+        sprite.material.depthWrite = false; // make sprite background transparent
+        sprite.color = getColor(node);
+        sprite.textHeight = 8;
+        sprite.position.set(10,10,0);
+
+        const group = new THREE.Group();
+        group.add(nodes);
+        group.add(sprite);
+
+        return group;
+    })
     .nodeThreeObjectExtend(false)
     // Get data
     .jsonUrl('../data/pipeline.json')
@@ -150,15 +163,18 @@ inputBox.onkeyup = (e)=> {
     cb.checked = false;
 
     // Get text in search box
-    let userData = e.target.value;
+    search = e.target.value;
+
     let emptyArray = [];
-    visibleNodes = []
-    if (userData) {
+    //visibleNodes = []
+    if (search) {
         emptyArray = nodes.filter((data)=>{
+            /*
             if (data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase())) {
                 visibleNodes.push(data)
             }
-            return data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
+             */
+            return data.id.toLocaleLowerCase().startsWith(search.toLocaleLowerCase());
         });
         emptyArray = emptyArray.map((data) => {
             return data = '<li>' + data.id + '</li>';
@@ -172,9 +188,20 @@ inputBox.onkeyup = (e)=> {
         }
     } else {
         searchWrapper.classList.remove("active");
-        visibleNodes = nodes;
+        // visibleNodes = nodes;
         reset();
         resetView();
+    }
+}
+
+function getNodeOpacity(node) {
+    if (search === "") {
+        return 0.75;
+    }
+    if (node.id.toLowerCase().includes(search.toLowerCase())) {
+        return 0.8;
+    } else {
+        return 0.1;
     }
 }
 
