@@ -67,11 +67,9 @@ const Graph = ForceGraph3D()
         sprite.textHeight = 8;
         sprite.position.set(0,10,0);
 
-        const group = new THREE.Group();
-        group.add(nodes);
-        group.add(sprite);
+        nodes.add(sprite);
 
-        return group;
+        return nodes;
     })
     .nodeThreeObjectExtend(false)
     // Get data
