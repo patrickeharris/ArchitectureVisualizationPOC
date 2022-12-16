@@ -4,7 +4,7 @@ import getNodeColor from '../utils/getNodeColor.js';
 import getNeighbors from '../utils/getNeighbors.js';
 import rightClick from "../utils/rightClick.js";
 import rightClickLink from "../utils/rightClickLink.js";
-import inputFile from '../data/pipeline.js';
+import inputFile from '../data/train_ticket_new.json' assert {type: 'json'};
 import {saveAs} from "../utils/file-saver.js";
 
 // HTML elements
@@ -34,6 +34,7 @@ let clickedNode = null;
 let clickedLink = null;
 let hoveredNode = null;
 let hoveredLink = null;
+let testNodes = [];
 let theme = 0;
 let threshold = 8;
 let zoom = d3.zoom().scaleExtent([1 / 4, 8]).on("zoom", zoomController);
@@ -406,8 +407,9 @@ function getInfoBox(selectedNode) {
 }
 
 export function selectSearchNodes(selectedNodes) {
-    nodes = selectedNodes;
-    selectLinksExplicit();
+    //nodes = selectedNodes;
+    //selectLinksExplicit();
+    testNodes = selectedNodes;
     changeColor = true;
     updateSimulation();
 }
@@ -707,6 +709,22 @@ function removeTrack(node) {
     connections.innerHTML = firstHalf + secondHalf;
 }
 
+function setOpacity(node) {
+    if (testNodes.includes(node) || testNodes.length === 0) {
+        return 1;
+    } else {
+        return 0.2;
+    }
+}
+
+function setLinkOpacity(link) {
+    if (testNodes.includes(link.source) || testNodes.includes(link.target) || testNodes.length === 0) {
+        return 1;
+    } else {
+        return 0.2;
+    }
+}
+
 function updateGraph() {
 
     // links
@@ -735,6 +753,12 @@ function updateGraph() {
 
     linkElements = linkEnter.merge(linkElements);
 
+    linkElements.transition()
+        .duration(500)
+        .style('opacity', function(link) {
+            return setLinkOpacity(link);
+        })
+
     // nodes
     nodeElements = nodeGroup.selectAll('circle')
         .data(nodes.filter((node) => {if(node.nodeType === "service"){return node;}}), function (node) { return node.id });
@@ -757,6 +781,12 @@ function updateGraph() {
         });
 
     nodeElements = nodeEnter.merge(nodeElements);
+
+    nodeElements.transition()
+        .duration(500)
+        .style('opacity', function(node) {
+            return setOpacity(node);
+        })
 
     // rectangle nodes
     rectNodeElements = nodeGroup.selectAll('rect')
@@ -899,6 +929,11 @@ function updateGraph() {
         .attr('dy', 4);
 
     textElements = textEnter.merge(textElements);
+    textElements.transition()
+        .duration(500)
+        .style('opacity', function(node) {
+            return setOpacity(node);
+        })
 }
 
 export function updateSimulation() {

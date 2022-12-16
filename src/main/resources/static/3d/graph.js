@@ -73,7 +73,7 @@ const Graph = ForceGraph3D()
     })
     .nodeThreeObjectExtend(false)
     // Get data
-    .jsonUrl('../data/pipeline.json')
+    .jsonUrl('../data/train_ticket_new.json')
     // Setup link width
     .linkWidth(link => highlightLinks.has(link) ? 4 : 1)
     // Setup data transfer visualization across links
@@ -289,7 +289,7 @@ function nodeClick(node) {
     // Set info box data
     document.getElementById("nodeName").innerHTML = node.id;
     document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + node.nodeType;
-    document.getElementById("nodeID").innerHTML = "<b>Node ID: </b>" + node.nodeID;
+    //document.getElementById("nodeID").innerHTML = "<b>Node ID: </b>" + node.nodeID;
 
     let found = false;
     let found2 = false;
