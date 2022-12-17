@@ -83,7 +83,7 @@ const Graph = ForceGraph3D()
     // Setup visibility for filtering of nodes
     .nodeVisibility((node) => customNodeVisibility(node))
     .linkVisibility((link) => customLinkVisibility(link))
-    .linkDirectionalArrowLength(3.5)
+    .linkDirectionalArrowLength(8.5)
     .linkDirectionalArrowRelPos(1)
     // Change where node is when clicking and dragging
     .onNodeDragEnd(node => {
@@ -142,6 +142,20 @@ const Graph = ForceGraph3D()
     // Setup clicking on links
     .onLinkClick(link => {
         selectedLink = link;
+    })
+    .linkCurvature(link => {
+        let test = false;
+        allLinks.forEach((link2) => {
+            if((link2.target === link.source) && (link2.source === link.target)){
+                test = true;
+            }
+        })
+        if(test){
+            return 0.4;
+        }
+        else{
+            return 0;
+        }
     })
     // Setup right clicking on links
     .onLinkRightClick((link, e) => {

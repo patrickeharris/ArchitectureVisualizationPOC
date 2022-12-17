@@ -741,6 +741,7 @@ function updateGraph() {
         .attr('stroke-width', 3)
         .attr('stroke', 'rgba(50, 50, 50, 0.2)')
         .attr('marker-end', (d) => "url(#arrow)")//attach the arrow from defs
+        .style("fill", "transparent")
         .on('click', function (e, link) {
             clickedLink = link;
         })
@@ -998,11 +999,23 @@ export function updateSimulation() {
             .attr('x', function (node) { return node.x })
             .attr('y', function (node) { return node.y });
         linkElements
-            .attr('x1', function (link) { return link.source.x })
-            .attr('y1', function (link) { return link.source.y })
-            .attr('x2', function (link) { return link.target.x })
-            .attr('y2', function (link) { return link.target.y })
-            .attr( "d", (d) => "M" + d.source.x + "," + d.source.y + ", " + d.target.x + "," + d.target.y);
+            .attr("d", function(d) {
+                let test = false;
+                allLinks.forEach(function (link) {
+                    if(link.target.id === d.source.id && link.source.id === d.target.id){
+                        test = true;
+                    }
+                });
+                var dx = d.target.x - d.source.x,
+                    dy = d.target.y - d.source.y,
+                    dr = Math.sqrt(dx * dx + dy * dy);
+                if(test){
+                    return "M" + d.source.x + "," + d.source.y + "A" + dr + "," + dr + " 0 0,1 " + d.target.x + "," + d.target.y;
+                }
+                else{
+                    return  "M" + d.source.x + "," + d.source.y + ", " + d.target.x + "," + d.target.y;
+                }
+            });
     });
 
     simulation.force('link').links(links);
