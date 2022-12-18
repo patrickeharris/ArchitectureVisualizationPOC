@@ -3,10 +3,12 @@
 export default function getNeighbors(node, links) {
     return links.reduce(
         (neighbors, link) => {
-            if (link.target.id === node.id) {
+            if (link.target.nodeName === node.nodeName) {
                 neighbors.push(link.source)
-            } else if (link.source.id === node.id) {
+                console.log(link.source)
+            } else if (link.source.nodeName === node.nodeName) {
                 neighbors.push(link.target)
+                console.log(link.target)
             }
             return neighbors
         },

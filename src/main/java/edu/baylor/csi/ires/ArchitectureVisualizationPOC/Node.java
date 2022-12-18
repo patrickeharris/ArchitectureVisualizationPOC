@@ -7,17 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Node {
-    @SerializedName(value = "id", alternate = "nodeName")
     @Expose(serialize = true, deserialize = true)
     String nodeName;
     @Expose(serialize = true, deserialize = true)
     String nodeType;
-    @Expose(serialize = true, deserialize = true)
-    List<Integer> dependencies = new ArrayList<>();
-    @Expose(serialize = true, deserialize = true)
-    List<String> previousSteps = new ArrayList<>();
-    @Expose(serialize = true, deserialize = true)
-    List<String> requests = new ArrayList<>();
+    @Expose(serialize = false, deserialize = true)
+    String nodeShape;
+    @Expose(serialize = false, deserialize = true)
+    List<Link> dependencies = new ArrayList<>();
+
+    @Expose(serialize = false, deserialize = true)
+    List<Link> targets = new ArrayList<>();
 
     public String getNodeName() {
         return nodeName;
@@ -35,39 +35,38 @@ public class Node {
         this.nodeType = nodeType;
     }
 
+    public String getNodeShape() {
+        return nodeShape;
+    }
 
-    public List<Integer> getDependencies() {
+    public void setNodeShape(String nodeShape) {
+        this.nodeShape = nodeShape;
+    }
+
+    public List<Link> getDependencies() {
         return dependencies;
     }
 
-    public void setDependencies(List<Integer> dependencies) {
+    public void setDependencies(List<Link> dependencies) {
         this.dependencies = dependencies;
     }
 
-    public List<String> getPreviousSteps() {
-        return previousSteps;
+    public List<Link> getTargets() {
+        return targets;
     }
 
-    public void setPreviousSteps(List<String> previousSteps) {
-        this.previousSteps = previousSteps;
+    public void setTargets(List<Link> targets) {
+        this.targets = targets;
     }
 
-    public List<String> getRequests() {
-        return requests;
-    }
-
-    public void setRequests(List<String> requests) {
-        this.requests = requests;
-    }
 
     @Override
     public String toString() {
         return "Node{" +
                 "nodeName='" + nodeName + '\'' +
                 ", nodeType='" + nodeType + '\'' +
+                ", nodeShape='" + nodeShape + '\'' +
                 ", dependencies=" + dependencies +
-                ", previousSteps=" + previousSteps +
-                ", requests=" + requests +
                 '}';
     }
 }

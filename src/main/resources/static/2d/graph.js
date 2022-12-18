@@ -70,7 +70,7 @@ let textGroup = g.attr('class', 'texts');
 // simulation setup with all forces
 let linkForce = d3
     .forceLink()
-    .id(function (link) { return link.id })
+    .id(function (link) { return link.nodeName })
     .strength(function (link) { return 0.1 });
 
 let simulation = d3
@@ -133,7 +133,7 @@ function addNode() {
 
         // Check to see if node already exists
         allNodes.forEach(node => {
-            if (node.id === newName) {
+            if (node.nodeName === newName) {
                 found = true;
             }
         })
@@ -150,7 +150,7 @@ function addNode() {
 
             // Create node with extracted info
             let node = {
-                id: newName,
+                nodeName: newName,
                 nodeType: newType,
                 dependencies: deps,
             }
@@ -160,10 +160,10 @@ function addNode() {
             // Create links based on dependencies
             deps.forEach(d => {
                 nodes.forEach(n => {
-                    if (n.id.toString() === d) {
+                    if (n.nodeName.toString() === d) {
                         let link = {
                             source: newName,
-                            target: n.id
+                            target: n.nodeName
                         }
                         allLinks.push(link);
                     }
@@ -208,7 +208,7 @@ function addLink() {
 
         // Check to make sure target exists
         allNodes.forEach(node => {
-            if (node.id === newTarget) {
+            if (node.nodeName === newTarget) {
                 foundNode = true;
                 linkNode = node;
             }
@@ -222,7 +222,7 @@ function addLink() {
             // Check to make sure link doesn't already exist
             let found = false;
             allLinks.forEach(link => {
-                if (link.source.id === clickedNode.id && link.target.id === newTarget) {
+                if (link.source === clickedNode.nodeName && link.target === newTarget) {
                     found = true;
                 }
             })
@@ -287,7 +287,7 @@ function getNeighborsSelected() {
     // Only display selected node and its neighbors
     nodes = getNeighbors(clickedNode, allLinks);
     links = allLinks.filter(function (link) {
-        return link.target.id === clickedNode.id || link.source.id === clickedNode.id;
+        return link.target === clickedNode.nodeName || link.source === clickedNode.nodeName;
     });
 
     // Update simulation
@@ -361,7 +361,7 @@ function getInfoBox(selectedNode) {
     cb.checked = true;
 
     // Set info box data
-    document.getElementById("nodeName").innerHTML = selectedNode.id;
+    document.getElementById("nodeName").innerHTML = selectedNode.nodeName;
     document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + selectedNode.nodeType;
 
     let found = false;
@@ -384,7 +384,7 @@ function getInfoBox(selectedNode) {
     // Display dependencies if found
     if (found) {
         newLinks = newLinks.map((data) => {
-            data = '<li>' + data.target.id + '</li>';
+            data = '<li>' + data.target + '</li>';
             return data;
         });
         dependencies.innerHTML = newLinks.join('');
@@ -395,7 +395,7 @@ function getInfoBox(selectedNode) {
     // Display depends on if found.
     if (found2) {
         dependLinks = dependLinks.map((data) => {
-            data = '<li>' + data.source.id + '</li>';
+            data = '<li>' + data.source + '</li>';
             return data;
         });
         dependson.innerHTML = dependLinks.join('');
@@ -492,8 +492,8 @@ function updateSlider(newVal) {
 }
 
 function replacer(key,value) {
-    if (key==="source") return value.id;
-    else if (key==="target") return value.id;
+    if (key==="source") return value.nodeName;
+    else if (key==="target") return value.nodeName;
     else return value;
 }
 
@@ -584,7 +584,7 @@ function getSVGString(svgNode) {
         // Add Children element Ids and Classes to the list
         let nodes = parentElement.getElementsByTagName("*");
         for (i = 0; i < nodes.length; i++) {
-            let id = nodes[i].id;
+            let id = nodes[i].nodeName;
             if ( !contains('#'+id, selectorTextArr) )
                 selectorTextArr.push( '#'+id );
 
@@ -679,14 +679,14 @@ function resetHoveredNode(){
 
 function track() {
     trackMenu.checked = true;
-    if(!connections.innerHTML.includes(clickedNode.id)) {
-        connections.innerHTML = connections.innerHTML + "<li for=\"trackMenu\" class=\"md-button-2\"  onclick=\"selectTrack(this.textContent)\">" + clickedNode.id + "<i class=\"fas fa-trash\" onclick=\"removeTrack(this.parentElement.textContent)\"></i></li>";
+    if(!connections.innerHTML.includes(clickedNode.nodeName)) {
+        connections.innerHTML = connections.innerHTML + "<li for=\"trackMenu\" class=\"md-button-2\"  onclick=\"selectTrack(this.textContent)\">" + clickedNode.nodeName + "<i class=\"fas fa-trash\" onclick=\"removeTrack(this.parentElement.textContent)\"></i></li>";
     }
 }
 
 function selectTrack(selectUserData){
     let emptyArray = nodes.filter((data)=>{
-        return data.id.startsWith(selectUserData);
+        return data.nodeName.startsWith(selectUserData);
     });
     selectNode(emptyArray.values().next().value);
 }
@@ -732,7 +732,7 @@ function updateGraph() {
     // links
     linkElements = linkGroup.selectAll('.link')
         .data(links, function (link) {
-            return link.target.id + link.source.id
+            return link.target + link.source
         });
 
     linkElements.exit().remove();
@@ -766,7 +766,7 @@ function updateGraph() {
 
     // nodes
     nodeElements = nodeGroup.selectAll('circle')
-        .data(nodes.filter((node) => {if(node.nodeType === "service"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "service"){return node;}}), function (node) { return node.nodeName });
 
     nodeElements.exit().remove();
 
@@ -795,7 +795,7 @@ function updateGraph() {
 
     // rectangle nodes
     rectNodeElements = nodeGroup.selectAll('rect')
-        .data(nodes.filter((node) => {if(node.nodeType === "kafka" || node.nodeType === "proxy" || node.nodeType === "writer" || node.nodeType === "pipeline"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "kafka" || node.nodeType === "proxy" || node.nodeType === "writer" || node.nodeType === "pipeline"){return node;}}), function (node) { return node.nodeName });
 
     rectNodeElements.exit().remove();
 
@@ -819,7 +819,7 @@ function updateGraph() {
 
     // star nodes
     starNodeElements = nodeGroup.selectAll('.star')
-        .data(nodes.filter((node) => {if(node.nodeType === "customer" || node.nodeType === "srcSink"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "customer" || node.nodeType === "srcSink"){return node;}}), function (node) { return node.nodeName });
 
     starNodeElements.exit().remove();
 
@@ -843,7 +843,7 @@ function updateGraph() {
 
     // ring nodes
     ringNodeElements = nodeGroup.selectAll('.ring')
-        .data(nodes.filter((node) => {if(node.nodeType === "archive" || node.nodeType === "bucket" || node.nodeType === "database"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "archive" || node.nodeType === "bucket" || node.nodeType === "database"){return node;}}), function (node) { return node.nodeName });
 
     ringNodeElements.exit().remove();
 
@@ -873,7 +873,7 @@ function updateGraph() {
 
     // triangle nodes
     triangleNodeElements = nodeGroup.selectAll('.triangle')
-        .data(nodes.filter((node) => {if(node.nodeType === "config"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "config"){return node;}}), function (node) { return node.nodeName });
 
     triangleNodeElements.exit().remove();
 
@@ -897,7 +897,7 @@ function updateGraph() {
 
     // y nodes
     yNodeElements = nodeGroup.selectAll('.y')
-        .data(nodes.filter((node) => {if(node.nodeType === "API"){return node;}}), function (node) { return node.id });
+        .data(nodes.filter((node) => {if(node.nodeType === "API"){return node;}}), function (node) { return node.nodeName });
 
     yNodeElements.exit().remove();
 
@@ -921,14 +921,14 @@ function updateGraph() {
 
     // texts
     textElements = textGroup.selectAll('text')
-        .data(nodes, function (node) { return node.id });
+        .data(nodes, function (node) { return node.nodeName });
 
     textElements.exit().remove();
 
     let textEnter = textElements
         .enter()
         .append('text')
-        .text(function (node) { return node.id })
+        .text(function (node) { return node.nodeName })
         .attr('font-size', 15)
         .attr('dx', 15)
         .attr('dy', 4);
@@ -942,7 +942,6 @@ function updateGraph() {
 }
 
 export function updateSimulation() {
-    console.log(inputFile)
     updateGraph();
 
     // Set color of nodes and links
@@ -1006,7 +1005,7 @@ export function updateSimulation() {
             .attr("d", function(d) {
                 let test = false;
                 allLinks.forEach(function (link) {
-                    if(link.target.id === d.source.id && link.source.id === d.target.id){
+                    if(link.target === d.source && link.source === d.target){
                         test = true;
                     }
                 });

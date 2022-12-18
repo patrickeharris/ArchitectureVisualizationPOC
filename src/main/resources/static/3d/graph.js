@@ -4,7 +4,7 @@ import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
 import rightClick from "../utils/rightClick.js";
 import {CustomSinCurve} from "../utils/CustomSinCurve.js";
-import {updateSimulation} from "../2d/graph.js";
+//import {updateSimulation} from "../2d/graph.js";
 import rightClickLink from "../utils/rightClickLink.js"
 
 // Data Abstraction
@@ -81,6 +81,7 @@ const Graph = ForceGraph3D()
     .linkDirectionalParticles(link => highlightLinks.has(link) ? 4 : 0)
     // Width of data transfer points
     .linkDirectionalParticleWidth(4)
+    .nodeId("nodeName")
     // Setup visibility for filtering of nodes
     .nodeVisibility((node) => customNodeVisibility(node))
     .linkVisibility((link) => customLinkVisibility(link))
@@ -298,6 +299,23 @@ function nodeClick(node) {
     // Set info box data
     document.getElementById("nodeName").innerHTML = node.nodeName;
     document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + node.nodeType;
+    //document.getElementById("nodeID").innerHTML = "<b>Node ID: </b>" + node.nodeID;
+    let endpointLinks = [];
+    allLinks.forEach((link) => {
+        if(link.source === node || link.target === node){
+            endpointLinks.push(link);
+        }
+    });
+    if(endpointLinks.length > 0){
+        let endpoints = endpointLinks.map((link) => {
+            let funcs = link.functions.map((func) => {
+                func = '<li>' + func.functionType + '<br>' + func.returnData + '<br>' + func.endpointName + '(' + '<br>' + func.arguments + ') </li>';
+                return func;
+            })
+            return funcs.join('');
+        })
+        //document.getElementById("endpoints").innerHTML = endpoints.join('');
+    }
 
     let found = false;
     let found2 = false;
@@ -319,8 +337,12 @@ function nodeClick(node) {
     // Display dependencies in info box
     if (found) {
         newLinks = newLinks.map((data) => {
-            data = '<li>' + data.target.nodeName + '</li>';
-            return data;
+            let link = '<li> <button class="accordian">' + data.target.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
+            let funcs = data.functions.map((func) => {
+                func = '<li>' + func.functionType + '<br>' + func.returnData + '<br>' + func.endpointName + '(' + '<br>' + func.arguments + ') </li>';
+                return func;
+            })
+            return link + funcs + '</ul></div> </li>';
         });
         dependencies.innerHTML = newLinks.join('');
     } else {
@@ -330,12 +352,29 @@ function nodeClick(node) {
     // Display depends on in info box
     if (found2) {
         dependLinks = dependLinks.map((data) => {
-            data = '<li>' + data.source.nodeName + '</li>';
-            return data;
+            let link = '<li> <button class="accordion">' + data.source.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
+            let funcs = data.functions.map((func) => {
+                func = '<li style="margin-left: 20px">' + func.functionType + '<br>' + func.returnData + '<br>' + func.endpointName + '(' + '<br>' + func.arguments + ') </li>';
+                return func;
+            })
+            return link + funcs.join('') + '</ul></div> </li>';
         });
         dependson.innerHTML = dependLinks.join('');
     } else {
         dependson.innerHTML = '<li>N/A</li>';
+    }
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+    for(i = 0; i < acc.length; i++){
+        acc[i].addEventListener("click", function(){
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if(panel.style.maxHeight){
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        })
     }
 }
 
