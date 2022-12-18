@@ -4,7 +4,7 @@ import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
 import rightClick from "../utils/rightClick.js";
 import {CustomSinCurve} from "../utils/CustomSinCurve.js";
-import {nodes, updateSimulation} from "../2d/graph.js";
+import {updateSimulation} from "../2d/graph.js";
 import rightClickLink from "../utils/rightClickLink.js"
 
 // Data Abstraction
@@ -61,13 +61,14 @@ const Graph = ForceGraph3D()
                 opacity: getNodeOpacity(node)
             })
         )
-        const sprite = new SpriteText(node.id);
+        const sprite = new SpriteText(node.nodeName);
         sprite.material.depthWrite = false; // make sprite background transparent
         sprite.color = getSpriteColor(node);
         sprite.textHeight = 8;
         sprite.position.set(0,10,0);
 
         nodes.add(sprite);
+
 
         return nodes;
     })
@@ -179,15 +180,10 @@ inputBox.onkeyup = (e)=> {
     //visibleNodes = []
     if (search) {
         emptyArray = nodes.filter((data)=>{
-            /*
-            if (data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase())) {
-                visibleNodes.push(data)
-            }
-             */
-            return data.id.toLocaleLowerCase().startsWith(search.toLocaleLowerCase());
+            return data.nodeName.toLocaleLowerCase().startsWith(search.toLocaleLowerCase());
         });
         emptyArray = emptyArray.map((data) => {
-            return data = '<li>' + data.id + '</li>';
+            return data = '<li>' + data.nodeName + '</li>';
         });
         reset()
         searchWrapper.classList.add("active");
@@ -198,7 +194,6 @@ inputBox.onkeyup = (e)=> {
         }
     } else {
         searchWrapper.classList.remove("active");
-        // visibleNodes = nodes;
         reset();
         resetView();
     }
@@ -208,7 +203,7 @@ function getNodeOpacity(node) {
     if (search === "") {
         return 0.75;
     }
-    if (node.id.toLowerCase().includes(search.toLowerCase())) {
+    if (node.nodeName.toLowerCase().includes(search.toLowerCase())) {
         return 0.8;
     } else {
         return 0.1;
@@ -241,7 +236,7 @@ function updateSlider(newVal){
 }
 
 function getSpriteColor(node){
-    if (!node.id.toLowerCase().includes(search.toLowerCase())) {
+    if (!node.nodeName.toLowerCase().includes(search.toLowerCase())) {
         return 'rgba(255,255,255,0)';
     }
     return getColor(node);
@@ -301,9 +296,8 @@ function nodeClick(node) {
     cb.checked = true;
 
     // Set info box data
-    document.getElementById("nodeName").innerHTML = node.id;
+    document.getElementById("nodeName").innerHTML = node.nodeName;
     document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + node.nodeType;
-    //document.getElementById("nodeID").innerHTML = "<b>Node ID: </b>" + node.nodeID;
 
     let found = false;
     let found2 = false;
@@ -325,7 +319,7 @@ function nodeClick(node) {
     // Display dependencies in info box
     if (found) {
         newLinks = newLinks.map((data) => {
-            data = '<li>' + data.target.id + '</li>';
+            data = '<li>' + data.target.nodeName + '</li>';
             return data;
         });
         dependencies.innerHTML = newLinks.join('');
@@ -336,7 +330,7 @@ function nodeClick(node) {
     // Display depends on in info box
     if (found2) {
         dependLinks = dependLinks.map((data) => {
-            data = '<li>' + data.source.id + '</li>';
+            data = '<li>' + data.source.nodeName + '</li>';
             return data;
         });
         dependson.innerHTML = dependLinks.join('');
@@ -360,7 +354,7 @@ function addNode() {
 
         // Check if node already exists
         nodes.forEach(node => {
-            if (node.id === newName) {
+            if (node.nodeName === newName) {
                 found = true;
             }
         })
@@ -377,20 +371,19 @@ function addNode() {
 
             // Create new node with info from form.
             let node = {
-                id: newName,
+                nodeName: newName,
                 nodeType: newType,
                 dependencies: deps,
-                nodeID: 23
             }
             nodes.push(node);
 
             // Create new links if new node has dependencies.
             deps.forEach(d => {
                 nodes.forEach(n => {
-                    if (n.nodeID.toString() === d) {
+                    if (n.nodeName.toString() === d) {
                         let link = {
                             source: newName,
-                            target: n.id
+                            target: n.nodeName
                         }
                         links.push(link);
                     }
@@ -433,7 +426,7 @@ function addLink() {
 
         // Check if target node exists
         nodes.forEach(node => {
-            if (node.id === newTarget) {
+            if (node.nodeName === newTarget) {
                 foundNode = true;
             }
         })
@@ -446,7 +439,7 @@ function addLink() {
             // Check if link already exists
             let found = false;
             links.forEach(link => {
-                if (link.source.id === selectedNode.id && link.target.id === newTarget) {
+                if (link.source.nodeName === selectedNode.nodeName && link.target.nodeName === newTarget) {
                     found = true;
                 }
             })
@@ -552,7 +545,7 @@ function select(element) {
         inputBox.value = selectUserData;
         searchWrapper.classList.remove("active");
         for (let i = 0; i < nodes.length; i++) {
-            if (nodes[i].id.startsWith(selectUserData)) {
+            if (nodes[i].nodeName.startsWith(selectUserData)) {
                 nodeClick(nodes[i])
             }
         }
@@ -702,8 +695,8 @@ function darkTheme() {
 
 function track() {
     trackMenu.checked = true;
-    if(!connections.innerHTML.includes(selectedNode.id)) {
-        connections.innerHTML = connections.innerHTML + "<li for=\"trackMenu\" class=\"md-button-2\" onclick=\"select(this)\">" + selectedNode.id + "<i class=\"fas fa-trash\" onclick=\"removeTrack(this.parentElement.textContent)\"></i></li>";
+    if(!connections.innerHTML.includes(selectedNode.nodeName)) {
+        connections.innerHTML = connections.innerHTML + "<li for=\"trackMenu\" class=\"md-button-2\" onclick=\"select(this)\">" + selectedNode.nodeName + "<i class=\"fas fa-trash\" onclick=\"removeTrack(this.parentElement.textContent)\"></i></li>";
     }
 }
 

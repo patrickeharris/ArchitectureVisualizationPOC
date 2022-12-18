@@ -13,8 +13,6 @@ public class Node {
     @Expose(serialize = true, deserialize = true)
     String nodeType;
     @Expose(serialize = true, deserialize = true)
-    String nodeID;
-    @Expose(serialize = true, deserialize = true)
     List<Integer> dependencies = new ArrayList<>();
     @Expose(serialize = true, deserialize = true)
     List<String> previousSteps = new ArrayList<>();
@@ -37,13 +35,6 @@ public class Node {
         this.nodeType = nodeType;
     }
 
-    public String getNodeID() {
-        return nodeID;
-    }
-
-    public void setNodeID(String nodeID) {
-        this.nodeID = nodeID;
-    }
 
     public List<Integer> getDependencies() {
         return dependencies;
@@ -74,7 +65,6 @@ public class Node {
         return "Node{" +
                 "nodeName='" + nodeName + '\'' +
                 ", nodeType='" + nodeType + '\'' +
-                ", nodeID='" + nodeID + '\'' +
                 ", dependencies=" + dependencies +
                 ", previousSteps=" + previousSteps +
                 ", requests=" + requests +

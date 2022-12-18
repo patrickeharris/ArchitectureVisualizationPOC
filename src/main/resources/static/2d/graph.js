@@ -153,7 +153,6 @@ function addNode() {
                 id: newName,
                 nodeType: newType,
                 dependencies: deps,
-                nodeID: 23
             }
             allNodes.push(node);
             nodes = allNodes;
@@ -161,7 +160,7 @@ function addNode() {
             // Create links based on dependencies
             deps.forEach(d => {
                 nodes.forEach(n => {
-                    if (n.nodeID.toString() === d) {
+                    if (n.id.toString() === d) {
                         let link = {
                             source: newName,
                             target: n.id
@@ -364,7 +363,6 @@ function getInfoBox(selectedNode) {
     // Set info box data
     document.getElementById("nodeName").innerHTML = selectedNode.id;
     document.getElementById("nodeType").innerHTML = "<b>Node Type: </b>" + selectedNode.nodeType;
-    document.getElementById("nodeID").innerHTML = "<b>Node ID: </b>" + selectedNode.nodeID;
 
     let found = false;
     let found2 = false;
@@ -725,6 +723,10 @@ function setLinkOpacity(link) {
     }
 }
 
+function setLinkWidth(link) {
+    return link.requests.length * 3;
+}
+
 function updateGraph() {
 
     // links
@@ -738,7 +740,9 @@ function updateGraph() {
     let linkEnter = linkElements
         .enter().append( "path" )//append path
         .attr( "class", "link" )
-        .attr('stroke-width', 3)
+        .attr('stroke-width', function(link) {
+            return setLinkWidth(link);
+        })
         .attr('stroke', 'rgba(50, 50, 50, 0.2)')
         .attr('marker-end', (d) => "url(#arrow)")//attach the arrow from defs
         .style("fill", "transparent")
