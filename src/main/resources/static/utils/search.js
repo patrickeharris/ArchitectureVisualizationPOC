@@ -10,11 +10,11 @@ inputBox.onkeyup = (e)=>{
     let emptyArray = [];
     if (userData){
         emptyArray = nodes.filter((data)=>{
-           return data.id.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
+           return data.nodeName.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
         });
         selectSearchNodes(emptyArray);
         emptyArray = emptyArray.map((data)=>{
-            return data = '<li>' + data.id + '</li>';
+            return data = '<li>' + data.nodeName + '</li>';
         });
         searchWrapper.classList.add("active");
         showSuggestions(emptyArray);
@@ -35,7 +35,7 @@ function select(element){
     inputBox.value = selectUserData;
     searchWrapper.classList.remove("active");
     let emptyArray = nodes.filter((data)=>{
-        return data.id.startsWith(selectUserData);
+        return data.nodeName.startsWith(selectUserData);
     });
     selectNode(emptyArray.values().next().value);
 }

@@ -4,7 +4,7 @@ import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
 import rightClick from "../utils/rightClick.js";
 import {CustomSinCurve} from "../utils/CustomSinCurve.js";
-//import {updateSimulation} from "../2d/graph.js";
+import {updateSimulation} from "../2d/graph.js";
 import rightClickLink from "../utils/rightClickLink.js"
 
 // Data Abstraction
@@ -308,7 +308,7 @@ function nodeClick(node) {
     });
     if(endpointLinks.length > 0){
         let endpoints = endpointLinks.map((link) => {
-            let funcs = link.functions.map((func) => {
+            let funcs = link.requests.map((func) => {
                 func = '<li>' + func.functionType + '<br>' + func.returnData + '<br>' + func.endpointName + '(' + '<br>' + func.arguments + ') </li>';
                 return func;
             })
@@ -338,7 +338,7 @@ function nodeClick(node) {
     if (found) {
         newLinks = newLinks.map((data) => {
             let link = '<li> <button class="accordian">' + data.target.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
-            let funcs = data.functions.map((func) => {
+            let funcs = data.requests.map((func) => {
                 func = '<li>' + func.functionType + '<br>' + func.returnData + '<br>' + func.endpointName + '(' + '<br>' + func.arguments + ') </li>';
                 return func;
             })
@@ -353,7 +353,7 @@ function nodeClick(node) {
     if (found2) {
         dependLinks = dependLinks.map((data) => {
             let link = '<li> <button class="accordion">' + data.source.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
-            let funcs = data.functions.map((func) => {
+            let funcs = data.requests.map((func) => {
                 func = '<li style="margin-left: 20px">' + func.functionType + '<br>' + func.returnData + '<br>' + func.endpointName + '(' + '<br>' + func.arguments + ') </li>';
                 return func;
             })

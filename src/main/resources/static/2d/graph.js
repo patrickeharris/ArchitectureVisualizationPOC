@@ -384,7 +384,7 @@ function getInfoBox(selectedNode) {
     // Display dependencies if found
     if (found) {
         newLinks = newLinks.map((data) => {
-            data = '<li>' + data.target + '</li>';
+            data = '<li>' + data.target.nodeName + '</li>';
             return data;
         });
         dependencies.innerHTML = newLinks.join('');
@@ -395,7 +395,7 @@ function getInfoBox(selectedNode) {
     // Display depends on if found.
     if (found2) {
         dependLinks = dependLinks.map((data) => {
-            data = '<li>' + data.source + '</li>';
+            data = '<li>' + data.source.nodeName + '</li>';
             return data;
         });
         dependson.innerHTML = dependLinks.join('');
