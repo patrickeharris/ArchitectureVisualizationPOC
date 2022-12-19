@@ -384,8 +384,12 @@ function getInfoBox(selectedNode) {
     // Display dependencies if found
     if (found) {
         newLinks = newLinks.map((data) => {
-            data = '<li>' + data.target.nodeName + '</li>';
-            return data;
+            let link = '<li> <button class="accordion">' + data.target.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
+            let funcs = data.requests.map((func) => {
+                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.msReturn + '<br>' + func.endpointFunction + '(' + '<br>' + func.argument + ') </li>';
+                return func;
+            })
+            return link + funcs.join('') + '</ul></div> </li>';
         });
         dependencies.innerHTML = newLinks.join('');
     } else {
@@ -395,12 +399,29 @@ function getInfoBox(selectedNode) {
     // Display depends on if found.
     if (found2) {
         dependLinks = dependLinks.map((data) => {
-            data = '<li>' + data.source.nodeName + '</li>';
-            return data;
+            let link = '<li> <button class="accordion">' + data.source.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
+            let funcs = data.requests.map((func) => {
+                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.msReturn + '<br>' + func.endpointFunction + '(' + '<br>' + func.argument + ') </li>';
+                return func;
+            })
+            return link + funcs.join('') + '</ul></div> </li>';
         });
         dependson.innerHTML = dependLinks.join('');
     } else {
         dependson.innerHTML = '<li>N/A</li>';
+    }
+    var acc = document.getElementsByClassName("accordion");
+    var i;
+    for(i = 0; i < acc.length; i++){
+        acc[i].addEventListener("click", function(){
+            this.classList.toggle("active");
+            var panel = this.nextElementSibling;
+            if(panel.style.maxHeight){
+                panel.style.maxHeight = null;
+            } else {
+                panel.style.maxHeight = panel.scrollHeight + "px";
+            }
+        })
     }
 }
 

@@ -341,12 +341,12 @@ function nodeClick(node) {
     // Display dependencies in info box
     if (found) {
         newLinks = newLinks.map((data) => {
-            let link = '<li> <button class="accordian">' + data.target.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
+            let link = '<li> <button class="accordion">' + data.target.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
             let funcs = data.requests.map((func) => {
-                func = '<li>' + func.functionType + '<br>' + func.returnData + '<br>' + func.endpointName + '(' + '<br>' + func.arguments + ') </li>';
+                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.msReturn + '<br>' + func.endpointFunction + '(' + '<br>' + func.argument + ') </li>';
                 return func;
             })
-            return link + funcs + '</ul></div> </li>';
+            return link + funcs.join('') + '</ul></div> </li>';
         });
         dependencies.innerHTML = newLinks.join('');
     } else {
@@ -358,7 +358,7 @@ function nodeClick(node) {
         dependLinks = dependLinks.map((data) => {
             let link = '<li> <button class="accordion">' + data.source.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
             let funcs = data.requests.map((func) => {
-                func = '<li style="margin-left: 20px">' + func.functionType + '<br>' + func.returnData + '<br>' + func.endpointName + '(' + '<br>' + func.arguments + ') </li>';
+                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.msReturn + '<br>' + func.endpointFunction + '(' + '<br>' + func.argument + ') </li>';
                 return func;
             })
             return link + funcs.join('') + '</ul></div> </li>';

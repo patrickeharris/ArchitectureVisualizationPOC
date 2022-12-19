@@ -1,10 +1,11 @@
 <!DOCTYPE HTML>
-<meta charset="utf-8">
-<link rel="stylesheet" href="styles.css">
-<script src="../libraries/d3.v7.min.js"></script>
-<script type="module" src="graph.js"></script>
-<script src="https://kit.fontawesome.com/31ba8b7d44.js" crossorigin="anonymous"></script>
+<head><meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+    <script src="../libraries/d3.v7.min.js"></script>
+    <script type="module" src="graph.js"></script>
+    <script src="https://kit.fontawesome.com/31ba8b7d44.js" crossorigin="anonymous"></script></head>
 
+<body>
 <ul class="hList">
     <li>
         <a class="menu">
@@ -103,6 +104,8 @@
         <div class="md-card-content">
             <h2 id="nodeName">Name</h2><br>
             <p id="nodeType">Type</p>
+            <ul id="endpoints" class="endpoints">
+            </ul>
             <p><b>Dependencies:</b></p>
             <ul class="dependencies">
                 <li class="md-caption">Coffee</li>
@@ -159,3 +162,4 @@
     </form>
 </div>
 <script src="../utils/drag.js"></script>
+</body>
