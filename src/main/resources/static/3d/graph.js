@@ -76,16 +76,16 @@ const Graph = ForceGraph3D()
     // Get data
     .jsonUrl('../data/train_ticket_new.json')
     // Setup link width
-    .linkWidth(link => highlightLinks.has(link) ? 4 : 1)
+    .linkWidth(link => getLinkWidth(link))
     // Setup data transfer visualization across links
     .linkDirectionalParticles(link => highlightLinks.has(link) ? 4 : 0)
     // Width of data transfer points
-    .linkDirectionalParticleWidth(4)
+    .linkDirectionalParticleWidth(link => getLinkWidth(link))
     .nodeId("nodeName")
     // Setup visibility for filtering of nodes
     .nodeVisibility((node) => customNodeVisibility(node))
     .linkVisibility((link) => customLinkVisibility(link))
-    .linkDirectionalArrowLength(8.5)
+    .linkDirectionalArrowLength(link => getLinkWidth(link))
     .linkDirectionalArrowRelPos(1)
     // Change where node is when clicking and dragging
     .onNodeDragEnd(node => {
@@ -164,6 +164,10 @@ const Graph = ForceGraph3D()
         rightClickLink(e);
         selectedLink = link;
     })
+
+function getLinkWidth(link) {
+    return link.requests.length * 4;
+}
 
 // When user types something in search box
 inputBox.onkeyup = (e)=> {
