@@ -124,7 +124,7 @@ const Graph = ForceGraph3D()
 
         // Update highlighted nodes on graph
         updateHighlight();
-        greedyKColoring();
+        //greedyKColoring();
     })
     // Setup hovering on links
     .onLinkHover(link => {
