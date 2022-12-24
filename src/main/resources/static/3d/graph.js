@@ -46,6 +46,7 @@ const Graph = ForceGraph3D()
 (document.getElementById('graph'))
     // Setup shapes
     .nodeThreeObject((node) => {
+        //console.log(node);
         const nodes = new THREE.Mesh(
             [
                 new THREE.SphereGeometry(5),
@@ -68,7 +69,6 @@ const Graph = ForceGraph3D()
         sprite.position.set(0,10,0);
 
         nodes.add(sprite);
-
 
         return nodes;
     })
@@ -124,6 +124,7 @@ const Graph = ForceGraph3D()
 
         // Update highlighted nodes on graph
         updateHighlight();
+        greedyKColoring();
     })
     // Setup hovering on links
     .onLinkHover(link => {
@@ -163,7 +164,96 @@ const Graph = ForceGraph3D()
     .onLinkRightClick((link, e) => {
         rightClickLink(e);
         selectedLink = link;
-    })
+
+    });
+
+
+function greedyKColoring() {
+    let {nodes, links} = Graph.graphData();
+    console.log(Graph.graphData());
+
+    const colors = ["rgb(100,200,250)","rgb(250,100,200)", "rgb(200,250,0)", "rgb(0,30,100)"]
+
+    // Initialize all vertices as unassigned
+    nodes.forEach(node => {
+        node.color = "-1";
+    });
+
+    // Set initial starting node && color
+    nodes[0].color = colors[0];
+
+    // Map of available colors
+    // A temporary array to store the available colors. True
+    // value of available[cr] would mean that the color cr is
+    // assigned to one of its adjacent vertices
+    const colorMap = new Map();
+    colors.forEach(color => {
+        colorMap.set(color, false);
+    });
+
+
+    // Assign colors to remaining V-1 vertices
+    for (let u = 1; u < nodes.length; u++) {
+        // Process all adjacent vertices and flag their colors
+        // as unavailable
+        links.filter(edge => edge.source === nodes[u]).forEach(edge => {
+            let compareNodes = (node) => {
+                return node.nodeName === edge.target.nodeName;
+            }
+
+            console.log(nodes.find(compareNodes));
+            if (nodes.find(compareNodes).color !== "-1") {
+                //Flag the color as taken
+                colorMap.set(nodes.find(compareNodes).color, true);
+            }
+        });
+
+        // Assign the found color
+        // colorMap.forEach((value, key) => {
+        //     if(value == false){
+        //         // Assign the found color
+        //         nodes[u].setAttribute("color", key);
+        //         break;
+        //     }
+        // });
+
+        for (let [key, value] of colorMap) {
+            if (value === false) {
+                // Assign the found color
+                nodes[u].color = key;
+                break;
+            }
+        }
+
+        links.filter(edge => edge.source == nodes[u]).forEach(edge => {
+            let compareNodes = (node) => {
+                return node.nodeName === edge.target.nodeName;
+            }
+
+            if (nodes.find(compareNodes).color !== "-1") {
+                //Flag the color as taken
+                colorMap.set(nodes.find(compareNodes).color, false);
+            }
+        });
+    }
+
+    //Update graph with new colors
+    // nodes.forEach(node => {
+    //
+    //
+    // })
+    Graph.graphData().nodes.forEach(node => {
+        node.__threeObj.children.forEach(child => {
+            console.log(child._color, node.color);
+            child._color = node.color;
+        })
+
+    });
+
+    updateSimulation();
+
+}
+
 
 function getLinkWidth(link) {
     return link.requests.length * 4;
@@ -171,7 +261,8 @@ function getLinkWidth(link) {
 
 // When user types something in search box
 inputBox.onkeyup = (e)=> {
-
+    console.log(Graph);
+    console.log(Graph.graphData());
     // Get data
     let { nodes, links } = Graph.graphData();
 
@@ -270,6 +361,27 @@ function getColor(node) {
     }
 
     return 'rgba(0,255,0)';
+}
+
+// Generates a random color for the node and sets the attribute
+// which is needed to prevent future neighbor nodes from being same color
+function getRandomColor(node){
+    const random = function(){return Math.floor(Math.random() * 10)};
+    Math.floor(Math.random() * 10);
+    return 'rgba(0,255,0)';
+}
+
+function colorNodesAndLinks(link){
+    const defaultMesh = new THREE.MeshLambertMaterial({
+        // Setup colors
+        color: getColor(node),
+        transparent: true,
+        opacity: getNodeOpacity(node)
+    });
+
+    console.log(link.getSource().__threeObj);
+
+    return link;
 }
 
 // Event when node is clicked on
