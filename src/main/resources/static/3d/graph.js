@@ -25,6 +25,8 @@ let highlighted = false;
 let removing = false;
 let bloomPass = new UnrealBloomPass();
 let a, downloads = 0;
+let defNodeColor = false;
+let i = 0;
 
 // HTML elements
 const searchWrapper = document.querySelector(".search-box");
@@ -46,7 +48,6 @@ const Graph = ForceGraph3D()
 (document.getElementById('graph'))
     // Setup shapes
     .nodeThreeObject((node) => {
-        //console.log(node);
         const nodes = new THREE.Mesh(
             [
                 new THREE.SphereGeometry(5),
@@ -77,6 +78,7 @@ const Graph = ForceGraph3D()
     .jsonUrl('../data/train_ticket_new.json')
     // Setup link width
     .linkWidth(link => getLinkWidth(link))
+    .linkColor(link => getLinkColor(link))
     // Setup data transfer visualization across links
     .linkDirectionalParticles(link => highlightLinks.has(link) ? 4 : 0)
     // Width of data transfer points
@@ -225,7 +227,7 @@ function greedyKColoring() {
             }
         }
 
-        links.filter(edge => edge.source == nodes[u]).forEach(edge => {
+        links.filter(edge => edge.source === nodes[u]).forEach(edge => {
             let compareNodes = (node) => {
                 return node.nodeName === edge.target.nodeName;
             }
@@ -254,6 +256,13 @@ function greedyKColoring() {
 
 }
 
+function getLinkColor(link) {
+
+    if (link.source === hoverNode) {
+        return 'rgb(50,50,200)';
+    }
+    return link.source.color;
+}
 
 function getLinkWidth(link) {
     return link.requests.length * 4;
@@ -340,16 +349,50 @@ function getSpriteColor(node){
 
 // Sets color of node
 function getColor(node) {
+
+    let { nodes, links } = Graph.graphData();
+
     if(highlightNodes.has(node)){
         if(node === hoverNode){
             return 'rgb(50,50,200)';
         }
-        else{
+        /*else{
             return 'rgba(0,200,200)';
         }
+
+         */
     }
 
-    let { nodes, links } = Graph.graphData();
+    if (!defNodeColor) {
+        nodes.map((n) => {
+            n.color = "-1";
+        })
+        defNodeColor = true;
+    }
+
+    if (node.color === "-1") {
+
+        const colors = ["rgb(255, 153, 204)", "rgb(255, 167, 0)", "rgb(245, 239, 71)",
+            "rgb(51, 153, 255)", "rgb(204, 51, 255)", "rgb(153, 0, 51)"]
+        let neighbors = getNeighbors(node, links);
+        node.color = colors[0];
+
+        neighbors.map((neighbor) => {
+            if (neighbor.color !== null) {
+                if (neighbor.color === node.color) {
+
+                    if (i === 5) {
+                        i = 0;
+                    } else {
+                        i++;
+                    }
+                    node.color = colors[i];
+                }
+            }
+        })
+    }
+
+    /*
     let numNeighbors = getNeighbors(node, links).length;
 
     if (numNeighbors > threshold) {
@@ -361,6 +404,10 @@ function getColor(node) {
     }
 
     return 'rgba(0,255,0)';
+
+     */
+
+    return node.color;
 }
 
 // Generates a random color for the node and sets the attribute

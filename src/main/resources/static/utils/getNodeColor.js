@@ -1,6 +1,6 @@
 
 // set node color based on if it is selected, hovered over, or a neighbor
-export default function getNodeColor(node, neighbors, selectedNode, hoverNode, threshold) {
+export default function getNodeColor(node, neighbors, selectedNode, hoverNode, defNodeColor) {
     if (Array.isArray(neighbors) && neighbors.indexOf(node) > -1) {
         if(node === selectedNode || node === hoverNode){
             return 'blue';
@@ -8,12 +8,9 @@ export default function getNodeColor(node, neighbors, selectedNode, hoverNode, t
         if(neighbors.indexOf(hoverNode) > -1){
             return 'deepskyblue';
         }
-        if(neighbors.length > threshold){
-            return 'red';
-        }
-        if(neighbors.length > threshold / 2){
-            return 'orange';
-        }
-        return 'green';
+
+        let randomColor = Math.floor(Math.random()*16777215).toString(16);
+
+        return '#' + randomColor;
     }
 }

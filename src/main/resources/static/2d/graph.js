@@ -34,6 +34,8 @@ let clickedNode = null;
 let clickedLink = null;
 let hoveredNode = null;
 let hoveredLink = null;
+let defNodeColor = false;
+let i = 0;
 let testNodes = [];
 let theme = 0;
 let threshold = 8;
@@ -466,12 +468,15 @@ function hoverNode(selectedNode) {
     updateSimulation();
 }
 
+/*
 // Hover over link
 function hoverLink(selectedLink) {
     hoveredLink = selectedLink
     changeLinkColor = true;
     updateSimulation();
 }
+
+ */
 
 // Stop hovering over node
 function stopHoverNode(selectedNode) {
@@ -480,12 +485,15 @@ function stopHoverNode(selectedNode) {
     updateSimulation();
 }
 
+/*
 // Stop hovering over link
 function stopHoverLink(selectedLink) {
     hoveredLink = null;
     changeLinkColor = true;
     updateSimulation();
 }
+
+ */
 
 // Set dark mode
 function darkMode() {
@@ -962,6 +970,52 @@ function updateGraph() {
         })
 }
 
+function getColor(node) {
+
+    let neighbors = getNeighbors(node, allLinks);
+
+    if (node === clickedNode || node === hoveredNode) {
+        return 'blue';
+    }
+
+    /*
+    if (neighbors.indexOf(hoveredNode) > -1) {
+        return 'deepskyblue';
+    }
+     */
+
+    if (!defNodeColor) {
+        allNodes.map((n) => {
+            n.color = "-1";
+        })
+        defNodeColor = true;
+    }
+
+    if (node.color === "-1") {
+
+        const colors = ["rgb(255, 153, 204)", "rgb(255, 167, 0)", "rgb(245, 239, 71)",
+            "rgb(51, 153, 255)", "rgb(204, 51, 255)", "rgb(153, 0, 51)"];
+
+        node.color = colors[0];
+
+        neighbors.map((neighbor) => {
+            if (neighbor.color !== null) {
+                if (neighbor.color === node.color) {
+
+                    if (i === 5) {
+                        i = 0;
+                    } else {
+                        i++;
+                    }
+                    node.color = colors[i];
+                }
+            }
+        })
+    }
+
+    return node.color;
+}
+
 export function updateSimulation() {
     updateGraph();
 
@@ -970,35 +1024,44 @@ export function updateSimulation() {
         if(changeColor) {
             changeColor = false;
             nodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+                return getColor(node);
+                //return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, defNodeColor);
             });
             rectNodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+                return getColor(node);
+                //return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, defNodeColor);
             });
             starNodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+                return getColor(node);
+                //return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, defNodeColor);
             });
             ringNodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+                return getColor(node);
+                //return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, defNodeColor);
             });
             triangleNodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+                return getColor(node);
+                //return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, defNodeColor);
             });
             yNodeElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+                return getColor(node);
+                //return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, defNodeColor);
             });
             textElements.attr('fill', function (node) {
-                return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, threshold);
+                return getColor(node);
+                //return getNodeColor(node, getNeighbors(node, allLinks), clickedNode, hoveredNode, defNodeColor);
             });
             linkElements.attr('stroke', function (link) {
-                return getLinkColor(link, hoveredNode, null, theme);
+                return getLinkColor(link, hoveredNode, hoveredLink, theme);
             });
         }
-        if (changeLinkColor) {
+        /*if (changeLinkColor) {
             linkElements.attr('stroke', function(link){
                 return getLinkColor(link, hoveredNode, hoveredLink, theme);
             });
         }
+
+         */
         nodeElements
             .attr('cx', function (node) { return node.x })
             .attr('cy', function (node) { return node.y })
