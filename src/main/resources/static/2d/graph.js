@@ -1,10 +1,9 @@
 // Import functions from utils file
 import getLinkColor from '../utils/getLinkColor.js';
-import getNodeColor from '../utils/getNodeColor.js';
 import getNeighbors from '../utils/getNeighbors.js';
 import rightClick from "../utils/rightClick.js";
 import rightClickLink from "../utils/rightClickLink.js";
-import inputFile from '../data/small_v1.json' assert {type: 'json'};
+import inputFile from '../data/large_v1.json' assert {type: 'json'};
 import {saveAs} from "../utils/file-saver.js";
 
 // HTML elements
@@ -994,10 +993,29 @@ function getColor(node) {
     if (node.color === "-1") {
 
         const colors = ["rgb(255, 153, 204)", "rgb(255, 167, 0)", "rgb(245, 239, 71)",
-            "rgb(51, 153, 255)", "rgb(204, 51, 255)", "rgb(153, 0, 51)"];
+            "rgb(51, 153, 255)", "rgb(204, 51, 255)", "rgb(153, 0, 51)", "rgb(102, 255, 204)",
+            "rgb(153, 102, 51)"];
 
-        node.color = colors[0];
+        let offLimits = [];
+        let newColors = [];
 
+        neighbors.map((neighbor) => {
+            if (neighbor.color !== "-1") {
+                offLimits.push(neighbor.color);
+            }
+        })
+
+        colors.map((color) => {
+            if (offLimits.indexOf(color) === -1) {
+                newColors.push(color);
+            }
+        })
+
+        let randIndex = Math.floor(Math.random() * newColors.length);
+
+        node.color = newColors[randIndex];
+
+        /*
         neighbors.map((neighbor) => {
             if (neighbor.color !== null) {
                 if (neighbor.color === node.color) {
@@ -1011,6 +1029,8 @@ function getColor(node) {
                 }
             }
         })
+
+         */
     }
 
     return node.color;

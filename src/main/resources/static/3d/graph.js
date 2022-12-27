@@ -74,7 +74,7 @@ const Graph = ForceGraph3D()
     })
     .nodeThreeObjectExtend(false)
     // Get data
-    .jsonUrl('../data/small_v1.json')
+    .jsonUrl('../data/large_v1.json')
     // Setup link width
     .linkWidth(link => getLinkWidth(link))
     .linkColor(link => getLinkColor(link))
@@ -391,10 +391,31 @@ function getColor(node) {
     if (node.color === "-1") {
 
         const colors = ["rgb(255, 153, 204)", "rgb(255, 167, 0)", "rgb(245, 239, 71)",
-            "rgb(51, 153, 255)", "rgb(204, 51, 255)", "rgb(153, 0, 51)"]
-        let neighbors = getNeighbors(node, links);
-        node.color = colors[0];
+            "rgb(51, 153, 255)", "rgb(204, 51, 255)", "rgb(153, 0, 51)", "rgb(102, 255, 204)",
+            "rgb(153, 102, 51)"];
 
+        let neighbors = getNeighbors(node, links);
+
+        let offLimits = [];
+        let newColors = [];
+
+        neighbors.map((neighbor) => {
+            if (neighbor.color !== "-1") {
+                offLimits.push(neighbor.color);
+            }
+        })
+
+        colors.map((color) => {
+            if (offLimits.indexOf(color) === -1) {
+                newColors.push(color);
+            }
+        })
+
+        let randIndex = Math.floor(Math.random() * newColors.length);
+
+        node.color = newColors[randIndex];
+
+        /*
         neighbors.map((neighbor) => {
             if (neighbor.color !== null) {
                 if (neighbor.color === node.color) {
@@ -408,6 +429,8 @@ function getColor(node) {
                 }
             }
         })
+
+         */
     }
 
     /*
