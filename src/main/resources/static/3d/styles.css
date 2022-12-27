@@ -103,7 +103,7 @@ body{
     opacity: 0;
     pointer-events: none;
 }
-.search-box.active .autocom_box{
+.search-box.active2 .autocom_box{
     padding: 10px 8px;
     opacity: 1;
     pointer-events: auto;
@@ -119,7 +119,7 @@ body{
     border-radius: 3px;
     display: none;
 }
-.search-box.active .autocom_box li{
+.search-box.active2 .autocom_box li{
     display: block;
 }
 .autocom_box li:hover{

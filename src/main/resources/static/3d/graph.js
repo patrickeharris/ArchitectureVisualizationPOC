@@ -4,7 +4,6 @@ import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
 import rightClick from "../utils/rightClick.js";
 import {CustomSinCurve} from "../utils/CustomSinCurve.js";
-import {updateSimulation} from "../2d/graph.js";
 import rightClickLink from "../utils/rightClickLink.js"
 
 // Data Abstraction
@@ -75,7 +74,7 @@ const Graph = ForceGraph3D()
     })
     .nodeThreeObjectExtend(false)
     // Get data
-    .jsonUrl('../data/train_ticket_new.json')
+    .jsonUrl('../data/small_v1.json')
     // Setup link width
     .linkWidth(link => getLinkWidth(link))
     .linkColor(link => getLinkColor(link))
@@ -252,20 +251,28 @@ function greedyKColoring() {
 
     });
 
-    updateSimulation();
 
 }
 
 function getLinkColor(link) {
 
     if (link.source === hoverNode) {
-        return 'rgb(50,50,200)';
+        return `rgba(50,50,200, ${getLinkOpacity(link)})`;
     }
-    return link.source.color;
+    let color = link.source.color;
+    color = color.replace(`)`, `, ${getLinkOpacity(link)})`).replace('rgb', 'rgba');
+    return color;
 }
 
 function getLinkWidth(link) {
-    return link.requests.length * 4;
+    if (search === "") {
+        return link.requests.length * 4;
+    }
+    if (link.source.nodeName.toLowerCase().includes(search.toLowerCase()) || link.target.nodeName.toLowerCase().includes(search.toLowerCase())) {
+        return link.requests.length * 4;
+    } else {
+        return 0;
+    }
 }
 
 // When user types something in search box
@@ -291,14 +298,14 @@ inputBox.onkeyup = (e)=> {
             return data = '<li>' + data.nodeName + '</li>';
         });
         reset()
-        searchWrapper.classList.add("active");
+        searchWrapper.classList.add("active2");
         showSuggestions(emptyArray);
         let allList = suggBox.querySelectorAll("li");
         for (let index = 0; index < allList.length; index++) {
             allList[index].setAttribute("onclick", "select(this)")
         }
     } else {
-        searchWrapper.classList.remove("active");
+        searchWrapper.classList.remove("active2");
         reset();
         resetView();
     }
@@ -312,6 +319,17 @@ function getNodeOpacity(node) {
         return 0.8;
     } else {
         return 0.1;
+    }
+}
+
+function getLinkOpacity(link) {
+    if (search === "") {
+        return 1;
+    }
+    if (link.source.nodeName.toLowerCase().includes(search.toLowerCase()) || link.target.nodeName.toLowerCase().includes(search.toLowerCase())) {
+        return 1;
+    } else {
+        return 0.2;
     }
 }
 
@@ -472,7 +490,7 @@ function nodeClick(node) {
     if(endpointLinks.length > 0){
         let endpoints = endpointLinks.map((link) => {
             let funcs = link.requests.map((func) => {
-                func = '<li>' + func.functionType + '<br>' + func.returnData + '<br>' + func.endpointName + '(' + '<br>' + func.arguments + ') </li>';
+                func = '<li>' + func.type + '<br>' + func.returnData + '<br>' + func.endPointName + '(' + '<br>' + func.arguments + ') </li>';
                 return func;
             })
             return funcs.join('');
@@ -502,7 +520,7 @@ function nodeClick(node) {
         newLinks = newLinks.map((data) => {
             let link = '<li> <button class="accordion">' + data.target.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
             let funcs = data.requests.map((func) => {
-                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.msReturn + '<br>' + func.endpointFunction + '(' + '<br>' + func.argument + ') </li>';
+                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.returnData + '<br>' + func.endPointName + '(' + '<br>' + func.arguments + ') </li>';
                 return func;
             })
             return link + funcs.join('') + '</ul></div> </li>';
@@ -517,7 +535,7 @@ function nodeClick(node) {
         dependLinks = dependLinks.map((data) => {
             let link = '<li> <button class="accordion">' + data.source.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
             let funcs = data.requests.map((func) => {
-                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.msReturn + '<br>' + func.endpointFunction + '(' + '<br>' + func.argument + ') </li>';
+                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.returnData + '<br>' + func.endPointName + '(' + '<br>' + func.arguments + ') </li>';
                 return func;
             })
             return link + funcs.join('') + '</ul></div> </li>';
@@ -599,7 +617,6 @@ function addNode() {
             })
 
             // Update the simulation
-            updateSimulation();
             closeNodeForm();
         }
     });
@@ -745,9 +762,10 @@ function select(element) {
         let {nodes, links} = Graph.graphData();
         let selectUserData = element.textContent;
         inputBox.value = selectUserData;
-        searchWrapper.classList.remove("active");
+        searchWrapper.classList.remove("active2");
+        searchWrapper.firstElementChild.firstElementChild.value = "";
         for (let i = 0; i < nodes.length; i++) {
-            if (nodes[i].nodeName.startsWith(selectUserData)) {
+            if (nodes[i].nodeName === selectUserData) {
                 nodeClick(nodes[i])
             }
         }
@@ -883,16 +901,16 @@ function exportToJsonFile(jsonData) {
 
 function lightTheme() {
     Graph.backgroundColor("#FFFFFF");
-    Graph.linkColor(() => "#000000");
-    Graph.linkDirectionalParticleColor(() => "#FFFFFF");
-    document.querySelector(".scene-tooltip").classList.add("active");
+    //Graph.linkColor(() => "#000000");
+    //Graph.linkDirectionalParticleColor(() => "#FFFFFF");
+    //document.querySelector(".scene-tooltip").classList.add("active");
 }
 
 function darkTheme() {
     Graph.backgroundColor("#000000");
-    Graph.linkColor(defLinkColor);
-    Graph.linkDirectionalParticleColor(defLinkColor);
-    document.querySelector(".scene-tooltip").classList.remove("active");
+    //Graph.linkColor(defLinkColor);
+    //Graph.linkDirectionalParticleColor(defLinkColor);
+    //document.querySelector(".scene-tooltip").classList.remove("active");
 }
 
 function track() {
@@ -972,9 +990,12 @@ function importGraph() {
     input.click();
 }
 
+lightTheme();
+
 // Populate graph after 150ms (after async jsonURL runs)
 delay(150).then(() => {
     let { nodes, links } = Graph.graphData();
+    Graph.d3Force('charge').strength(-150)
     allLinks = links;
     visibleNodes = nodes;
     reset();

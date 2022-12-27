@@ -4,7 +4,7 @@ import getNodeColor from '../utils/getNodeColor.js';
 import getNeighbors from '../utils/getNeighbors.js';
 import rightClick from "../utils/rightClick.js";
 import rightClickLink from "../utils/rightClickLink.js";
-import inputFile from '../data/train_ticket_new.json' assert {type: 'json'};
+import inputFile from '../data/small_v1.json' assert {type: 'json'};
 import {saveAs} from "../utils/file-saver.js";
 
 // HTML elements
@@ -78,7 +78,7 @@ let linkForce = d3
 let simulation = d3
     .forceSimulation()
     .force('link', linkForce)
-    .force('charge', d3.forceManyBody().strength(-240))
+    .force('charge', d3.forceManyBody().strength(-640))
     .force('center', d3.forceCenter(width / 2, height / 2));
 
 let dragDrop = d3.drag().on('start', function (event, node) {
@@ -388,7 +388,7 @@ function getInfoBox(selectedNode) {
         newLinks = newLinks.map((data) => {
             let link = '<li> <button class="accordion">' + data.target.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
             let funcs = data.requests.map((func) => {
-                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.msReturn + '<br>' + func.endpointFunction + '(' + '<br>' + func.argument + ') </li>';
+                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.returnData + '<br>' + func.endPointName + '(' + '<br>' + func.arguments + ') </li>';
                 return func;
             })
             return link + funcs.join('') + '</ul></div> </li>';
@@ -403,7 +403,7 @@ function getInfoBox(selectedNode) {
         dependLinks = dependLinks.map((data) => {
             let link = '<li> <button class="accordion">' + data.source.nodeName + '</button> <div class="panel" Endpoints: <br> <ul>';
             let funcs = data.requests.map((func) => {
-                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.msReturn + '<br>' + func.endpointFunction + '(' + '<br>' + func.argument + ') </li>';
+                func = '<li style="margin-left: 20px">' + func.type + '<br>' + func.returnData + '<br>' + func.endPointName + '(' + '<br>' + func.arguments + ') </li>';
                 return func;
             })
             return link + funcs.join('') + '</ul></div> </li>';
@@ -692,7 +692,7 @@ function svgString2Image( svgString, width, height, format, callback ) {
 
 // Force reset graph
 function forceReset() {
-    searchWrapper.classList.remove("active");
+    searchWrapper.classList.remove("active2");
     cb.checked = false;
     resetData();
     resetZoom();

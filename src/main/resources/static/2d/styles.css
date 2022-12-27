@@ -113,7 +113,8 @@
 
 .search-box{
     width: 50%;
-    position: relative;
+    position: absolute;
+    display: block;
 }
 
 .search-box .autocom_box{
@@ -124,7 +125,7 @@
     pointer-events: none;
 }
 
-.search-box.active .autocom_box{
+.search-box.active2 .autocom_box{
     padding: 10px 8px;
     opacity: 1;
     pointer-events: auto;
@@ -139,7 +140,7 @@
     display: none;
 }
 
-.search-box.active .autocom_box li{
+.search-box.active2 .autocom_box li{
     display: block;
 }
 

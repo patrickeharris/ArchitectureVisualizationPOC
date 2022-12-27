@@ -16,7 +16,7 @@ inputBox.onkeyup = (e)=>{
         emptyArray = emptyArray.map((data)=>{
             return data = '<li>' + data.nodeName + '</li>';
         });
-        searchWrapper.classList.add("active");
+        searchWrapper.classList.add("active2");
         showSuggestions(emptyArray);
         let allList = suggBox.querySelectorAll("li");
         for(let index = 0; index < allList.length; index++){
@@ -25,7 +25,7 @@ inputBox.onkeyup = (e)=>{
         }
     }
     else{
-        searchWrapper.classList.remove("active");
+        searchWrapper.classList.remove("active2");
         resetData();
     }
 }
@@ -33,7 +33,7 @@ inputBox.onkeyup = (e)=>{
 function select(element){
     let selectUserData = element.textContent;
     inputBox.value = selectUserData;
-    searchWrapper.classList.remove("active");
+    searchWrapper.classList.remove("active2");
     let emptyArray = nodes.filter((data)=>{
         return data.nodeName.startsWith(selectUserData);
     });
