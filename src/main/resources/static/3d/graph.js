@@ -49,7 +49,7 @@ const Graph = ForceGraph3D()
     .nodeThreeObject((node) => {
         const nodes = new THREE.Mesh(
             [
-                new THREE.SphereGeometry(5),
+                new THREE.SphereGeometry(10),
                 new THREE.BoxGeometry(10, 10, 10),
                 new THREE.ConeGeometry(5, 10),
                 new THREE.CylinderGeometry(5, 5, 10),
@@ -66,7 +66,7 @@ const Graph = ForceGraph3D()
         sprite.material.depthWrite = false; // make sprite background transparent
         sprite.color = getSpriteColor(node);
         sprite.textHeight = 8;
-        sprite.position.set(0,10,0);
+        sprite.position.set(0,15,0);
 
         nodes.add(sprite);
 
@@ -79,7 +79,7 @@ const Graph = ForceGraph3D()
     .linkWidth(link => getLinkWidth(link))
     .linkColor(link => getLinkColor(link))
     // Setup data transfer visualization across links
-    .linkDirectionalParticles(link => highlightLinks.has(link) ? 4 : 0)
+    .linkDirectionalParticles(link => highlightLinks.has(link) ? 2 : 0)
     // Width of data transfer points
     .linkDirectionalParticleWidth(link => getLinkWidth(link))
     .nodeId("nodeName")
@@ -390,9 +390,9 @@ function getColor(node) {
 
     if (node.color === "-1") {
 
-        const colors = ["rgb(255, 153, 204)", "rgb(255, 167, 0)", "rgb(245, 239, 71)",
-            "rgb(51, 153, 255)", "rgb(204, 51, 255)", "rgb(153, 0, 51)", "rgb(102, 255, 204)",
-            "rgb(153, 102, 51)"];
+        const colors = ["rgb(250, 93, 57)", "rgb(255, 167, 0)", "rgb(245, 239, 71)",
+            "rgb(51, 241, 255)", "rgb(204, 51, 255)", "rgb(255, 51, 112)", "rgb(173, 255, 51)",
+            "rgb(194, 151, 252)"];
 
         let neighbors = getNeighbors(node, links);
 
@@ -510,6 +510,8 @@ function nodeClick(node) {
             endpointLinks.push(link);
         }
     });
+
+    document.getElementById("dependencyNum").innerHTML = "<b>Number of Dependencies: </b>" + endpointLinks.length;
     if(endpointLinks.length > 0){
         let endpoints = endpointLinks.map((link) => {
             let funcs = link.requests.map((func) => {
@@ -537,6 +539,8 @@ function nodeClick(node) {
             dependLinks.push(link);
         }
     });
+
+    document.getElementById("dependentNum").innerHTML = "<b>Number of Dependents: </b>" + dependLinks.length;
 
     // Display dependencies in info box
     if (found) {

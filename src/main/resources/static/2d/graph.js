@@ -56,7 +56,7 @@ var linkElements,
 svg.append("svg:defs").append("svg:marker")
     .attr("id", "arrow")
     .attr("viewBox", "0 -5 10 10")
-    .attr('refX', 17)//so that it comes towards the center.
+    .attr('refX', 30)//so that it comes towards the center.
     .attr("markerWidth", 5)
     .attr("markerHeight", 5)
     .attr("orient", "auto")
@@ -382,6 +382,8 @@ function getInfoBox(selectedNode) {
         }
     });
 
+    document.getElementById("dependencyNum").innerHTML = "<b>Number of Dependencies: </b>" + newLinks.length;
+
     // Display dependencies if found
     if (found) {
         newLinks = newLinks.map((data) => {
@@ -396,6 +398,8 @@ function getInfoBox(selectedNode) {
     } else {
         dependencies.innerHTML = '<li>N/A</li>';
     }
+
+    document.getElementById("dependentNum").innerHTML = "<b>Number of Dependents: </b>" + dependLinks.length;
 
     // Display depends on if found.
     if (found2) {
@@ -752,7 +756,7 @@ function setLinkOpacity(link) {
 }
 
 function setLinkWidth(link) {
-    return link.requests.length * 3;
+    return link.requests.length * 2;
 }
 
 function updateGraph() {
@@ -780,9 +784,7 @@ function updateGraph() {
         .on('contextmenu', function (e, link) {
             clickedLink = link;
             rightClickLink(e);
-         })
-        .on('mouseover', function(e, link){hoverLink(link)})
-        .on('mouseout', function(e, link){stopHoverLink(link)});
+         });
 
     linkElements = linkEnter.merge(linkElements);
 
@@ -801,7 +803,7 @@ function updateGraph() {
     let nodeEnter = nodeElements
         .enter()
         .append('circle')
-        .attr('r', 10)
+        .attr('r', 15)
         .call(dragDrop)
         // we link the selectNode method here
         // to update the graph on every click
@@ -992,9 +994,9 @@ function getColor(node) {
 
     if (node.color === "-1") {
 
-        const colors = ["rgb(255, 153, 204)", "rgb(255, 167, 0)", "rgb(245, 239, 71)",
-            "rgb(51, 153, 255)", "rgb(204, 51, 255)", "rgb(153, 0, 51)", "rgb(102, 255, 204)",
-            "rgb(153, 102, 51)"];
+        const colors = ["rgb(250, 93, 57)", "rgb(255, 167, 0)", "rgb(245, 239, 71)",
+            "rgb(51, 241, 255)", "rgb(204, 51, 255)", "rgb(255, 51, 112)", "rgb(173, 255, 51)",
+            "rgb(194, 151, 252)"];
 
         let offLimits = [];
         let newColors = [];
@@ -1014,23 +1016,6 @@ function getColor(node) {
         let randIndex = Math.floor(Math.random() * newColors.length);
 
         node.color = newColors[randIndex];
-
-        /*
-        neighbors.map((neighbor) => {
-            if (neighbor.color !== null) {
-                if (neighbor.color === node.color) {
-
-                    if (i === 5) {
-                        i = 0;
-                    } else {
-                        i++;
-                    }
-                    node.color = colors[i];
-                }
-            }
-        })
-
-         */
     }
 
     return node.color;
@@ -1123,6 +1108,7 @@ export function updateSimulation() {
                     return  "M" + d.source.x + "," + d.source.y + ", " + d.target.x + "," + d.target.y;
                 }
             });
+
     });
 
     simulation.force('link').links(links);

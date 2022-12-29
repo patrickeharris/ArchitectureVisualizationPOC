@@ -35,11 +35,13 @@
 </div>
 
 <div class="btn-group">
+    <!--
     <button id="zoom_in" class="button" onclick="zoomIn()">Zoom in</button>
     <button class="button" onclick="zoomOut()">Zoom out</button>
     <button class="button" onclick="resetZoom()">Reset zoom</button>
     <button class="button" onclick="center()">Center</button>
     <button class="button" onclick="addNode()">Add Node</button>
+    -->
     <button class="button" onclick="importGraph()">Import</button>
     <button class="button" onclick="exportGraph()">Export</button>
     <button class="button" onclick="download()">Screenshot</button>
@@ -55,6 +57,7 @@
                 <i class="uil uil-eye"></i>
                 <span>Show Neighbors</span>
             </li>
+            <!--
             <li class="item" onclick="addLink()">
                 <i class="uil uil-add-link"></i>
                 <span>Add Link</span>
@@ -63,6 +66,7 @@
                 <i class="uil uil-link-alt"></i>
                 <span>Highlight Nodes</span>
             </li>
+            -->
             <li class="item" onclick="track()">
                 <i class="uil uil-edit"></i>
                 <span>Track Node</span>
@@ -108,12 +112,14 @@
             <p id="nodeType">Type</p>
             <ul id="endpoints" class="endpoints">
             </ul>
+            <p id="dependencyNum">Number</p>
             <p><b>Dependencies:</b></p>
             <ul class="dependencies">
                 <li class="md-caption">Coffee</li>
                 <li class="md-caption">Tea</li>
                 <li class="md-caption">Milk</li>
             </ul>
+            <p id="dependentNum">Number</p>
             <p><b>Dependents:</b></p>
             <ul class="dependson">
                 <li class="md-caption">Coffee</li>
