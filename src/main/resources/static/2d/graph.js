@@ -702,7 +702,7 @@ function forceReset() {
     center();
 }
 
-function resetHoveredNode(){
+function resetHoveredNode() {
     //clickedNode = null;
     hoveredNode = null;
     changeColor = true;
@@ -979,12 +979,6 @@ function getColor(node) {
         return 'blue';
     }
 
-    /*
-    if (neighbors.indexOf(hoveredNode) > -1) {
-        return 'deepskyblue';
-    }
-     */
-
     if (!defNodeColor) {
         allNodes.map((n) => {
             n.color = "-1";
@@ -1142,4 +1136,3 @@ window.track = track;
 window.removeTrack = removeTrack;
 window.toggleTrack = toggleTrack;
 window.selectTrack = selectTrack;
-window.resetHoveredNode = resetHoveredNode;

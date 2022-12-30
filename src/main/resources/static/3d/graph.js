@@ -1,5 +1,5 @@
 // Import for lighting
-import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
+//import {UnrealBloomPass} from '//cdn.skypack.dev/three@0.136/examples/jsm/postprocessing/UnrealBloomPass.js';
 import getNeighbors from "../utils/getNeighbors.js";
 import { saveAs } from '../utils/file-saver.js';
 import rightClick from "../utils/rightClick.js";
@@ -22,7 +22,7 @@ let defLinkColor = null;
 let threshold = 8;
 let highlighted = false;
 let removing = false;
-let bloomPass = new UnrealBloomPass();
+//let bloomPass = new UnrealBloomPass();
 let a, downloads = 0;
 let defNodeColor = false;
 let i = 0;
@@ -125,7 +125,6 @@ const Graph = ForceGraph3D()
 
         // Update highlighted nodes on graph
         updateHighlight();
-        //greedyKColoring();
     })
     // Setup hovering on links
     .onLinkHover(link => {
@@ -167,92 +166,6 @@ const Graph = ForceGraph3D()
         selectedLink = link;
 
     });
-
-
-function greedyKColoring() {
-    let {nodes, links} = Graph.graphData();
-    console.log(Graph.graphData());
-
-    const colors = ["rgb(100,200,250)","rgb(250,100,200)", "rgb(200,250,0)", "rgb(0,30,100)"]
-
-    // Initialize all vertices as unassigned
-    nodes.forEach(node => {
-        node.color = "-1";
-    });
-
-    // Set initial starting node && color
-    nodes[0].color = colors[0];
-
-    // Map of available colors
-    // A temporary array to store the available colors. True
-    // value of available[cr] would mean that the color cr is
-    // assigned to one of its adjacent vertices
-    const colorMap = new Map();
-    colors.forEach(color => {
-        colorMap.set(color, false);
-    });
-
-
-    // Assign colors to remaining V-1 vertices
-    for (let u = 1; u < nodes.length; u++) {
-        // Process all adjacent vertices and flag their colors
-        // as unavailable
-        links.filter(edge => edge.source === nodes[u]).forEach(edge => {
-            let compareNodes = (node) => {
-                return node.nodeName === edge.target.nodeName;
-            }
-
-            console.log(nodes.find(compareNodes));
-            if (nodes.find(compareNodes).color !== "-1") {
-                //Flag the color as taken
-                colorMap.set(nodes.find(compareNodes).color, true);
-            }
-        });
-
-        // Assign the found color
-        // colorMap.forEach((value, key) => {
-        //     if(value == false){
-        //         // Assign the found color
-        //         nodes[u].setAttribute("color", key);
-        //         break;
-        //     }
-        // });
-
-        for (let [key, value] of colorMap) {
-            if (value === false) {
-                // Assign the found color
-                nodes[u].color = key;
-                break;
-            }
-        }
-
-        links.filter(edge => edge.source === nodes[u]).forEach(edge => {
-            let compareNodes = (node) => {
-                return node.nodeName === edge.target.nodeName;
-            }
-
-            if (nodes.find(compareNodes).color !== "-1") {
-                //Flag the color as taken
-                colorMap.set(nodes.find(compareNodes).color, false);
-            }
-        });
-    }
-
-    //Update graph with new colors
-    // nodes.forEach(node => {
-    //
-    //
-    // })
-    Graph.graphData().nodes.forEach(node => {
-        node.__threeObj.children.forEach(child => {
-            console.log(child._color, node.color);
-            child._color = node.color;
-        })
-
-    });
-
-
-}
 
 function getLinkColor(link) {
 
@@ -351,12 +264,13 @@ function getShape(type) {
         return 0;
     }
 }
-
+/*
 function updateSlider(newVal){
     coupling.innerText = newVal;
     threshold = parseInt(newVal);
     updateHighlight();
 }
+ */
 
 function getSpriteColor(node){
     if (!node.nodeName.toLowerCase().includes(search.toLowerCase())) {
@@ -374,11 +288,6 @@ function getColor(node) {
         if(node === hoverNode){
             return 'rgb(50,50,200)';
         }
-        /*else{
-            return 'rgba(0,200,200)';
-        }
-
-         */
     }
 
     if (!defNodeColor) {
@@ -414,62 +323,9 @@ function getColor(node) {
         let randIndex = Math.floor(Math.random() * newColors.length);
 
         node.color = newColors[randIndex];
-
-        /*
-        neighbors.map((neighbor) => {
-            if (neighbor.color !== null) {
-                if (neighbor.color === node.color) {
-
-                    if (i === 5) {
-                        i = 0;
-                    } else {
-                        i++;
-                    }
-                    node.color = colors[i];
-                }
-            }
-        })
-
-         */
     }
-
-    /*
-    let numNeighbors = getNeighbors(node, links).length;
-
-    if (numNeighbors > threshold) {
-        return 'rgb(255,0,0)';
-    }
-    if (numNeighbors > threshold/2) {
-        //node.color =
-        return 'rgba(255,160,0)';
-    }
-
-    return 'rgba(0,255,0)';
-
-     */
 
     return node.color;
-}
-
-// Generates a random color for the node and sets the attribute
-// which is needed to prevent future neighbor nodes from being same color
-function getRandomColor(node){
-    const random = function(){return Math.floor(Math.random() * 10)};
-    Math.floor(Math.random() * 10);
-    return 'rgba(0,255,0)';
-}
-
-function colorNodesAndLinks(link){
-    const defaultMesh = new THREE.MeshLambertMaterial({
-        // Setup colors
-        color: getColor(node),
-        transparent: true,
-        opacity: getNodeOpacity(node)
-    });
-
-    console.log(link.getSource().__threeObj);
-
-    return link;
 }
 
 // Event when node is clicked on
@@ -585,7 +441,7 @@ function nodeClick(node) {
         })
     }
 }
-
+/*
 // Add node button
 function addNode() {
 
@@ -724,6 +580,8 @@ function closeLinkForm() {
     linkForm.style.display = 'none';
 }
 
+ */
+
 // Delete node button
 function deleteNode() {
 
@@ -800,7 +658,7 @@ function select(element) {
         removing = false;
     }
 }
-
+/*
 function recolor() {
     if (!highlighted) {
         highlighted = true;
@@ -815,6 +673,8 @@ function recolor() {
         Graph.postProcessingComposer().removePass(bloomPass);
     }
 }
+
+ */
 
 function showSuggestions(list) {
     let listData;
@@ -928,16 +788,10 @@ function exportToJsonFile(jsonData) {
 
 function lightTheme() {
     Graph.backgroundColor("#FFFFFF");
-    //Graph.linkColor(() => "#000000");
-    //Graph.linkDirectionalParticleColor(() => "#FFFFFF");
-    //document.querySelector(".scene-tooltip").classList.add("active");
 }
 
 function darkTheme() {
     Graph.backgroundColor("#000000");
-    //Graph.linkColor(defLinkColor);
-    //Graph.linkDirectionalParticleColor(defLinkColor);
-    //document.querySelector(".scene-tooltip").classList.remove("active");
 }
 
 function track() {
@@ -950,8 +804,7 @@ function track() {
 function toggleTrack(){
     if(trackMenu.checked){
         trackMenu.checked = false;
-    }
-    else{
+    } else {
         trackMenu.checked = true;
     }
 }
@@ -1020,7 +873,7 @@ function importGraph() {
 lightTheme();
 
 // Populate graph after 150ms (after async jsonURL runs)
-delay(150).then(() => {
+delay(200).then(() => {
     let { nodes, links } = Graph.graphData();
     Graph.d3Force('charge').strength(-150)
     allLinks = links;
@@ -1036,7 +889,7 @@ delay(150).then(() => {
 });
 
 // Make functions global (accessible from html)
-window.recolor = recolor;
+//window.recolor = recolor;
 window.getNeighborsSelected = getNeighborsSelected;
 window.select = select;
 window.closeBox = closeBox;
@@ -1048,10 +901,10 @@ window.deleteLink = deleteLink;
 window.deleteNode = deleteNode;
 window.lightTheme = lightTheme;
 window.darkTheme = darkTheme;
-window.addLink = addLink;
+//window.addLink = addLink;
 window.track = track;
-window.updateSlider = updateSlider;
-window.addNode = addNode;
+//window.updateSlider = updateSlider;
+//window.addNode = addNode;
 window.forceReset = forceReset;
 window.removeTrack = removeTrack;
 window.toggleTrack = toggleTrack;
