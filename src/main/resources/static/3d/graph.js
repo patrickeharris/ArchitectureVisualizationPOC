@@ -873,7 +873,7 @@ function importGraph() {
 lightTheme();
 
 // Populate graph after 150ms (after async jsonURL runs)
-delay(200).then(() => {
+delay(250).then(() => {
     let { nodes, links } = Graph.graphData();
     Graph.d3Force('charge').strength(-150)
     allLinks = links;
