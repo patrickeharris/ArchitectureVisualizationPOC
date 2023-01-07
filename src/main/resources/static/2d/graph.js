@@ -376,6 +376,7 @@ function getInfoBox(selectedNode) {
             found = true;
             newLinks.push(link);
         }
+
         if (link.target === selectedNode) {
             found2 = true;
             dependLinks.push(link);

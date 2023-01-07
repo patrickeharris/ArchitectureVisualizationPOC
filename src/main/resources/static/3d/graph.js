@@ -367,7 +367,6 @@ function nodeClick(node) {
         }
     });
 
-    document.getElementById("dependencyNum").innerHTML = "<b>Number of Dependencies: </b>" + endpointLinks.length;
     if(endpointLinks.length > 0){
         let endpoints = endpointLinks.map((link) => {
             let funcs = link.requests.map((func) => {
@@ -395,6 +394,8 @@ function nodeClick(node) {
             dependLinks.push(link);
         }
     });
+
+    document.getElementById("dependencyNum").innerHTML = "<b>Number of Dependencies: </b>" + newLinks.length;
 
     document.getElementById("dependentNum").innerHTML = "<b>Number of Dependents: </b>" + dependLinks.length;
 
