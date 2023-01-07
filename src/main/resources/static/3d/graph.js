@@ -179,10 +179,10 @@ function getLinkColor(link) {
 
 function getLinkWidth(link) {
     if (search === "") {
-        return link.requests.length * 4;
+        return link.requests.length * 6;
     }
     if (link.source.nodeName.toLowerCase().includes(search.toLowerCase()) || link.target.nodeName.toLowerCase().includes(search.toLowerCase())) {
-        return link.requests.length * 4;
+        return link.requests.length * 6;
     } else {
         return 0;
     }
